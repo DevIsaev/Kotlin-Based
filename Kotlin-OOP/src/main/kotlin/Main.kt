@@ -1,6 +1,6 @@
 fun main(args: Array<String>) {
     //классы и объекты
-    val class1=UserClass1()
+    /*val class1=UserClass1()
     class1.priting()
     class1.fName="Ilya"
     class1.sName="Isaev"
@@ -27,9 +27,27 @@ fun main(args: Array<String>) {
     class6.login="log"
     println(class6.login)
     class6.login=null
-    println(class6.login)
+    println(class6.login)*/
+
 
     //абстрактные классы и интерфейсы
+    /*val u1=CreateInterface()
+    u1.printInfo(UserClass6())
+    u1.printInfo(UserClass6("Ilya","Isaev"))
+    println(u1.getConnection())
 
-    
+    CheckingDateTypes(u1)*/
+
+    //наследование классов и перечисление
+}
+
+fun CheckingDateTypes(obj: UserInterface){
+    if(obj is UserInterface){
+        println(true)
+        obj.printInfo(UserClass6())
+    }
+    if(obj is DBConnection){
+        println(true)
+        println(obj.getConnection())
+    }
 }
