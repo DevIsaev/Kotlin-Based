@@ -1,3 +1,12 @@
+enum class  Animals{
+    DOG,CAT,BEAR,LION;
+
+    fun tLC()=name.toLowerCase().capitalize()
+}
+
+
+
+
 fun main(args: Array<String>) {
     //классы и объекты
     /*val class1=UserClass1()
@@ -38,7 +47,32 @@ fun main(args: Array<String>) {
 
     CheckingDateTypes(u1)*/
 
+
     //наследование классов и перечисление
+    //val u2=NewClass()
+    //CheckingDateTypes(u2)
+
+    /*val u3=object : CreateInterface(){
+        override fun printInfo(user: UserClass6) {
+            //super.printInfo(user)
+            println("изменено через класс наследника")
+        }
+
+        override val db: String
+            get() = "connected from object class"
+    }
+    CheckingDateTypes(u3)
+
+    var a=Animals.BEAR
+
+    when(a){
+        Animals.BEAR-> println(a.tLC())
+        Animals.LION-> println("Лев")
+        else -> println("Что то другое")
+    }*/
+
+
+    // Классы данных, изолированные классы
 }
 
 fun CheckingDateTypes(obj: UserInterface){
@@ -51,3 +85,4 @@ fun CheckingDateTypes(obj: UserInterface){
         println(obj.getConnection())
     }
 }
+

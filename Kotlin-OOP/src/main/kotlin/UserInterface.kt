@@ -18,7 +18,7 @@ interface DBConnection{
 
 
 
-class CreateInterface:UserInterface,DBConnection{
+open class CreateInterface:UserInterface,DBConnection{
     override val info: String
         get() = "переменная была изменена"
 
@@ -31,8 +31,12 @@ class CreateInterface:UserInterface,DBConnection{
         println("дополнительный код функции")
     }
 
+
+    open val db="DB"
     override fun getConnection(): String {
-        return "DB connected"
+        //return "DB connected"
+        return db
     }
+    protected open val close="closed"
 }
 
