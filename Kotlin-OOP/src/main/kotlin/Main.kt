@@ -1,12 +1,3 @@
-enum class  Animals{
-    DOG,CAT,BEAR,LION;
-
-    fun tLC()=name.toLowerCase().capitalize()
-}
-
-
-
-
 fun main(args: Array<String>) {
     //классы и объекты
     /*val class1=UserClass1()
@@ -73,6 +64,40 @@ fun main(args: Array<String>) {
 
 
     // Классы данных, изолированные классы
+    val test=Some()
+    val test1=Some()
+    val test2=Some()
+    val test3=Some()
+
+    val MySql=SealedClass.MySQL(345,"connection")
+    val MongoDb=SealedClass.MongoDB(34345,"connection")
+    val PostgressSQL=SealedClass.PostgressSQL(345,"connection",true)
+
+    val db_copy=MySql.copy()
+    if (MySql==db_copy){
+        println("равны")
+    }
+    else{
+        println("не равны")
+    }
+
+    val db_copy2=MySql.copy(con="Done")
+    if (MySql==db_copy2){
+        println("равны")
+    }
+    else{
+        println("не равны")
+    }
+
+    if (MongoDb is SealedClass.MongoDB){
+        MongoDb.prnting()
+    }
+
+
+    val list= listOf("PSP","PS2","PS3","PSVITA","PSONE")
+    filterList(list,{it.endsWith("3")})
+
+
 }
 
 fun CheckingDateTypes(obj: UserInterface){
@@ -86,3 +111,6 @@ fun CheckingDateTypes(obj: UserInterface){
     }
 }
 
+fun filterList(list: List<String>,filter: (String)->Boolean){
+    list.forEach{el->if (filter(el)) println(el) }
+}
