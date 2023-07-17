@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">TODO_List</string>
+    <string name="List">Список дел</string>
+    <string name="hintField1">Дело, задача</string>
+    <string name="bText">Добавить</string>
+</resources>
