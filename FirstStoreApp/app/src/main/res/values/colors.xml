@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#fdfdfd</color>
+    <color name="gray">#6a6a6a</color>
+    <color name="gradient_start_color1">#FF9800</color> <!-- Синий цвет -->
+    <color name="gradient_end_color1">#FF1605</color> <!-- Зеленый цвет -->
+    <color name="gradient_start_color">#3F51B5</color> <!-- Синий цвет -->
+    <color name="gradient_end_color">#4CAF50</color> <!-- Зеленый цвет -->
+</resources>
