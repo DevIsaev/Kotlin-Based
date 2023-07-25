@@ -1,10 +1,12 @@
 package com.example.firststoreapp
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
@@ -14,6 +16,8 @@ class ItemsAdapter(var items:List<Item>,var context:Context):RecyclerView.Adapte
         val title:TextView=view.findViewById(R.id.ItemTitle)
         val desc:TextView=view.findViewById(R.id.ItemDesc)
         val price:TextView=view.findViewById(R.id.ItemPrice)
+
+        val button:LinearLayout=view.findViewById(R.id.ItemPicture)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -36,5 +40,16 @@ class ItemsAdapter(var items:List<Item>,var context:Context):RecyclerView.Adapte
             context.packageName
         )
         holder.image.setImageResource(imgID)
+
+        holder.button.setOnClickListener {
+            val intent= Intent(context,ItemActivity::class.java)
+
+            intent.putExtra("ITitle",items[position].title)
+            intent.putExtra("IDesc",items[position].desc)
+            intent.putExtra("IText",items[position].text)
+            intent.putExtra("IImageResId", imgID)
+
+            context.startActivity(intent)
+        }
     }
 }
