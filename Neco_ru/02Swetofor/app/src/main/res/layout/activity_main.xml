@@ -19,20 +19,22 @@
         app:layout_constraintVertical_bias="0.307"
         android:src="@drawable/semafor_grey" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/bGo"
         android:layout_width="124dp"
         android:layout_height="121dp"
         android:layout_marginBottom="24dp"
         android:background="@android:color/transparent"
+        android:contentDescription="@string/app_name"
+        android:onClick="onClickStartStop"
         android:scaleType="fitCenter"
+        android:src="@drawable/button_start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/swetofor"
-        app:layout_constraintVertical_bias="0.832"
-        android:src="@drawable/button_start" />
+        app:layout_constraintVertical_bias="0.832" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
