@@ -1,8 +1,10 @@
 package com.example.a01begin
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 
@@ -12,11 +14,13 @@ class MainActivity2 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
+
         var n=56
         var str="в <магазине> <осталось> $n яблок, а может ${GetNumber()}"
         var text:TextView=findViewById(R.id.tView)
         var text2:TextView=findViewById(R.id.tView2)
         var text3:TextView=findViewById(R.id.tView3)
+        var text4:TextView=findViewById(R.id.fromACTIVITY)
 
         var substring:String=str.substringAfter('<')
         var substring1:String=str.substringBefore('>')
@@ -63,9 +67,10 @@ class MainActivity2 : AppCompatActivity() {
 
         text3.setText(count.toString())
 
-
-
-
+        var geting=intent
+        if (geting!=null){
+            text4.setText(geting.getCharSequenceExtra("передача"))
+        }
     }
     fun GetNumber():Int{
         return n1+n2
