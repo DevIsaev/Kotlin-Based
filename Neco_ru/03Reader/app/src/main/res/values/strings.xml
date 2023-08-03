@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">03. Reader</string>
+    <string name="fish">Рыбы</string>
+    <string name="naj">Наживки</string>
+    <string name="sna">Снасти</string>
+    <string name="history">Истории</string>
+</resources>
