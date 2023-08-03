@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="multi_item">
+        <item>PS3</item>
+        <item>PS2</item>
+        <item>PS4</item>
+        <item>PSVITA</item>
+        <item>PSP</item>
+    </string-array>
+</resources>
