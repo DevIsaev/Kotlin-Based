@@ -1,7 +1,6 @@
 package com.example.auth_reg_with_data
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -9,6 +8,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -41,7 +41,7 @@ class Auth : AppCompatActivity() {
             val email = tEmail.text.toString()
             val pass = tPass.text.toString()
             PB.visibility = View.VISIBLE
-
+            // проверка на пустоту
             if (email.isEmpty() || pass.isEmpty()) {
                 when {
                     email.isEmpty() -> tEmail.error = "Введите email"
@@ -58,6 +58,7 @@ class Auth : AppCompatActivity() {
                 Toast.makeText(this, "Введите пароль больше 8 символов", Toast.LENGTH_SHORT).show()
                 PB.visibility = View.GONE
             } else {
+                // авторизация
                 auth.signInWithEmailAndPassword(email, pass).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val user = auth.currentUser
@@ -66,8 +67,7 @@ class Auth : AppCompatActivity() {
                             dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
                                     val userName = snapshot.child("name").value as? String
-
-                                    // Передаем имя пользователя в MainActivity
+                                    // передача данных в активити
                                     val intent = Intent(this@Auth, MainActivity::class.java)
                                     intent.putExtra("id", user.uid)
                                     intent.putExtra("email", email)
@@ -81,18 +81,10 @@ class Auth : AppCompatActivity() {
                                 }
                             })
                         } else {
-                            Toast.makeText(
-                                this,
-                                "Неверные данные или что-то пошло не так",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Toast.makeText(this, "Неверные данные или что-то пошло не так", Toast.LENGTH_SHORT).show()
                         }
                     } else {
-                        Toast.makeText(
-                            this,
-                            "Неверные данные или что-то пошло не так",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this, "Неверные данные или что-то пошло не так", Toast.LENGTH_SHORT).show()
                     }
                     PB.visibility = View.GONE
                 }

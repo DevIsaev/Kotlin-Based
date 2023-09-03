@@ -1,11 +1,11 @@
 package com.example.auth_reg_with_data
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
@@ -35,6 +35,5 @@ class MainActivity : AppCompatActivity() {
         uUser.text=intent.getStringExtra("id")
         EmailId.text=intent.getStringExtra("email")
         name.text=intent.getStringExtra("name")
-
     }
 }
