@@ -67,6 +67,7 @@ class Auth : AppCompatActivity() {
                             dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
                                     val userName = snapshot.child("name").value as? String
+                                    val Avatar=snapshot.child(userName.toString()).value as? String
                                     // передача данных в активити
                                     val intent = Intent(this@Auth, MainActivity::class.java)
                                     intent.putExtra("id", user.uid)

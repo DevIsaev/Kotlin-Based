@@ -32,8 +32,12 @@ class MainActivity : AppCompatActivity() {
         val name=findViewById<TextView>(R.id.tvNameId)
         val profileImage = findViewById<ImageView>(R.id.Avatar)
 
+
+
         uUser.text=intent.getStringExtra("id")
         EmailId.text=intent.getStringExtra("email")
         name.text=intent.getStringExtra("name")
+
+        
     }
 }
