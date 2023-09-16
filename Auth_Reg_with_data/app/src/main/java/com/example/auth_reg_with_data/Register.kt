@@ -47,6 +47,10 @@ class Register : AppCompatActivity() {
         binding.PBReg.setOnClickListener {
             onBackPressed()
         }
+        val resultLauncher=registerForActivityResult(ActivityResultContracts.GetContent()){
+            binding.profileImage.setImageURI(it)
+            ImgURI=it
+        }
         //изображение
         binding.selectImageButton.setOnClickListener {
               resultLauncher.launch("image/*")
@@ -183,20 +187,18 @@ class Register : AppCompatActivity() {
         }
     }
 
-    private val resultLauncher=registerForActivityResult(ActivityResultContracts.GetContent()){
-        ImgURI=it
-        binding.profileImage.setImageURI(it)
-    }
+
     private fun uploadImage(uName: String){
         try {
-            storageRef = FirebaseStorage.getInstance().reference.child("UsersProfiles").child(uName).child(uName)
+            storageRef = FirebaseStorage.getInstance().reference.child("UsersProfiles").child(uName).child(1.toString())
 
             ImgURI?.let {
                 storageRef.putFile(it).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         storageRef.downloadUrl.addOnSuccessListener { uri ->
-                            val map = HashMap<String, Any>()
-                            map["pic"] = uri.toString()
+//                            val map = HashMap<String, Any>()
+//                            map["pic"] = uri.toString()
+                            val map= mapOf("url" to it.toString())
                             firebaseFirestore.collection(uName).add(map)
                                 .addOnCompleteListener { firestoreTask ->
                                     if (firestoreTask.isSuccessful) {

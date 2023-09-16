@@ -35,7 +35,6 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this,url,Toast.LENGTH_SHORT).show()
 
 
-
             Glide.with(this)
                 .load(url)
                 .placeholder(R.drawable.grad) // Placeholder image resource
@@ -55,6 +54,7 @@ class MainActivity : AppCompatActivity() {
         }
         
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
