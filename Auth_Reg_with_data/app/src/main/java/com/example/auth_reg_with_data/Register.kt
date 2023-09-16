@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.auth_reg_with_data.databinding.ActivityRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -12,18 +13,24 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.android.synthetic.main.activity_register.profileImage
-import java.util.Date
+import com.google.firebase.storage.StorageReference
 
 class Register : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseDatabase
     private lateinit var binding: ActivityRegisterBinding
     private lateinit var storage: FirebaseStorage
-    private lateinit var SelectedImg: Uri
+    //private lateinit var SelectedImg: Uri
+    //private var imgUrl: String? = null
+    private var ImgURI: Uri?=null
     private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
-    private var imgUrl: String? = null
+
+
+
+    private lateinit var storageRef:StorageReference
+    private lateinit var firebaseFirestore: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,14 +41,15 @@ class Register : AppCompatActivity() {
         db = FirebaseDatabase.getInstance()
         storage = FirebaseStorage.getInstance()
 
+        firebaseFirestore=FirebaseFirestore.getInstance()
+
+
         binding.PBReg.setOnClickListener {
             onBackPressed()
         }
         //изображение
         binding.selectImageButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.type = "image/*"
-            startActivityForResult(intent, 1)
+              resultLauncher.launch("image/*")
         }
         binding.button.setOnClickListener {
             val name = binding.NameText.text.toString()
@@ -82,12 +90,12 @@ class Register : AppCompatActivity() {
             Toast.makeText(this, "Пароли не совпадают", Toast.LENGTH_SHORT).show()
             binding.PBReg.visibility = View.GONE
         }
-            else if (SelectedImg==null||profileImage.drawable==null) {
+            else if (ImgURI==null) {
                 Toast.makeText(this, "Выберите изображение для аватара", Toast.LENGTH_SHORT).show()
                 binding.PBReg.visibility = View.GONE
             }
         else {
-            uploadImg(name)
+            uploadImage(name)
             uploadUser(name,email,phone,pass1)
         }
     }
@@ -132,15 +140,12 @@ class Register : AppCompatActivity() {
                                                                 .addOnCompleteListener { registrationTask ->
                                                                     // Если регистрация прошла успешно
                                                                     if (registrationTask.isSuccessful) {
-                                                                        val dbRef =
-                                                                            db.reference.child("users").child(auth.currentUser!!.uid)
-                                                                        val users = User(name, email, phone, auth.currentUser!!.uid, imgUrl)
-                                                                        dbRef.setValue(users)
-                                                                            .addOnCompleteListener { databaseTask ->
+                                                                        val dbRef = db.reference.child("users").child(auth.currentUser!!.uid)
+                                                                        val users = User(name, email, phone, auth.currentUser!!.uid, ImgURI.toString())
+                                                                        dbRef.setValue(users).addOnCompleteListener { databaseTask ->
                                                                                 if (databaseTask.isSuccessful) {
                                                                                     Toast.makeText(this@Register, "Регистрация прошла успешно!", Toast.LENGTH_SHORT).show()
-                                                                                    val intent = Intent(
-                                                                                        this@Register, Auth::class.java)
+                                                                                    val intent = Intent(this@Register, Auth::class.java)
                                                                                     startActivity(intent)
                                                                                 } else {
                                                                                     Toast.makeText(this@Register, "Неверные данные или что-то пошло не так", Toast.LENGTH_SHORT).show()
@@ -178,33 +183,39 @@ class Register : AppCompatActivity() {
         }
     }
 
-    private fun uploadImg(uName: String) {
-        val referenceImg = storage.reference.child("UsersProfiles").child(uName).child(Date().time.toString())
-        referenceImg.putFile(SelectedImg).addOnCompleteListener { it ->
-            if (it.isSuccessful) {
-                referenceImg.downloadUrl.addOnCompleteListener { task ->
+    private val resultLauncher=registerForActivityResult(ActivityResultContracts.GetContent()){
+        ImgURI=it
+        binding.profileImage.setImageURI(it)
+    }
+    private fun uploadImage(uName: String){
+        try {
+            storageRef = FirebaseStorage.getInstance().reference.child("UsersProfiles").child(uName).child(uName)
+
+            ImgURI?.let {
+                storageRef.putFile(it).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        imgUrl = task.result.toString()
+                        storageRef.downloadUrl.addOnSuccessListener { uri ->
+                            val map = HashMap<String, Any>()
+                            map["pic"] = uri.toString()
+                            firebaseFirestore.collection(uName).add(map)
+                                .addOnCompleteListener { firestoreTask ->
+                                    if (firestoreTask.isSuccessful) {
+                                        Toast.makeText(this, "Great", Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        Toast.makeText(this, "Что то не так с изображением", Toast.LENGTH_SHORT).show()
+                                        binding.PBReg.visibility = View.GONE
+                                    }
+                                }
+                        }
+                    } else {
+                        Toast.makeText(this, "0", Toast.LENGTH_SHORT).show()
+                        binding.PBReg.visibility = View.GONE
                     }
                 }
             }
         }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            data?.data?.let { SelectedImg = it }
-            // Здесь вы также можете установить выбранное изображение в ваш ImageView
-            binding.profileImage.setImageURI(SelectedImg)
+        catch (ex:Exception){
+            Toast.makeText(this, ex.toString(), Toast.LENGTH_SHORT).show()
         }
-
-//        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
-//            if (data.data != null) {
-//                SelectedImg = data.data!!
-//                setCircularImage(SelectedImg)
-//            }
-//        }
     }
-
 }

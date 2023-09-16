@@ -2,42 +2,63 @@ package com.example.auth_reg_with_data
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
+import com.example.auth_reg_with_data.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var Auth:FirebaseAuth
+    private lateinit var auth:FirebaseAuth
+    private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        /*Auth=FirebaseAuth.getInstance()
-        if (Auth.currentUser==null){
-            val intent=Intent(this,Auth::class.java)
-            startActivity(intent)
-        }*/
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val button=findViewById<Button>(R.id.button)
-        button.setOnClickListener {
-            FirebaseAuth.getInstance().signOut()
-            val intent= Intent(this,Auth::class.java)
-            startActivity(intent)
+        auth=FirebaseAuth.getInstance()
+        if (auth.currentUser==null){
+            Toast.makeText(this, "Что то пошло не так, авторизация прошла неудачно", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this,Auth::class.java))
+            finish()
+            return
+        }
+
+        binding.tvUserId.text=intent.getStringExtra("id")
+        binding.tvEmailId.text=intent.getStringExtra("email")
+        binding.tvNameId.text=intent.getStringExtra("name")
+        var url=intent.getStringExtra("image").toString()
+        if (!url.isNullOrEmpty()) {
+            Toast.makeText(this,"URL не пустой",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,url,Toast.LENGTH_SHORT).show()
+
+
+
+            Glide.with(this)
+                .load(url)
+                .placeholder(R.drawable.grad) // Placeholder image resource
+                .error(R.drawable.gradient) // Error image resource
+                .into(binding.Avatar)
+
+            }
+
+        else{
+            Toast.makeText(this,"URL пустой",Toast.LENGTH_SHORT).show()
+        }
+
+        binding.button.setOnClickListener {
+            auth.signOut()
+            startActivity(Intent(this,Auth::class.java))
             finish()
         }
-        val uUser=findViewById<TextView>(R.id.tvUserId)
-        val EmailId=findViewById<TextView>(R.id.tvEmailId)
-        val name=findViewById<TextView>(R.id.tvNameId)
-        val profileImage = findViewById<ImageView>(R.id.Avatar)
-
-
-
-        uUser.text=intent.getStringExtra("id")
-        EmailId.text=intent.getStringExtra("email")
-        name.text=intent.getStringExtra("name")
-
         
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        auth.signOut()
+        finish()
     }
 }
