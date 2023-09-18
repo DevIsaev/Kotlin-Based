@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
+import com.bumptech.glide.request.RequestOptions
 import com.example.auth_reg_with_data.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
 
@@ -29,19 +31,22 @@ class MainActivity : AppCompatActivity() {
         binding.tvUserId.text=intent.getStringExtra("id")
         binding.tvEmailId.text=intent.getStringExtra("email")
         binding.tvNameId.text=intent.getStringExtra("name")
-        var url=intent.getStringExtra("image").toString()
+        var url=intent.getStringExtra("image@#").toString()
         if (!url.isNullOrEmpty()) {
             Toast.makeText(this,"URL не пустой",Toast.LENGTH_SHORT).show()
             Toast.makeText(this,url,Toast.LENGTH_SHORT).show()
 
 
-            Glide.with(this)
+            val options = RequestOptions().format(DecodeFormat.PREFER_ARGB_8888)
+                 Glide.with(this)
+                .asDrawable()
+                .placeholder(R.drawable.grad)
+                .error(R.drawable.gradient)
+                .apply(options)
                 .load(url)
-                .placeholder(R.drawable.grad) // Placeholder image resource
-                .error(R.drawable.gradient) // Error image resource
                 .into(binding.Avatar)
 
-            }
+        }
 
         else{
             Toast.makeText(this,"URL пустой",Toast.LENGTH_SHORT).show()
@@ -52,7 +57,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this,Auth::class.java))
             finish()
         }
-        
+
     }
 
 

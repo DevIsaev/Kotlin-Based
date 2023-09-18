@@ -82,8 +82,8 @@ class Auth : AppCompatActivity() {
                             intent.putExtra("id", user.uid)
                             intent.putExtra("email", email)
                             intent.putExtra("name", userName)
-                            intent.putExtra("image", imgUrl)
-//                            Toast.makeText(this@Auth,imgUrl.toString(),Toast.LENGTH_LONG).show()
+                            intent.putExtra("image@#", imgUrl)
+                            //Toast.makeText(this@Auth,imgUrl.toString(),Toast.LENGTH_LONG).show()
                             startActivity(intent)
                         }
 
@@ -96,7 +96,7 @@ class Auth : AppCompatActivity() {
                     Toast.makeText(this, "Неверные данные или что-то пошло не так", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(this, "Неверные данные или что-то пошло не так", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Неверные данные или пользователь отстутствует", Toast.LENGTH_SHORT).show()
             }
             binding1.PBAuth.visibility = View.GONE
         }

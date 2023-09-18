@@ -48,9 +48,15 @@ class Register : AppCompatActivity() {
             onBackPressed()
         }
         val resultLauncher=registerForActivityResult(ActivityResultContracts.GetContent()){
-            binding.profileImage.setImageURI(it)
-            ImgURI=it
+            // Проверяем, что выбранный файл - изображение
+            if (isValidImage(it)) {
+                binding.profileImage.setImageURI(it)
+                ImgURI = it
+            } else {
+                Toast.makeText(this@Register, "GIF изображения пока не поддерживаются", Toast.LENGTH_SHORT).show()
+            }
         }
+
         //изображение
         binding.selectImageButton.setOnClickListener {
               resultLauncher.launch("image/*")
@@ -187,7 +193,6 @@ class Register : AppCompatActivity() {
         }
     }
 
-
     private fun uploadImage(uName: String){
         try {
             storageRef = FirebaseStorage.getInstance().reference.child("UsersProfiles").child(uName).child(1.toString())
@@ -219,5 +224,14 @@ class Register : AppCompatActivity() {
         catch (ex:Exception){
             Toast.makeText(this, ex.toString(), Toast.LENGTH_SHORT).show()
         }
+    }
+
+    fun isValidImage(uri: Uri?): Boolean {
+        uri?.let {
+            val contentResolver = applicationContext.contentResolver
+            val type = contentResolver.getType(it)
+            return type?.startsWith("image/") == true && !type.endsWith("gif")
+        }
+        return false
     }
 }
