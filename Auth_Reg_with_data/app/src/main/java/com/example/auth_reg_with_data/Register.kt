@@ -25,8 +25,11 @@ class Register : AppCompatActivity() {
     //private lateinit var SelectedImg: Uri
     //private var imgUrl: String? = null
     private var ImgURI: Uri?=null
-    private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
-
+    private var emailPattern = "[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}"
+    //private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
+    private var phoneNumberPattern = "^(\\+7|8)[0-9]{10}$"
+    private var nicknamePattern = "^[a-zA-Z0-9_]*$"
+    private var passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}"
 
 
     private lateinit var storageRef:StorageReference
@@ -84,26 +87,32 @@ class Register : AppCompatActivity() {
             }
             Toast.makeText(this, "Неверные данные", Toast.LENGTH_SHORT).show()
             binding.PBReg.visibility = View.GONE
-        } else if (!email.matches(emailPattern.toRegex())) {
+        }
+        else if (!name.matches(nicknamePattern.toRegex())) {
+            binding.NameText.error = "Введите Никнейм корректно"
+            Toast.makeText(this, " Никнейм может содержать только буквы, цифры и символы подчеркивания", Toast.LENGTH_SHORT).show()
+            binding.PBReg.visibility = View.GONE
+        }
+        else if (!email.matches(emailPattern.toRegex())) {
             binding.EmailText.error = "Введите Email корректно"
             Toast.makeText(this, "Введите Email корректно", Toast.LENGTH_SHORT).show()
             binding.PBReg.visibility = View.GONE
-        } else if (phone.length != 10) {
+        } else if (!phone.matches(phoneNumberPattern.toRegex())) {
             binding.PhoneText.error = "Введите номер телефона корректно"
             Toast.makeText(this, "Введите номер телефона корректно", Toast.LENGTH_SHORT).show()
             binding.PBReg.visibility = View.GONE
-        } else if (pass1.length < 8) {
+        } else if (pass1.length<8) {
             binding.PassText.error = "Введите пароль больше 8 символов"
-            Toast.makeText(this, "Введите пароль больше 8 символов", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Пароль: минимум 8 символов с буквами, цифрами и специальными символами", Toast.LENGTH_SHORT).show()
             binding.PBReg.visibility = View.GONE
         } else if (pass2 != pass1) {
             Toast.makeText(this, "Пароли не совпадают", Toast.LENGTH_SHORT).show()
             binding.PBReg.visibility = View.GONE
         }
-            else if (ImgURI==null) {
-                Toast.makeText(this, "Выберите изображение для аватара", Toast.LENGTH_SHORT).show()
-                binding.PBReg.visibility = View.GONE
-            }
+        else if (ImgURI==null) {
+            Toast.makeText(this, "Выберите изображение для аватара", Toast.LENGTH_SHORT).show()
+            binding.PBReg.visibility = View.GONE
+        }
         else {
             uploadImage(name)
             uploadUser(name,email,phone,pass1)

@@ -51,6 +51,7 @@
             app:layout_constraintTop_toBottomOf="@+id/PhoneText">
             <ImageView
                 android:id="@+id/profileImage"
+                android:src="@drawable/avatar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -63,6 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Выбрать изображение"
+            android:backgroundTint="#2196F3"
             app:layout_constraintBottom_toTopOf="@+id/button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.076"
@@ -105,11 +107,12 @@
 
         <EditText
             android:id="@+id/PhoneText"
-            android:layout_width="144dp"
+            android:layout_width="148dp"
             android:layout_height="48dp"
             android:layout_gravity="center"
             android:ems="5"
-            android:hint="Номер телефона"
+            android:textColor="@color/white"
+            android:hint="Номер телефона (+7)"
             android:inputType="text"
             android:textColorHint="@color/white"
             android:textSize="14sp"

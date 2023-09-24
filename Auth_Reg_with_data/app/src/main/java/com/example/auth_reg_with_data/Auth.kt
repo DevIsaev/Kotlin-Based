@@ -11,8 +11,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.StorageReference
 
 class Auth : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
@@ -20,8 +18,6 @@ class Auth : AppCompatActivity() {
     private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
 
     private lateinit var binding1: ActivityAuthBinding
-    private lateinit var storageRef: StorageReference
-    private lateinit var firebaseFirestore: FirebaseFirestore
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,10 +30,9 @@ class Auth : AppCompatActivity() {
             val intent = Intent(this, Register::class.java)
             startActivity(intent)
         }
-
-
-        auth = FirebaseAuth.getInstance()
-        db=FirebaseDatabase.getInstance()
+        binding1.bGo.setOnClickListener {
+            authAsGuset()
+        }
 
         binding1.buttonAuth.setOnClickListener {
             val email = binding1.EmailAuth.text.toString()
@@ -60,12 +55,21 @@ class Auth : AppCompatActivity() {
                 Toast.makeText(this, "Введите пароль больше 8 символов", Toast.LENGTH_SHORT).show()
                 binding1.PBAuth.visibility = View.GONE
             } else {
-                authFun(email,pass)
+                authFun(email, pass)
             }
         }
     }
-    fun authFun(email:String,pass:String){
 
+    private fun authAsGuset() {
+        val intent = Intent(this@Auth, MainActivity::class.java)
+        intent.putExtra("email", "Не авторизован")
+        intent.putExtra("name", "Не авторизован")
+        startActivity(intent)
+    }
+
+    fun authFun(email:String,pass:String){
+        auth = FirebaseAuth.getInstance()
+        db=FirebaseDatabase.getInstance()
         // авторизация
         auth.signInWithEmailAndPassword(email, pass).addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -79,7 +83,7 @@ class Auth : AppCompatActivity() {
 
                             // передача данных в активити
                             val intent = Intent(this@Auth, MainActivity::class.java)
-                            intent.putExtra("id", user.uid)
+                            //intent.putExtra("id", user.uid)
                             intent.putExtra("email", email)
                             intent.putExtra("name", userName)
                             intent.putExtra("image@#", imgUrl)
