@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group>
+        <item
+            android:id="@+id/IDSignOut"
+            android:title="Выйти"
+            android:icon="@drawable/baseline_login_24"
+            android:padding="10dp" />
+    </group>
+
+
+<group>
+    <item android:title="Музыка">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/IDMusicStorage"
+                    android:title="Композиции из хранилища"
+                    android:icon="@drawable/baseline_queue_music_24"
+                    android:padding="20dp" />
+                <item
+                    android:id="@+id/IDMusicDownload"
+                    android:title="Скачанные композиции"
+                    android:icon="@drawable/baseline_music_note_24"
+                    android:padding="20dp" />
+                <item
+                    android:id="@+id/IDStore"
+                    android:title="Магазин HI-RES Store"
+                    android:icon="@drawable/baseline_shop_24"
+                    android:padding="20dp" />
+                <item
+                    android:id="@+id/IDPlaylists"
+                    android:title="Плейлисты"
+                    android:icon="@drawable/baseline_library_music_24"
+                    android:padding="30dp" />
+                <item
+                    android:id="@+id/IDStatistic"
+                    android:title="Статистика прослушанного"
+                    android:icon="@drawable/baseline_app_registration_24"
+                    android:padding="10dp" />
+            </group>
+        </menu>
+    </item>
+</group>
+
+<group android:checkableBehavior="single">
+    <item android:title="Прочее">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/IDSettings"
+                    android:title="Настройки"
+                    android:icon="@drawable/baseline_settings_24"
+                    android:padding="10dp" />
+                <item
+                    android:id="@+id/IDPlugIn"
+                    android:title="Подключение к оборудованию"
+                    android:icon="@drawable/baseline_settings_input_component_24"
+                    android:padding="10dp" />
+                <item
+                    android:id="@+id/ID_F.A.Q"
+                    android:title="F.A.Q"
+                    android:icon="@drawable/baseline_library_books_24"
+                    android:padding="10dp" />
+                <item
+                    android:id="@+id/IDAbout"
+                    android:title="О приложении"
+                    android:icon="@drawable/baseline_info_24"
+                    android:padding="10dp" />
+            </group>
+        </menu>
+    </item>
+</group>
+</menu>

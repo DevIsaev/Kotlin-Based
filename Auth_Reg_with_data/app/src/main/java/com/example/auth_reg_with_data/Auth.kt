@@ -51,8 +51,8 @@ class Auth : AppCompatActivity() {
                 Toast.makeText(this, "Введите Email корректно", Toast.LENGTH_SHORT).show()
                 binding1.PBAuth.visibility = View.GONE
             } else if (pass.length < 8) {
-                binding1.PassAuth.error = "Введите пароль больше 8 символов"
-                Toast.makeText(this, "Введите пароль больше 8 символов", Toast.LENGTH_SHORT).show()
+                binding1.PassAuth.error = "Введите пароль корректно"
+                Toast.makeText(this, "Введите пароль корректно", Toast.LENGTH_SHORT).show()
                 binding1.PBAuth.visibility = View.GONE
             } else {
                 authFun(email, pass)
@@ -61,7 +61,7 @@ class Auth : AppCompatActivity() {
     }
 
     private fun authAsGuset() {
-        val intent = Intent(this@Auth, MainActivity::class.java)
+        val intent = Intent(this@Auth, ProfileActivity::class.java)
         intent.putExtra("email", "Не авторизован")
         intent.putExtra("name", "Не авторизован")
         startActivity(intent)
@@ -82,7 +82,7 @@ class Auth : AppCompatActivity() {
                             val imgUrl = snapshot.child("imgUrl").value as? String
 
                             // передача данных в активити
-                            val intent = Intent(this@Auth, MainActivity::class.java)
+                            val intent = Intent(this@Auth, ProfileActivity::class.java)
                             //intent.putExtra("id", user.uid)
                             intent.putExtra("email", email)
                             intent.putExtra("name", userName)

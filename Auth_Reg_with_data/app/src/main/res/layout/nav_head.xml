@@ -1,0 +1,41 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="25dp"
+    android:paddingStart="20dp"
+    android:background="@drawable/round">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/circle_image_view"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/avatar"
+        app:civ_border_color="#FFFFFFFF"
+        app:civ_border_width="2dp"
+        android:layout_marginTop="60dp"
+        app:civ_circle_background_color="#4B60DD"/>
+
+
+    <TextView
+        android:id="@+id/UserNameHead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="НЕ АВТОРИЗОВАН"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/EmailHead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:text="НЕ АВТОРИЗОВАН" />
+
+</LinearLayout>
