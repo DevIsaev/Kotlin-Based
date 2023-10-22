@@ -16,6 +16,9 @@
         android:theme="@style/Theme.Auth_Reg_with_data"
         tools:targetApi="31">
         <activity
+            android:name=".Music"
+            android:exported="false" />
+        <activity
             android:name=".ProfileActivity"
             android:exported="false" />
         <activity

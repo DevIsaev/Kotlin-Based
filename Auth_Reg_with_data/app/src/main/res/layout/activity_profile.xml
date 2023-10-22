@@ -8,11 +8,11 @@
     android:layout_height="match_parent"
     android:id="@+id/Drawer"
     app:menu="@menu/nav_menu">
-    <!--    -->
-<!--    <include layout="@layout/main_content"-->
+
+<!--    <include layout="@layout/profile"-->
 <!--        android:layout_height="match_parent"-->
 <!--        android:layout_width="match_parent"/>-->
-    <!---->
+
 
 
     <com.google.android.material.navigation.NavigationView

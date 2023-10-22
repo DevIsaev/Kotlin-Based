@@ -61,9 +61,9 @@ class Auth : AppCompatActivity() {
     }
 
     private fun authAsGuset() {
+        DataManager.userEmail
+        DataManager.userName
         val intent = Intent(this@Auth, ProfileActivity::class.java)
-        intent.putExtra("email", "Не авторизован")
-        intent.putExtra("name", "Не авторизован")
         startActivity(intent)
     }
 
@@ -80,19 +80,19 @@ class Auth : AppCompatActivity() {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             val userName = snapshot.child("name").value as? String
                             val imgUrl = snapshot.child("imgUrl").value as? String
+                            // передача данных в класс хранения
+                            DataManager.userEmail=email
+                            DataManager.userName=userName
+                            DataManager.userImageUrl=imgUrl.toString()
+                            Toast.makeText(this@Auth,"${DataManager.userName.toString()}",Toast.LENGTH_SHORT)
+                            Toast.makeText(this@Auth,"${DataManager.userEmail.toString()}",Toast.LENGTH_SHORT)
+                            Toast.makeText(this@Auth,"${DataManager.userImageUrl.toString()}",Toast.LENGTH_SHORT)
 
-                            // передача данных в активити
                             val intent = Intent(this@Auth, ProfileActivity::class.java)
-                            //intent.putExtra("id", user.uid)
-                            intent.putExtra("email", email)
-                            intent.putExtra("name", userName)
-                            intent.putExtra("image@#", imgUrl)
-                            //Toast.makeText(this@Auth,imgUrl.toString(),Toast.LENGTH_LONG).show()
                             startActivity(intent)
                         }
 
                         override fun onCancelled(error: DatabaseError) {
-                            // Обработка ошибок получения данных
                             binding1.PBAuth.visibility = View.GONE
                         }
                     })
