@@ -25,9 +25,9 @@ class MainActivity : AppCompatActivity() {
 
 
         //binding.tvUserId.text=intent.getStringExtra("id")
-        binding.tvEmailId.text=intent.getStringExtra("email")
-        binding.tvNameId.text=intent.getStringExtra("name")
-        var url=intent.getStringExtra("image@#").toString()
+        binding.tvEmailId.text=DataManager.userEmail
+        binding.tvNameId.text=DataManager.userName
+        var url=DataManager.userImageUrl.toString()
         if (!url.isNullOrEmpty()) {
             val options = RequestOptions().format(DecodeFormat.PREFER_ARGB_8888)
                  Glide.with(this)

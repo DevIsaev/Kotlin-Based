@@ -25,17 +25,13 @@ class ProfileActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
-
-        NavView.setNavigationItemSelectedListener(this)
-        drawer = findViewById(R.id.Drawer)
-
-        var header=NavView.getHeaderView(0)
-        var uNameHead=header.findViewById<TextView>(R.id.UserNameHead)
-        var uEmailHead=header.findViewById<TextView>(R.id.EmailHead)
-        var uImgHead=header.findViewById<ImageView>(R.id.circleAvatar)
+        auth = FirebaseAuth.getInstance()
+        var fieldname=findViewById<TextView>(R.id.tvNameId)
+        fieldname.text=DataManager.userName
+        var fieldemail=findViewById<TextView>(R.id.tvEmailId)
+        fieldemail.text=DataManager.userEmail
+        var avatar=findViewById<ImageView>(R.id.Avatar)
         var url=DataManager.userImageUrl.toString()
-        uNameHead.text=DataManager.userName
-        uEmailHead.text=DataManager.userEmail
         if (!url.isNullOrEmpty()) {
             val options = RequestOptions().format(DecodeFormat.PREFER_ARGB_8888)
             Glide.with(this)
@@ -43,29 +39,42 @@ class ProfileActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
                 .error(R.drawable.avatar)
                 .apply(options)
                 .load(url)
-                .into(uImgHead)
+                .into(avatar)
         }
+        Navigation()
 
-
-        auth = FirebaseAuth.getInstance()
     }
-    fun SignOut() {
+    private fun SignOut() {
 
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Выход")
         builder.setMessage("Вы действительно хотите выйти?")
-        builder.setPositiveButton("Да",
-            DialogInterface.OnClickListener { dialogInterface, i ->
-                auth.signOut()
+        builder.setPositiveButton("Да", DialogInterface.OnClickListener { dialogInterface, i ->
                 DataManager.userEmail="НЕ АВТОРИЗОВАН"
                 DataManager.userName="НЕ АВТОРИЗОВАН"
                 DataManager.userImageUrl=null
+                auth.signOut()
                 startActivity(Intent(this, Auth::class.java))
                 finish()
             })
-        builder.setNegativeButton("Нет",
-            DialogInterface.OnClickListener { dialogInterface, i -> })
+        builder.setNegativeButton("Нет", DialogInterface.OnClickListener { dialogInterface, i -> })
         builder.show()
+    }
+
+    private fun Navigation(){
+        NavView.setNavigationItemSelectedListener(this)
+        drawer = findViewById(R.id.Drawer)
+        NavView.getHeaderView(0).findViewById<TextView>(R.id.UserNameHead).text=DataManager.userName
+        NavView.getHeaderView(0).findViewById<TextView>(R.id.EmailHead).text=DataManager.userEmail
+        if (!DataManager.userImageUrl.toString().isNullOrEmpty()) {
+            val options = RequestOptions().format(DecodeFormat.PREFER_ARGB_8888)
+            Glide.with(this)
+                .asDrawable()
+                .error(R.drawable.avatar)
+                .apply(options)
+                .load(DataManager.userImageUrl.toString())
+                .into(NavView.getHeaderView(0).findViewById(R.id.circleAvatar))
+        }
     }
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -125,6 +134,7 @@ class ProfileActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         drawer?.closeDrawer(GravityCompat.START)
         return true
     }
+
     override fun onDestroy() {
         super.onDestroy()
         auth.signOut()
