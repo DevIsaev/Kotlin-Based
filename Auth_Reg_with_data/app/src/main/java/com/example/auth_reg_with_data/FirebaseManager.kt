@@ -2,6 +2,9 @@ package com.example.auth_reg_with_data
 
 import android.content.Context
 import android.net.Uri
+import android.util.Patterns
+import android.widget.EditText
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
@@ -115,4 +118,21 @@ class FirebaseManager(private var context: Context) {
         }
     }
 
+    fun compareEmail(email: EditText){
+        if(email.text.toString().isEmpty()){
+            return
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email.text.toString()).matches()){
+            return
+        }
+        auth.sendPasswordResetEmail(email.text.toString()).addOnCompleteListener {task->
+            if (task.isSuccessful){
+                Toast.makeText(context,"Проверьте свою почту",Toast.LENGTH_SHORT)
+            }
+        }
+    }
+
+    fun authGoogle(){
+
+    }
 }

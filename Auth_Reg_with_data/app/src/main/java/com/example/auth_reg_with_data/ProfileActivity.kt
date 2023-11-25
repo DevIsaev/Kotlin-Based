@@ -44,24 +44,26 @@ class ProfileActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         Navigation()
 
     }
-    private fun SignOut() {
+    fun SignOut() {
 
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Выход")
         builder.setMessage("Вы действительно хотите выйти?")
-        builder.setPositiveButton("Да", DialogInterface.OnClickListener { dialogInterface, i ->
+        builder.setPositiveButton("Да",
+            DialogInterface.OnClickListener { dialogInterface, i ->
+                auth.signOut()
                 DataManager.userEmail="НЕ АВТОРИЗОВАН"
                 DataManager.userName="НЕ АВТОРИЗОВАН"
                 DataManager.userImageUrl=null
-                auth.signOut()
                 startActivity(Intent(this, Auth::class.java))
                 finish()
             })
-        builder.setNegativeButton("Нет", DialogInterface.OnClickListener { dialogInterface, i -> })
+        builder.setNegativeButton("Нет",
+            DialogInterface.OnClickListener { dialogInterface, i -> })
         builder.show()
     }
 
-    private fun Navigation(){
+    fun Navigation(){
         NavView.setNavigationItemSelectedListener(this)
         drawer = findViewById(R.id.Drawer)
         NavView.getHeaderView(0).findViewById<TextView>(R.id.UserNameHead).text=DataManager.userName
