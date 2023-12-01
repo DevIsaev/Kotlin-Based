@@ -15,7 +15,7 @@ import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_profile.NavView
+
 
 class Music : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var auth1: FirebaseAuth
@@ -46,6 +46,7 @@ class Music : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListen
     }
 
    private fun Navigation(){
+       var NavView=findViewById<NavigationView>(R.id.NavView)
         NavView.setNavigationItemSelectedListener(this)
         drawer = findViewById(R.id.Drawer)
         NavView.getHeaderView(0).findViewById<TextView>(R.id.UserNameHead).text=DataManager.userName

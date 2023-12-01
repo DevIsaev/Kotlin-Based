@@ -14,6 +14,7 @@ import com.example.auth_reg_with_data.databinding.ActivityAuthBinding
 class Auth : AppCompatActivity() {
     private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
     private lateinit var binding1: ActivityAuthBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
@@ -53,9 +54,7 @@ class Auth : AppCompatActivity() {
                 dialog.window!!.setBackgroundDrawable(ColorDrawable(0))
             }
             dialog.show()
-}
-
-        Toast.makeText(this,"${DataManager.userName},${DataManager.userEmail}",Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun CheckedAndPattern(email:String,pass:String){
@@ -80,13 +79,13 @@ class Auth : AppCompatActivity() {
         }
         else {
             val fbm=FirebaseManager(this)
-            fbm.AuthUser(email,pass,{
+            fbm.AuthUser(this,email,pass,{
                 Toast.makeText(this, "Вы вошли успешно", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this@Auth, ProfileActivity::class.java)
                 startActivity(intent)
                 binding1.PBAuth.visibility = View.GONE
             }, {
-                Toast.makeText(this, "Что то пошло не так", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
                 binding1.PBAuth.visibility = View.GONE
             })
         }
@@ -98,6 +97,5 @@ class Auth : AppCompatActivity() {
         val intent = Intent(this@Auth, ProfileActivity::class.java)
         startActivity(intent)
     }
-
 
 }

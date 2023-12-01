@@ -35,17 +35,17 @@
 
         android:textStyle="bold" />
 
+
     <EditText
         android:id="@+id/EmailAuth"
         android:layout_width="220sp"
         android:layout_height="50dp"
-        android:ems="10"
-        android:inputType="text"
-        android:hint="email"
-        android:textColorHint="@color/white"
+        android:layout_gravity="center"
         android:layout_marginTop="100dp"
-        android:layout_gravity="center"/>
-
+        android:ems="10"
+        android:hint="email"
+        android:inputType="text"
+        android:textColorHint="@color/white" />
 
     <EditText
         android:id="@+id/PassAuth"
@@ -57,6 +57,16 @@
         android:textColorHint="@color/white"
         android:layout_marginTop="20dp"
         android:layout_gravity="center" />
+    <TextView
+        android:id="@+id/bRes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+
+        android:gravity="center"
+        android:text="Не помните пароль?"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
 
     <ProgressBar
         android:id="@+id/PBAuth"
@@ -71,15 +81,28 @@
         android:id="@+id/buttonAuth"
         android:layout_width="220sp"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
         android:backgroundTint="#201E20"
         android:gravity="center"
-        android:textSize="16sp"
 
+        android:text="Войти"
         android:textColor="#FFFFFF"
-        android:layout_marginTop="30dp"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+    <Button
+        android:id="@+id/buttonGoogle"
+        android:layout_width="220sp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Войти" />
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#FFFFFF"
+        android:gravity="center"
+        android:drawableLeft="@drawable/googleg_standard_color_18"
+        android:text="Войти через Google"
+        android:textColor="#000000"
+        android:textSize="12sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/bReg"
@@ -92,16 +115,6 @@
         android:textColor="@color/white"
         android:textSize="16sp" />
 
-    <TextView
-        android:id="@+id/bRes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-
-        android:gravity="center"
-        android:text="Не помните пароль?"
-        android:textColor="@color/white"
-        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/bGo"

@@ -60,12 +60,12 @@ class Register : AppCompatActivity() {
         }
 
         binding.button.setOnClickListener {
+            binding.PBReg.visibility = View.VISIBLE
             val name = binding.NameText.text.toString()
             val email = binding.EmailText.text.toString()
             val phone = binding.PhoneText.text.toString()
             val pass1 = binding.PassText.text.toString()
             val pass2 = binding.ConfPassText.text.toString()
-            binding.PBReg.visibility = View.VISIBLE
             PaternsAndEmpty(this,name,email,phone,pass1,pass2)
         }
     }
@@ -97,32 +97,40 @@ class Register : AppCompatActivity() {
                 !email.matches(emailPattern.toRegex()) -> {
                     binding.EmailText.error = "Введите Email корректно"
                     Toast.makeText(this, "Введите Email корректно", Toast.LENGTH_SHORT).show()
+                    binding.PBReg.visibility = View.GONE
                 }
                 !phone.matches(phoneNumberPattern.toRegex()) -> {
                     binding.PhoneText.error = "Введите номер телефона корректно"
                     Toast.makeText(this, "Введите номер телефона корректно", Toast.LENGTH_SHORT).show()
+                    binding.PBReg.visibility = View.GONE
                 }
                 pass1.length<8 -> {
                     binding.PassText.error = "Введите пароль больше 8 символов"
                     Toast.makeText(this, "Пароль: минимум 8 символов с буквами, цифрами и специальными символами", Toast.LENGTH_SHORT).show()
+                    binding.PBReg.visibility = View.GONE
                 }
-                pass2 != pass1 -> Toast.makeText(this, "Пароли не совпадают", Toast.LENGTH_SHORT).show()
-                ImgURI==null -> Toast.makeText(this, "Выберите изображение для аватара", Toast.LENGTH_SHORT).show()
+                pass2 != pass1 -> {
+                    Toast.makeText(this, "Пароли не совпадают", Toast.LENGTH_SHORT).show()
+                    binding.PBReg.visibility = View.GONE
+                }
+                ImgURI==null -> {
+                    Toast.makeText(this, "Выберите изображение для аватара", Toast.LENGTH_SHORT).show()
+                    binding.PBReg.visibility = View.GONE
+                }
                 else->{
                     uploadImage(name)
                     val fbm=FirebaseManager(context)
-                    fbm.RegisterUser(name,email,phone,pass1,ImgURI!!,{
+                    fbm.RegisterUser(this,name,email,phone,pass1,ImgURI!!,{
                         Toast.makeText(context, "Регистрация прошла успешно", Toast.LENGTH_SHORT).show()
                         binding.PBReg.visibility = View.GONE
                         val intent = Intent(this@Register, Auth::class.java)
                         startActivity(intent) },
                         {
-                        Toast.makeText(context, "Что то пошло не так", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                         binding.PBReg.visibility = View.GONE
                         })
                 }
             }
-            binding.PBReg.visibility = View.GONE
         }
     }
 

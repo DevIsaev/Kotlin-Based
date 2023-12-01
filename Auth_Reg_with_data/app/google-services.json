@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "263657266076",
+    "firebase_url": "https://authregwithdata-default-rtdb.firebaseio.com",
     "project_id": "authregwithdata",
     "storage_bucket": "authregwithdata.appspot.com"
   },
@@ -14,7 +15,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "263657266076-h3j189mb8br98i36l5uulcnc0a13fhkl.apps.googleusercontent.com",
+          "client_id": "263657266076-93rr69tpb08rsoorf8h6hfna2e97h261.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,7 +28,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "263657266076-h3j189mb8br98i36l5uulcnc0a13fhkl.apps.googleusercontent.com",
+              "client_id": "263657266076-93rr69tpb08rsoorf8h6hfna2e97h261.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

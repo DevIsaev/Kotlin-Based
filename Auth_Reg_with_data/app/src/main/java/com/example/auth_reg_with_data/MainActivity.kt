@@ -1,63 +1,74 @@
 package com.example.auth_reg_with_data
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
+import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DecodeFormat
-import com.bumptech.glide.request.RequestOptions
-import com.example.auth_reg_with_data.databinding.ActivityMainBinding
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var mGoogleSignInClient: GoogleSignInClient
+    private lateinit var mAuth: FirebaseAuth
 
-    private lateinit var auth:FirebaseAuth
-    private lateinit var binding: ActivityMainBinding
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        auth=FirebaseAuth.getInstance()
+        mAuth = FirebaseAuth.getInstance()
 
 
-        //binding.tvUserId.text=intent.getStringExtra("id")
-        binding.tvEmailId.text=DataManager.userEmail
-        binding.tvNameId.text=DataManager.userName
-        var url=DataManager.userImageUrl.toString()
-        if (!url.isNullOrEmpty()) {
-            val options = RequestOptions().format(DecodeFormat.PREFER_ARGB_8888)
-                 Glide.with(this)
-                .asDrawable()
-                .error(R.drawable.avatar)
-                .apply(options)
-                .load(url)
-                .into(binding.Avatar)
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+
+
+
+        val textView = findViewById<TextView>(R.id.name)
+
+        val auth = Firebase.auth
+        val user = auth.currentUser
+
+        if (user != null) {
+            val userName = user.displayName
+            textView.text = "Welcome, " + userName
+        } else {
+            // Handle the case where the user is not signed in
         }
-        binding.button.setOnClickListener {
-            val builder= AlertDialog.Builder(this)
-            builder.setTitle("Выход")
-            builder.setMessage("Вы действительно хотите выйти?")
-            builder.setPositiveButton("Да",
-                DialogInterface.OnClickListener { dialogInterface, i ->
-                    auth.signOut()
-                    startActivity(Intent(this,Auth::class.java))
-                    finish()
-            })
-            builder.setNegativeButton("Нет",
-                DialogInterface.OnClickListener { dialogInterface, i -> })
-            builder.show()
+
+
+
+// Inside onCreate() method
+        val sign_out_button = findViewById<Button>(R.id.logout_button)
+        sign_out_button.setOnClickListener {
+            signOutAndStartSignInActivity()
         }
+
+
+
 
     }
 
 
-    override fun onDestroy() {
-        super.onDestroy()
-        auth.signOut()
-        finish()
+    private fun signOutAndStartSignInActivity() {
+        mAuth.signOut()
+
+        mGoogleSignInClient.signOut().addOnCompleteListener(this) {
+            // Optional: Update UI or show a message to the user
+            val intent = Intent(this@MainActivity, Auth::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 }

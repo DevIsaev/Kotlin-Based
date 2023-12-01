@@ -6,73 +6,32 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        app:cardCornerRadius="64dp"
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Loading.."
+        android:textSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.216">
-                <ImageView
-                    android:id="@+id/Avatar"
-                    android:src="@drawable/avatar"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:scaleType="centerCrop" />
-    </androidx.cardview.widget.CardView>
-
-
-
-    <TextView
-        android:id="@+id/tvEmailId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.474" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="You are logged!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.103" />
-
-    <TextView
-        android:id="@+id/tvNameId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.577" />
+        app:layout_constraintVertical_bias="0.212" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/logout_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="LOGOUT"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="132dp"
+        android:text="logout"
+        android:background="@color/red"
+        android:textColor="@color/white"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.525"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.799" />
+        app:layout_constraintTop_toBottomOf="@+id/name" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

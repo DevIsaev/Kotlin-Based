@@ -13,10 +13,10 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 class FirebaseManager(private var context: Context) {
-    private var auth: FirebaseAuth = FirebaseAuth.getInstance()
     private var db: FirebaseDatabase = FirebaseDatabase.getInstance()
+    private var auth: FirebaseAuth = FirebaseAuth.getInstance()
 
-    fun RegisterUser(name: String, email: String, phone: String, password: String, ImgURI: Uri, onSuccess: () -> Unit, onFailure: (String) -> Unit): Boolean {
+    fun RegisterUser(context: Context, name: String, email: String, phone: String, password: String, ImgURI: Uri, onSuccess: () -> Unit, onFailure: (String) -> Unit): Boolean {
         try {
             val userRef = db.reference.child("users")
             // Проверка пользователя с именем
@@ -87,7 +87,7 @@ class FirebaseManager(private var context: Context) {
         }
     }
 
-    fun AuthUser(email: String, password: String, onSuccess: (FirebaseUser) -> Unit, onFailure: (String) -> Unit){
+    fun AuthUser(context: Context, email: String, password: String, onSuccess: (FirebaseUser) -> Unit, onFailure: (String) -> Unit){
         // авторизация
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -110,7 +110,7 @@ class FirebaseManager(private var context: Context) {
                         }
                     })
                 } else {
-                    onFailure("Неверные данные или что-то пошло не так")
+                    onFailure("Неверные данные или пользователь отсутсвует")
                 }
             } else {
                 onFailure("Неверные данные или пользователь отсутствует")
@@ -132,7 +132,7 @@ class FirebaseManager(private var context: Context) {
         }
     }
 
-    fun authGoogle(){
+    fun authVK(){
 
     }
 }

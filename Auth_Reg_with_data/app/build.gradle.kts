@@ -1,7 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-android-extensions")
+    id ("kotlin-android")
+    //id("kotlin-android-extensions")
     id("com.google.gms.google-services")
 }
 
@@ -35,7 +36,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
+    buildFeatures {
+        viewBinding = true
+    }
     buildFeatures.dataBinding = true
     buildFeatures.viewBinding = true
 }
@@ -58,4 +61,10 @@ dependencies {
     implementation ("com.squareup.picasso:picasso:2.8")
 
     implementation ("de.hdodenhof:circleimageview:3.1.0")
+
+
+
+    implementation ("com.google.firebase:firebase-bom:31.5.0")
+    implementation ("com.google.firebase:firebase-auth-ktx")
+    implementation ("com.google.android.gms:play-services-auth:20.5.0")
 }
