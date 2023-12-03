@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".screens.ThirdPageFragment"
+    android:background="@color/violent">
+
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/dtshdpremiumsound01"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.03" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DTS-HD MASTER AUDIO"
+        android:textColor="@color/white"
+        android:textSize="22dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.036" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Формат DTS-HD Master Audio, ранее известный как DTS++[3], обеспечивает побитную идентичность звука оригиналу, может использоваться для кодирования аудио с битрейтом, значительно превышающим битрейт звука стандартных DVD.
+
+Технические характеристики формата DTS-HD Master Audio[4]:
+
+максимальный битрейт аудио со сжатием без потерь ограничен 24,5 Мбит/с для дисков Blu-ray и 18,0 Мбит/с для HD DVD;
+поддержка до 7.1 каналов звука с частотой дискретизации 96 кГц и глубиной 24 бита;
+для пяти каналов частота дискретизации может достигать 192 кГц при глубине 24 бита;
+возможность перераспределения каналов при настройке громкоговорителей 7.1-канальной системы;
+совместимость со старым оборудованием, поддерживающим DTS, за счёт включения в формат «ядра» формата DTS 5.1; возможность доставки 6 каналов звука с максимальным для обычных DVD разрешением.
+По состоянию на апрель 2008 года японская версия[чего?] (Pioneer BDP-LX80 и Samsung BD-P1400, после обновления прошивки) поддерживает цифровой вывод формата[какого?], а также игровая приставка PlayStation 3 поддерживает[5] декодирование формата[какого?] и вывод его в PCM."
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintVertical_bias="0.101" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

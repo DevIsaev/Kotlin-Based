@@ -1,5 +1,6 @@
 package com.example.onboardingtest
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -20,16 +21,31 @@ class SplashFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         Handler(Looper.getMainLooper()).postDelayed({
-            findNavController().navigate(R.id.navigate_splashFragment_to_homeFragment)
+            if(finish()){
+                findNavController().navigate(R.id.navigate_splashFragment_to_homeFragment)
+            }
+            else{
+                findNavController().navigate(R.id.action_splashFragment_to_onBoardingFragment)
+            }
+
+
         },3000)
+
+
+
+
         val view= inflater.inflate(R.layout.fragment_splash, container, false)
         val  animTop=AnimationUtils.loadAnimation(view.context,R.anim.from_top)
         val  animBottom=AnimationUtils.loadAnimation(view.context,R.anim.from_bottom)
 
         val tvSplash=view.findViewById<TextView>(R.id.tvSplash)
         val imgSplash=view.findViewById<ImageView>(R.id.imgSplash)
-        tvSplash.animation=animBottom
-        imgSplash.animation=animTop
+        tvSplash.animation=animTop
+        imgSplash.animation=animBottom
         return  view
+    }
+    private fun finish():Boolean{
+        var sharedPreferences=requireActivity().getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
+        return  sharedPreferences.getBoolean("finished",false)
     }
 }
