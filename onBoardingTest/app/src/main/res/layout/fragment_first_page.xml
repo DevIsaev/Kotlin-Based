@@ -5,47 +5,52 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".screens.FirstPageFragment"
-    android:background="@color/white">
-
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:src="@drawable/playstation3logo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.03" />
+    android:background="@color/orange">
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="PLAYSTATION3"
-        android:textColor="@color/black"
-        android:textSize="22dp"
+        android:text="Введите никнейм"
+        android:textSize="28dp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.181" />
+
+    <EditText
+        android:id="@+id/Nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="Никнейм"
+        android:textColorHint="@color/white"
+        app:icon="@android:drawable/ic_dialog_email"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.061" />
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintVertical_bias="0.17" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/n"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="PlayStation 3 (яп. プレイステーション3 Пурэйсутэ:сён Сури:, официальное сокр. PS3) — игровая приставка седьмого поколения, третья основная в семействе игровых систем PlayStation (не считая PlayStation Portable и PocketStation). С помощью PS3 можно играть, смотреть фильмы, слушать музыку, отправлять электронную почту и просматривать веб-страницы. С самого момента выпуска приставкой поддерживается большинство игр для консолей 7-го поколения, PlayStation и PlayStation 2[11]. Главными конкурентами консоли являются Xbox 360 от Microsoft и Wii от Nintendo[12]."
-        android:textColor="@color/black"
-        android:textSize="11sp"
+        android:text="->"
+        android:textColor="@color/white"
+        android:textSize="66dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.934"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.217" />
+
+        app:layout_constraintTop_toBottomOf="@+id/Nickname"
+        app:layout_constraintVertical_bias="0.968" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

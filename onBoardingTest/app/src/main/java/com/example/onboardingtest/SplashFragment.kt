@@ -22,10 +22,10 @@ class SplashFragment : Fragment() {
         // Inflate the layout for this fragment
         Handler(Looper.getMainLooper()).postDelayed({
             if(finish()){
-                findNavController().navigate(R.id.navigate_splashFragment_to_homeFragment)
+                findNavController().navigate(R.id.action_splashFragment_to_onBoardingFragment)
             }
             else{
-                findNavController().navigate(R.id.action_splashFragment_to_onBoardingFragment)
+                findNavController().navigate(R.id.navigate_splashFragment_to_homeFragment)
             }
 
 
