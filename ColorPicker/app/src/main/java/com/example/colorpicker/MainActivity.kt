@@ -15,6 +15,11 @@ class MainActivity : AppCompatActivity() {
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         loadColorSpinner()
+        binding.buttonBG.setBackgroundColor(Color.parseColor(selectedColor.hexHash))
+        binding.buttonBG.setOnClickListener {
+            // Change the color of the button
+            binding.buttonBG.setBackgroundColor(Color.parseColor(selectedColor.hexHash))
+        }
     }
 
     private fun loadColorSpinner()

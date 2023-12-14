@@ -8,6 +8,7 @@
     android:id="@+id/back">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -18,21 +19,33 @@
         <TextView
             android:layout_width="120dp"
             android:layout_height="match_parent"
-            android:text="Color: "
-            android:textSize="30sp"
+            android:gravity="center"
+            android:text="Color:"
             android:textColor="@color/black"
-            android:gravity="center"/>
+            android:textSize="30sp" />
+
         <Spinner
             android:id="@+id/colorSpinner"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="65dp"
-            android:textAlignment="center"
+            android:layout_marginEnd="20dp"
+            android:layout_weight="1"
+            android:background="@drawable/color_blob"
             android:gravity="center"
             android:spinnerMode="dialog"
-            android:background="@drawable/color_blob"
-            android:layout_marginEnd="20dp"/>
+            android:textAlignment="center" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonBG"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="0.396" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
