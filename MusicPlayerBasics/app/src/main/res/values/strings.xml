@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">MusicPlayerBasics</string>
+    <string name="ShuffleBTN">Shuffle</string>
+    <string name="FavouritesBTN">Favourites</string>
+    <string name="PlaylistBTN">Playlists</string>
+    <string name="Total">Total songs:</string>
+    <string name="Song">Song:</string>
+    <string name="Start">00:00</string>
+    <string name="End">Loading...</string>
+    <string name="RepeatBTN">Repeat</string>
+    <string name="TimerBTN">Timer</string>
+    <string name="EqualizerBTN">Equalizer</string>
+    <string name="ShareBTN">Share</string>
+</resources>
