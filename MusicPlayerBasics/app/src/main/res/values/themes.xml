@@ -6,4 +6,11 @@
     </style>
 
     <style name="Theme.MusicPlayerBasics" parent="Base.Theme.MusicPlayerBasics" />
+
+    <style name="BottomSheet" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+    <style name="BottomSheetTheme" parent="Theme.Design.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheet</item>
+    </style>
 </resources>
