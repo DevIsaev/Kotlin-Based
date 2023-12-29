@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".MainActivity">
-    <!--android:background="@color/white"-->
+
 
 
 <LinearLayout
@@ -20,6 +21,7 @@
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/favouritesBTN"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -32,6 +34,7 @@
             android:textSize="12sp"
             android:textStyle="bold"/>
         <Button
+            android:id="@+id/shuffleBTN"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -44,6 +47,7 @@
             android:textSize="12sp"
             android:textStyle="bold"/>
         <Button
+            android:id="@+id/playlistsBTN"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
