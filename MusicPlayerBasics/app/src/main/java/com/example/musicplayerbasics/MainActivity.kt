@@ -5,8 +5,10 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.musicplayerbasics.databinding.ActivityMainBinding
@@ -15,12 +17,26 @@ import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener {
     private lateinit var binding:ActivityMainBinding
+
     var drawer: DrawerLayout? = null
+
+    private lateinit var permissionLancher:ActivityResultLauncher<Array<String>>
+    private var isReadPermission=false
+    private var isWritePermission=false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestRuntimePermission()
+
+
+        permissionLancher=registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){permissions->
+            isReadPermission=permissions[android.Manifest.permission.READ_EXTERNAL_STORAGE]?:isReadPermission
+            isWritePermission=permissions[android.Manifest.permission.WRITE_EXTERNAL_STORAGE]?:isWritePermission
+        }
+        requestPermission()
+
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         Navigation()
 
         binding.favouritesBTN.setOnClickListener {
@@ -36,21 +52,19 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         }
     }
     //запрос разрешения
-    private fun requestRuntimePermission(){
-        if(ActivityCompat.checkSelfPermission(this,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            !=PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),13)
+    private fun requestPermission(){
+        isWritePermission=ContextCompat.checkSelfPermission(this,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED
+        isReadPermission=ContextCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED
+
+        val permissionRequest:MutableList<String> =ArrayList()
+        if(!isReadPermission){
+            permissionRequest.add(android.Manifest.permission.READ_EXTERNAL_STORAGE)
         }
-    }
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(requestCode==13){
-            if(grantResults.isNotEmpty()&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this,"Разрешение получено",Toast.LENGTH_SHORT).show()
-            }
-            else{
-                ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),13)
-            }
+        if(!isWritePermission){
+            permissionRequest.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+        if(permissionRequest.isNotEmpty()){
+            permissionLancher.launch(permissionRequest.toTypedArray())
         }
     }
     //Navigation drawer
