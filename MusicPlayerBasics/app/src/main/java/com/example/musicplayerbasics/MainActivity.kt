@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        setTheme(R.style.coolPinkNav)
 
         permissionLancher=registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){permissions->
             isReadPermission=permissions[android.Manifest.permission.READ_EXTERNAL_STORAGE]?:isReadPermission
@@ -40,11 +40,11 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         Navigation()
 
         binding.favouritesBTN.setOnClickListener {
-            showBottomSheet()
+            val itent=Intent(this,FavouritesActivity::class.java)
+            startActivity(itent)
         }
         binding.shuffleBTN.setOnClickListener {
-            val itent=Intent(this,PlayerActivity::class.java)
-            startActivity(itent)
+            showBottomSheet()
         }
         binding.playlistsBTN.setOnClickListener {
             val itent=Intent(this,PlaylistsActivity::class.java)
@@ -121,12 +121,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     }
     //sheet
     private fun showBottomSheet(){
-//       val dialogview=layoutInflater.inflate(R.layout.activity_player,null)
-//        dialog=BottomSheetDialog(this,R.style.BottomSheetTheme)
-//        dialog.setContentView(dialogview)
-//        dialog.show()
-
-    val bottomsheet=PlayerFragment()
-    bottomsheet.show(supportFragmentManager,"BottomSheetDialog")
+        val bottomsheet=PlayerFragment()
+        bottomsheet.show(supportFragmentManager,"BottomSheetDialog")
     }
 }

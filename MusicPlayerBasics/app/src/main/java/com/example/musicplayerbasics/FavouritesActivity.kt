@@ -10,5 +10,6 @@ class FavouritesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding= ActivityFavouritesBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setTheme(R.style.coolPink)
     }
 }

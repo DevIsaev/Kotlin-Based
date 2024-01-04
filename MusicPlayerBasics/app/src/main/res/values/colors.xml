@@ -6,4 +6,49 @@
     <color name="green">#64dd17</color>
     <color name="pink">#f50057</color>
     <color name="yellow">#ffd600</color>
+
+    <color name="purple200">#ffbb86fc</color>
+    <color name="purple500">#ff6200ee</color>
+    <color name="purple700">#ff3700b3</color>
+    <color name="teal200">#ff03dac5</color>
+    <color name="teal700">#ff018786</color>
+
+
+
+    <!-- Основные цвета -->
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <!-- Цвета текста -->
+    <color name="textColorPrimary">#212121</color>
+    <color name="textColorSecondary">#757575</color>
+
+    <!-- Цвета фона -->
+    <color name="windowBackground">#FFFFFF</color>
+    <color name="backgroundColor">#F5F5F5</color>
+
+    <!-- Цвета кнопок -->
+    <color name="buttonColorNormal">#2196F3</color>
+    <color name="buttonColorPressed">#1976D2</color>
+
+    <!-- Цвета подсветки и выделения -->
+    <color name="highlightColor">#FFFF00</color>
+    <color name="selectedColor">#FFC107</color>
+
+    <!-- Цвета состояний -->
+    <color name="successColor">#4CAF50</color>
+    <color name="errorColor">#FF5722</color>
+    <color name="warningColor">#FFC107</color>
+    <color name="infoColor">#2196F3</color>
+
+    <!-- Цвета для разных состояний элементов интерфейса -->
+    <color name="enabledColor">#000000</color>
+    <color name="disabledColor">#9E9E9E</color>
+
+    <!-- Цвета для разных типов заголовков -->
+    <color name="headerColorPrimary">#4285F4</color>
+    <color name="headerColorSecondary">#34A853</color>
+    <color name="headerColorTertiary">#FBBC05</color>
+    <color name="headerColorQuaternary">#EA4335</color>
 </resources>

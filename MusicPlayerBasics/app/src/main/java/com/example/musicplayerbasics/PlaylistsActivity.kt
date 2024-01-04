@@ -8,6 +8,7 @@ class PlaylistsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPlaylistsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.coolPink)
         binding= ActivityPlaylistsBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }
