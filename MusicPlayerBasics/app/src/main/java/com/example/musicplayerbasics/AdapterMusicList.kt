@@ -1,0 +1,37 @@
+package com.example.musicplayerbasics
+
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.example.musicplayerbasics.databinding.MusicViewBinding
+
+class AdapterMusicList(private val context: Context, private val musicList: ArrayList<Music>) : RecyclerView.Adapter<AdapterMusicList.MyHolder>(){
+    class MyHolder(binding: MusicViewBinding):RecyclerView.ViewHolder(binding.root) {
+
+        val title=binding.songName
+        val artist=binding.songArtist
+        val img=binding.imgOfMusic
+        val duration=binding.songDuration
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdapterMusicList.MyHolder {
+        return MyHolder(MusicViewBinding.inflate(LayoutInflater.from(context),parent,false))
+    }
+
+    override fun onBindViewHolder(holder: AdapterMusicList.MyHolder, position: Int) {
+        holder.title.text=musicList[position].title
+        holder.artist.text=musicList[position].artist
+        holder.duration.text=musicList[position].duration.toString()
+        Glide.with(context)
+            .load(musicList[position].artURI)
+            .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
+            .into(holder.img)
+    }
+
+    override fun getItemCount(): Int {
+        return musicList.size
+    }
+}
