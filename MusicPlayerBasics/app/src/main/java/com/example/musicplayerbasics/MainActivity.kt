@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         val projection = arrayOf(
             MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ALBUM,
             MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.DATE_ADDED,
-            MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ALBUM_ID
+            MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ALBUM_ID,
         )
 
         val cursor = this.contentResolver.query(

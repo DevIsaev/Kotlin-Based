@@ -1,5 +1,7 @@
 package com.example.musicplayerbasics
 
+import android.animation.AnimatorInflater
+import android.animation.AnimatorSet
 import android.content.pm.ActivityInfo
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -15,6 +17,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class PlayerFragment : BottomSheetDialogFragment() {
     private lateinit var binding: ActivityPlayerBinding
+
+    lateinit var fontAnim:AnimatorSet
+    lateinit var backAnim:AnimatorSet
+    var isFont=true
+
     companion object {
         fun newInstance(): PlayerFragment {
             return PlayerFragment()
@@ -47,7 +54,31 @@ class PlayerFragment : BottomSheetDialogFragment() {
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             })
         }
+
+        binding.albumIMG.setOnClickListener {
+            if(isFont){
+                fontAnim.setTarget(binding.albumIMG)
+                backAnim.setTarget(binding.albumIMGback)
+                fontAnim.start()
+                backAnim.start()
+                isFont=false
+            }
+            else{
+                fontAnim.setTarget(binding.albumIMGback)
+                backAnim.setTarget(binding.albumIMG)
+                fontAnim.start()
+                backAnim.start()
+                isFont=true
+            }
+        }
+
+        val scale = requireContext().resources.displayMetrics.density
+        binding.albumIMG.cameraDistance = 8000 * scale
+        binding.albumIMGback.cameraDistance = 8000 * scale
+        fontAnim = AnimatorInflater.loadAnimator(requireContext(), R.animator.font) as AnimatorSet
+        backAnim = AnimatorInflater.loadAnimator(requireContext(), R.animator.back) as AnimatorSet
        songInitialization()
+
 
         binding.btnPAUSEPLAY.setOnClickListener {
             if (isPlaying){
@@ -57,7 +88,12 @@ class PlayerFragment : BottomSheetDialogFragment() {
                 playMusic()
             }
         }
-
+        binding.btnPREVIOUS.setOnClickListener {
+            musicNextPrev(false)
+        }
+        binding.btnNEXT.setOnClickListener {
+            musicNextPrev(true)
+        }
     }
     private fun songInitialization(){
     songPosition= arguments?.getInt("index",0)!!
@@ -79,7 +115,7 @@ class PlayerFragment : BottomSheetDialogFragment() {
             .load(musicListPA[songPosition].artURI)
             .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
             .into(binding.albumIMG)
-
+        binding.durationEND.text= DurationFormat(musicListPA[songPosition].duration)
         binding.songTITLE.text= musicListPA[songPosition].title +"\n"+musicListPA[songPosition].artist
 
     }
@@ -97,6 +133,7 @@ class PlayerFragment : BottomSheetDialogFragment() {
             return
         }
     }
+
     private fun playMusic(){
         binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
         isPlaying=true
@@ -107,8 +144,33 @@ class PlayerFragment : BottomSheetDialogFragment() {
         isPlaying=false
         mediaPlayer!!.pause()
     }
+    private fun musicNextPrev(increment:Boolean){
+        if(increment){
+            songPosition(true)
+            setLayout()
+            createMP()
+        }
+        else{
+            songPosition(false)
+            setLayout()
+            createMP()
+        }
+    }
+    private fun songPosition(increment: Boolean){
+        if (increment){
+            if(musicListPA.size-1== songPosition)
+                songPosition=0
+            else ++songPosition
+        }
+        else{
+            if(0== songPosition)
+                songPosition= musicListPA.size-1
+            else --songPosition
+        }
+    }
     override fun onDestroy() {
         super.onDestroy()
+        mediaPlayer!!.stop()
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
     }
 }
