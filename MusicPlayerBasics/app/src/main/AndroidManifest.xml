@@ -19,6 +19,7 @@
         android:roundIcon="@mipmap/soundwavelogo"
         android:supportsRtl="true"
         android:theme="@style/Theme.MusicPlayerBasics"
+        android:requestLegacyExternalStorage="true"
         tools:targetApi="31">
         <activity
             android:name=".PlaylistsActivity"

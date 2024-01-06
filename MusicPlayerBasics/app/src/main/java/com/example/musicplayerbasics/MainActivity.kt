@@ -45,17 +45,8 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
         Navigation()
 
-
-        binding.favouritesBTN.setOnClickListener {
-            val itent=Intent(this,FavouritesActivity::class.java)
-            startActivity(itent)
-        }
         binding.shuffleBTN.setOnClickListener {
             showBottomSheet()
-        }
-        binding.playlistsBTN.setOnClickListener {
-            val itent=Intent(this,PlaylistsActivity::class.java)
-            startActivity(itent)
         }
     }
 
@@ -80,32 +71,41 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     //получение всех аудио
     @SuppressLint("Recycle", "Range")
     @RequiresApi(Build.VERSION_CODES.R)
-    private fun getAllAudio(): ArrayList<Music>{
+    private fun getAllAudio(): ArrayList<Music> {
         val tempList = ArrayList<Music>()
-        val selection = MediaStore.Audio.Media.IS_MUSIC +  " != 0"
-        val projection = arrayOf(MediaStore.Audio.Media._ID,MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.ALBUM,
-            MediaStore.Audio.Media.ARTIST,MediaStore.Audio.Media.DURATION,MediaStore.Audio.Media.DATE_ADDED,
-            MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ALBUM_ID)
-        val cursor = this.contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection,selection,null,
-            MediaStore.Audio.Media.DATE_ADDED + " DESC", null)
-        if(cursor != null){
-            if(cursor.moveToFirst()){
+        val selection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
+        val projection = arrayOf(
+            MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ALBUM,
+            MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.DATE_ADDED,
+            MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ALBUM_ID
+        )
+
+        val cursor = this.contentResolver.query(
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null,
+            MediaStore.Audio.Media.DATE_ADDED + " DESC", null
+        )
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
                 do {
-                    val titleC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))?:"Unknown"
-                    val idC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID))?:"Unknown"
-                    val albumC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM))?:"Unknown"
-                    val artistC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))?:"Unknown"
+                    val titleC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)) ?: "Unknown"
+                    val idC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID)) ?: "Unknown"
+                    val albumC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)) ?: "Unknown"
+                    val artistC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)) ?: "Unknown"
                     val pathC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA))
                     val durationC = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION))
                     val albumIdC = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)).toString()
                     val uri = Uri.parse("content://media/external/audio/albumart")
                     val artUriC = Uri.withAppendedPath(uri, albumIdC).toString()
-                    val music = Music(id = idC, title = titleC, album = albumC, artist = artistC, path = pathC, duration = durationC,
-                        artURI = artUriC)
-                    val file = File(music.path)
-                    if(file.exists())
-                        tempList.add(music)
-                }while (cursor.moveToNext())
+
+                    // Добавьте проверку, чтобы загружать аудио только из папки "Music"
+                    if (pathC != null && pathC.contains("/Music/")) {
+                        val music = Music(id = idC, title = titleC, album = albumC, artist = artistC, path = pathC, duration = durationC, artURI = artUriC)
+                        val file = File(music.path)
+                        if (file.exists())
+                            tempList.add(music)
+                    }
+                } while (cursor.moveToNext())
             }
             cursor.close()
         }
@@ -157,9 +157,14 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             }
 
             R.id.IDMusicStorage -> {
-                Toast.makeText(this, "IDMusicStorage", Toast.LENGTH_SHORT).show()
+                val itent=Intent(this,MainActivity::class.java)
+                startActivity(itent)
             }
 
+            R.id.IDMusicFavourite -> {
+                val itent=Intent(this,FavouritesActivity::class.java)
+                startActivity(itent)
+            }
             R.id.IDMusicDownload -> {
                 Toast.makeText(this, "IDMusicDownload", Toast.LENGTH_SHORT).show()
             }
@@ -169,7 +174,8 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             }
 
             R.id.IDPlaylists -> {
-                Toast.makeText(this, "IDPlaylists", Toast.LENGTH_SHORT).show()
+                val itent=Intent(this,PlaylistsActivity::class.java)
+                startActivity(itent)
             }
 
             R.id.IDStatistic -> {

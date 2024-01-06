@@ -1,8 +1,10 @@
 package com.example.musicplayerbasics
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -15,6 +17,7 @@ class AdapterMusicList(private val context: Context, private val musicList: Arra
         val artist=binding.songArtist
         val img=binding.imgOfMusic
         val duration=binding.songDuration
+        val root=binding.root
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdapterMusicList.MyHolder {
@@ -24,14 +27,32 @@ class AdapterMusicList(private val context: Context, private val musicList: Arra
     override fun onBindViewHolder(holder: AdapterMusicList.MyHolder, position: Int) {
         holder.title.text=musicList[position].title
         holder.artist.text=musicList[position].artist
-        holder.duration.text=musicList[position].duration.toString()
+        holder.duration.text= DurationFormat(musicList[position].duration)
+
         Glide.with(context)
             .load(musicList[position].artURI)
             .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
             .into(holder.img)
+
+
+        holder.root.setOnClickListener {
+            val playerFragment = PlayerFragment.newInstance()
+
+            // Передача данных в PlayerFragment
+            val bundle = Bundle()
+            bundle.putInt("index", position)
+            bundle.putString("class", "MusicAdapter")
+            playerFragment.arguments = bundle
+
+            playerFragment.show(
+                (context as AppCompatActivity).supportFragmentManager,
+                playerFragment.tag
+            )
+        }
     }
 
     override fun getItemCount(): Int {
         return musicList.size
     }
 }
+

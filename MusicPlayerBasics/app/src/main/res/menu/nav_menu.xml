@@ -18,8 +18,13 @@
             <group android:checkableBehavior="single">
                 <item
                     android:id="@+id/IDMusicStorage"
-                    android:title="Композиции из хранилища"
+                    android:title="Все композиции"
                     android:icon="@drawable/baseline_queue_music_24"
+                    android:padding="20dp" />
+                <item
+                    android:id="@+id/IDMusicFavourite"
+                    android:title="Избранное"
+                    android:icon="@drawable/baseline_favorite_241"
                     android:padding="20dp" />
                 <item
                     android:id="@+id/IDMusicDownload"

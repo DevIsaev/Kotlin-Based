@@ -28,19 +28,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/favouritesBTN"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:contentDescription="@string/FavouritesBTN"
-            android:drawableTop="@drawable/baseline_favorite_24"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:text="@string/FavouritesBTN"
-            android:textColor="@color/black"
-            android:textAllCaps="false"
-            android:textSize="12sp"
-            android:textStyle="bold"/>
+
         <Button
             android:id="@+id/shuffleBTN"
             android:layout_width="wrap_content"
@@ -54,19 +42,7 @@
             android:textAllCaps="false"
             android:textSize="12sp"
             android:textStyle="bold"/>
-        <Button
-            android:id="@+id/playlistsBTN"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:contentDescription="@string/PlaylistBTN"
-            android:drawableTop="@drawable/sharp_apps_24"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:text="@string/PlaylistBTN"
-            android:textColor="@color/black"
-            android:textAllCaps="false"
-            android:textSize="12sp"
-            android:textStyle="bold"/>
+
 
     </LinearLayout>
     <!---->

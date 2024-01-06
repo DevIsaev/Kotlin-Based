@@ -52,6 +52,7 @@
 </LinearLayout>
 
     <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/albumIMG"
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_margin="25dp"
@@ -62,6 +63,7 @@
         app:strokeWidth="4dp" />
 
     <TextView
+        android:id="@+id/songTITLE"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
@@ -79,6 +81,7 @@
         android:layout_weight="1"
         >
 <TextView
+    android:id="@+id/durationCURRENT"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:textColor="@color/black"
@@ -92,6 +95,7 @@
             tools:ignore="NestedWeights"
             />
         <TextView
+            android:id="@+id/durationEND"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textColor="@color/black"
@@ -111,12 +115,13 @@
     android:gravity="center"
     android:layout_weight="1">
 <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+    android:id="@+id/btnNEXT"
     android:layout_width="30dp"
     android:layout_height="30dp"
     app:icon="@drawable/baseline_skip_previous_24"
     app:iconSize="40dp"/>
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/pause"
+        android:id="@+id/btnPAUSE_PLAY"
         android:layout_width="30dp"
         android:layout_height="30dp"
         app:icon="@drawable/baseline_stop_24"
@@ -126,6 +131,7 @@
         android:backgroundTint="@color/pink"
         app:iconTint="@color/white"/>
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/btnPREVIOUS"
         android:layout_width="30dp"
         android:layout_height="30dp"
         app:icon="@drawable/baseline_skip_next_24"

@@ -12,30 +12,36 @@
         android:layout_height="50dp"
         android:src="@drawable/icon"
         app:shapeAppearanceOverlay="@style/curved"
-        android:layout_marginStart="15dp"/>
+        android:layout_marginStart="10dp"/>
+
     <TextView
         android:id="@+id/songName"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:text="songname"
+        android:layout_height="25dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginTop="5dp"
         android:layout_toStartOf="@id/songDuration"
         android:layout_toEndOf="@+id/imgOfMusic"
-        android:textColor="@color/black"
-        android:layout_marginStart="25dp"
         android:gravity="center_vertical"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        android:text="songname"
+        android:textColor="@color/black"
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/songArtist"
+        android:textColor="@color/textColorSecondary"
         android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:layout_marginStart="25dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="30dp"
         android:layout_toStartOf="@id/songDuration"
         android:layout_toEndOf="@+id/imgOfMusic"
         android:gravity="center_vertical"
         android:singleLine="true"
-        android:text="songartist" />
+        android:text="songartist"
+        android:textSize="12sp" />
     <TextView
         android:id="@+id/songDuration"
         android:layout_width="50dp"
