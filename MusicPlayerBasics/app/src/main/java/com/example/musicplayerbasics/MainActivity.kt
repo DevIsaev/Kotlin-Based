@@ -46,7 +46,12 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         Navigation()
 
         binding.shuffleBTN.setOnClickListener {
-            showBottomSheet()
+            val bottomSheet = PlayerFragment.newInstance()
+            val bundle = Bundle()
+            bundle.putInt("index", 0)
+            bundle.putString("class", "MainActivity")
+            bottomSheet.arguments = bundle
+            bottomSheet.show(supportFragmentManager, bottomSheet.tag)
         }
     }
 
@@ -153,7 +158,6 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         when (item.itemId) {
             R.id.IDSignOut -> {
                 Toast.makeText(this, "IDSignOut", Toast.LENGTH_SHORT).show()
-                showBottomSheet()
             }
 
             R.id.IDMusicStorage -> {
@@ -201,9 +205,5 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         drawer?.closeDrawer(GravityCompat.START)
         return true
     }
-    //sheet
-    private fun showBottomSheet(){
-        val bottomsheet=PlayerFragment()
-        bottomsheet.show(supportFragmentManager,"BottomSheetDialog")
-    }
+
 }

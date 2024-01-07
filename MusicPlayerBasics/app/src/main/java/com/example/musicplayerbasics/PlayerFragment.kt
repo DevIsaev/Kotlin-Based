@@ -2,9 +2,14 @@ package com.example.musicplayerbasics
 
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
+import android.content.ComponentName
+import android.content.Context.BIND_AUTO_CREATE
+import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.ActivityInfo
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +20,7 @@ import com.example.musicplayerbasics.databinding.ActivityPlayerBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class PlayerFragment : BottomSheetDialogFragment() {
+class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection {
     private lateinit var binding: ActivityPlayerBinding
 
     lateinit var fontAnim:AnimatorSet
@@ -26,15 +31,18 @@ class PlayerFragment : BottomSheetDialogFragment() {
         fun newInstance(): PlayerFragment {
             return PlayerFragment()
         }
-
         lateinit var musicListPA:ArrayList<Music>
-        private var songPosition:Int=0
-        var mediaPlayer:MediaPlayer?=null
+        var songPosition:Int=0
+        //var mediaPlayer:MediaPlayer?=null
         var isPlaying:Boolean=false
+        var musicService:MusicSevice?=null
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         binding = ActivityPlayerBinding.inflate(inflater, container, false)
+        //service
+        val intent = Intent(requireContext(), MusicSevice::class.java)
+        requireContext().bindService(intent, this, BIND_AUTO_CREATE)
         return binding.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -107,6 +115,13 @@ class PlayerFragment : BottomSheetDialogFragment() {
                 setLayout()
                 createMP()
             }
+            "MainActivity"->{
+                musicListPA= ArrayList()
+                musicListPA.addAll(MainActivity.MusicListMA)
+                musicListPA.shuffle()
+                setLayout()
+                createMP()
+            }
         }
     }
 }
@@ -121,11 +136,11 @@ class PlayerFragment : BottomSheetDialogFragment() {
     }
     private fun createMP(){
         try {
-            if (mediaPlayer == null) mediaPlayer = MediaPlayer()
-            mediaPlayer!!.reset()
-            mediaPlayer!!.setDataSource(musicListPA[songPosition].path)
-            mediaPlayer!!.prepare()
-            mediaPlayer!!.start()
+            if (musicService!!.mediaPlayer == null) musicService!!.mediaPlayer = MediaPlayer()
+            musicService!!.mediaPlayer!!.reset()
+            musicService!!.mediaPlayer!!.setDataSource(musicListPA[songPosition].path)
+            musicService!!.mediaPlayer!!.prepare()
+            musicService!!.mediaPlayer!!.start()
             isPlaying=true
             binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
         }
@@ -137,12 +152,12 @@ class PlayerFragment : BottomSheetDialogFragment() {
     private fun playMusic(){
         binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
         isPlaying=true
-        mediaPlayer!!.start()
+        musicService!!.mediaPlayer!!.start()
     }
     private fun pauseMusic(){
         binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_play_arrow_24)
         isPlaying=false
-        mediaPlayer!!.pause()
+        musicService!!.mediaPlayer!!.pause()
     }
     private fun musicNextPrev(increment:Boolean){
         if(increment){
@@ -170,7 +185,19 @@ class PlayerFragment : BottomSheetDialogFragment() {
     }
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer!!.stop()
+        musicService!!.mediaPlayer!!.stop()
+        //requireContext().unbindService(this)
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+    }
+    //Service
+    override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+        val binder=service as MusicSevice.MyBinder
+        musicService=binder.currentService()
+        createMP()
+        musicService!!.showNotification()
+    }
+
+    override fun onServiceDisconnected(name: ComponentName?) {
+        musicService=null
     }
 }
