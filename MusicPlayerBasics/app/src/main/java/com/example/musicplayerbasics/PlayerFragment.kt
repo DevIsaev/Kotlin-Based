@@ -2,6 +2,7 @@ package com.example.musicplayerbasics
 
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context.BIND_AUTO_CREATE
 import android.content.Intent
@@ -21,7 +22,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection {
-    private lateinit var binding: ActivityPlayerBinding
+
 
     lateinit var fontAnim:AnimatorSet
     lateinit var backAnim:AnimatorSet
@@ -31,11 +32,14 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection {
         fun newInstance(): PlayerFragment {
             return PlayerFragment()
         }
+
         lateinit var musicListPA:ArrayList<Music>
         var songPosition:Int=0
         //var mediaPlayer:MediaPlayer?=null
         var isPlaying:Boolean=false
         var musicService:MusicSevice?=null
+        @SuppressLint("StaticFieldLeak")
+        lateinit var binding: ActivityPlayerBinding
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -130,8 +134,8 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection {
             .load(musicListPA[songPosition].artURI)
             .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
             .into(binding.albumIMG)
-        binding.durationEND.text= DurationFormat(musicListPA[songPosition].duration)
         binding.songTITLE.text= musicListPA[songPosition].title +"\n"+musicListPA[songPosition].artist
+        binding.durationEND.text= DurationFormat(musicListPA[songPosition].duration)
 
     }
     private fun createMP(){
@@ -143,6 +147,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection {
             musicService!!.mediaPlayer!!.start()
             isPlaying=true
             binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
+            musicService!!.showNotification(R.drawable.baseline_pause_24)
         }
         catch (ex:Exception){
             return
@@ -151,11 +156,13 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection {
 
     private fun playMusic(){
         binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
+        musicService!!.showNotification(R.drawable.baseline_pause_24)
         isPlaying=true
         musicService!!.mediaPlayer!!.start()
     }
     private fun pauseMusic(){
         binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_play_arrow_24)
+        musicService!!.showNotification(R.drawable.baseline_play_arrow_24)
         isPlaying=false
         musicService!!.mediaPlayer!!.pause()
     }
@@ -171,18 +178,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection {
             createMP()
         }
     }
-    private fun songPosition(increment: Boolean){
-        if (increment){
-            if(musicListPA.size-1== songPosition)
-                songPosition=0
-            else ++songPosition
-        }
-        else{
-            if(0== songPosition)
-                songPosition= musicListPA.size-1
-            else --songPosition
-        }
-    }
+
     override fun onDestroy() {
         super.onDestroy()
         musicService!!.mediaPlayer!!.stop()
@@ -194,10 +190,12 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection {
         val binder=service as MusicSevice.MyBinder
         musicService=binder.currentService()
         createMP()
-        musicService!!.showNotification()
     }
 
     override fun onServiceDisconnected(name: ComponentName?) {
         musicService=null
     }
+
 }
+
+

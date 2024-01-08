@@ -22,4 +22,5 @@ class ApplicationClass:Application() {
             notificationManager.createNotificationChannel(notificationChannel)
         }
     }
+
 }

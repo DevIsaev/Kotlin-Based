@@ -42,7 +42,7 @@
         </activity>
 
         <service android:name=".MusicSevice"/>
-
+        <receiver android:name=".NotificationReceiver" android:enabled="true"/>
     </application>
 
 </manifest>
