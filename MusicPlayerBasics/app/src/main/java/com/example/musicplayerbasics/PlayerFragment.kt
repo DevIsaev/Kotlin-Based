@@ -15,13 +15,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.SeekBar
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.musicplayerbasics.databinding.ActivityPlayerBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection {
+class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer.OnCompletionListener {
 
 
     lateinit var fontAnim:AnimatorSet
@@ -41,9 +42,12 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection {
         @SuppressLint("StaticFieldLeak")
         lateinit var binding: ActivityPlayerBinding
     }
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         binding = ActivityPlayerBinding.inflate(inflater, container, false)
+
         //service
         val intent = Intent(requireContext(), MusicSevice::class.java)
         requireContext().bindService(intent, this, BIND_AUTO_CREATE)
@@ -59,7 +63,6 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection {
         behavior.apply {
             peekHeight = resources.displayMetrics.heightPixels // Pop-up height
             state = BottomSheetBehavior.STATE_EXPANDED // Expanded state
-
             addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                 }
@@ -83,14 +86,13 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection {
                 isFont=true
             }
         }
-
         val scale = requireContext().resources.displayMetrics.density
         binding.albumIMG.cameraDistance = 8000 * scale
         binding.albumIMGback.cameraDistance = 8000 * scale
         fontAnim = AnimatorInflater.loadAnimator(requireContext(), R.animator.font) as AnimatorSet
         backAnim = AnimatorInflater.loadAnimator(requireContext(), R.animator.back) as AnimatorSet
-       songInitialization()
 
+       songInitialization()
 
         binding.btnPAUSEPLAY.setOnClickListener {
             if (isPlaying){
@@ -106,6 +108,15 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection {
         binding.btnNEXT.setOnClickListener {
             musicNextPrev(true)
         }
+
+        binding.SeekBarDuration.setOnSeekBarChangeListener(object :SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                 if (fromUser) musicService!!.mediaPlayer!!.seekTo(progress)
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) =Unit
+            override fun onStopTrackingTouch(seekBar: SeekBar?) =Unit
+
+        })
     }
     private fun songInitialization(){
     songPosition= arguments?.getInt("index",0)!!
@@ -135,7 +146,6 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection {
             .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
             .into(binding.albumIMG)
         binding.songTITLE.text= musicListPA[songPosition].title +"\n"+musicListPA[songPosition].artist
-        binding.durationEND.text= DurationFormat(musicListPA[songPosition].duration)
 
     }
     private fun createMP(){
@@ -148,6 +158,13 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection {
             isPlaying=true
             binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
             musicService!!.showNotification(R.drawable.baseline_pause_24)
+
+            binding.durationCURRENT.text= DurationFormat(musicService!!.mediaPlayer!!.currentPosition.toLong())
+            binding.durationEND.text= DurationFormat(musicService!!.mediaPlayer!!.duration.toLong())
+            binding.SeekBarDuration.progress=0
+            binding.SeekBarDuration.max= musicService!!.mediaPlayer!!.duration
+
+            musicService!!.mediaPlayer!!.setOnCompletionListener (this)
         }
         catch (ex:Exception){
             return
@@ -185,15 +202,30 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection {
         //requireContext().unbindService(this)
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
     }
+
     //Service
     override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
         val binder=service as MusicSevice.MyBinder
         musicService=binder.currentService()
         createMP()
-    }
+        musicService!!.seekBarSetup()
 
+    }
     override fun onServiceDisconnected(name: ComponentName?) {
         musicService=null
+    }
+
+    //song completed
+    override fun onCompletion(mp: MediaPlayer?) {
+        songPosition(increment = true)
+        createMP()
+        try {
+            setLayout()
+
+        }
+        catch (ex:Exception){
+            return
+        }
     }
 
 }
