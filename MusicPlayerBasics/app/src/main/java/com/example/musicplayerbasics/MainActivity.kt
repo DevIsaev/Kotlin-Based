@@ -1,6 +1,8 @@
 package com.example.musicplayerbasics
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -17,9 +19,11 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.musicplayerbasics.PlayerFragment.Companion.musicService
 import com.example.musicplayerbasics.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
 import java.io.File
+import kotlin.system.exitProcess
 
 
 class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener {
@@ -52,6 +56,16 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             bundle.putString("class", "MainActivity")
             bottomSheet.arguments = bundle
             bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(!PlayerFragment.isPlaying&&PlayerFragment.musicService!=null){
+            PlayerFragment.musicService!!.stopForeground(true)
+            PlayerFragment.musicService!!.mediaPlayer!!.release()
+            PlayerFragment.musicService=null
+            exitProcess(1)
         }
     }
 
@@ -158,6 +172,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         when (item.itemId) {
             R.id.IDSignOut -> {
                 Toast.makeText(this, "IDSignOut", Toast.LENGTH_SHORT).show()
+                Out()
             }
 
             R.id.IDMusicStorage -> {
@@ -206,4 +221,17 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         return true
     }
 
+    fun Out() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Выход")
+        builder.setMessage("Вы действительно хотите выйти?")
+        builder.setPositiveButton("Да",
+            DialogInterface.OnClickListener { dialogInterface, i ->
+                musicService!!.mediaPlayer!!.stop()
+                finish()
+            })
+        builder.setNegativeButton("Нет",
+            DialogInterface.OnClickListener { dialogInterface, i -> })
+        builder.show()
+    }
 }

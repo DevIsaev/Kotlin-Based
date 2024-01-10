@@ -35,8 +35,7 @@ class MusicSevice: Service() {
     fun showNotification(PlayPause: Int){
         val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.FLAG_IMMUTABLE
-        }
-        else {
+        } else {
             PendingIntent.FLAG_UPDATE_CURRENT
         }
 
@@ -58,8 +57,7 @@ class MusicSevice: Service() {
     var imgArt= getImage(PlayerFragment.musicListPA[PlayerFragment.songPosition].path)
     val Art =if (imgArt!=null){
         BitmapFactory.decodeByteArray(imgArt,0,imgArt.size)
-    }
-    else{
+    } else{
         BitmapFactory.decodeResource(resources, R.drawable.icon)
     }
 
@@ -82,6 +80,7 @@ class MusicSevice: Service() {
     startForeground(13, notification)
 
     }
+    //вызов плеера
     fun createMP(){
         try {
             if (PlayerFragment.musicService!!.mediaPlayer == null) PlayerFragment.musicService!!.mediaPlayer = MediaPlayer()
@@ -102,6 +101,7 @@ class MusicSevice: Service() {
         }
     }
 
+    //
     fun seekBarSetup(){
         runnable= Runnable {
             PlayerFragment.binding.durationCURRENT.text= DurationFormat(mediaPlayer!!.currentPosition.toLong())

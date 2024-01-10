@@ -17,14 +17,16 @@ fun getImage(path: String): ByteArray? {
     return retriver.embeddedPicture
 }
 fun songPosition(increment: Boolean){
-    if (increment){
-        if(PlayerFragment.musicListPA.size-1== PlayerFragment.songPosition)
-            PlayerFragment.songPosition =0
-        else ++PlayerFragment.songPosition
-    }
-    else{
-        if(0== PlayerFragment.songPosition)
-            PlayerFragment.songPosition = PlayerFragment.musicListPA.size-1
-        else --PlayerFragment.songPosition
+    if(!PlayerFragment.repeat){
+        if (increment){
+            if(PlayerFragment.musicListPA.size-1== PlayerFragment.songPosition)
+                PlayerFragment.songPosition =0
+            else ++PlayerFragment.songPosition
+        }
+        else{
+            if(0== PlayerFragment.songPosition)
+                PlayerFragment.songPosition = PlayerFragment.musicListPA.size-1
+            else --PlayerFragment.songPosition
+        }
     }
 }

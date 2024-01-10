@@ -8,6 +8,7 @@ import com.bumptech.glide.request.RequestOptions
 import kotlin.system.exitProcess
 
 class NotificationReceiver:BroadcastReceiver() {
+    //воспроизведение фоном в виде уведомления
     override fun onReceive(context:  Context?, intent: Intent?) {
         when(intent?.action){
             ApplicationClass.PLAY-> {
@@ -17,7 +18,9 @@ class NotificationReceiver:BroadcastReceiver() {
                     playMusic()
                 }
             }
-            ApplicationClass.EXIT->{PlayerFragment.musicService!!.stopForeground(true)
+            ApplicationClass.EXIT->{
+                PlayerFragment.musicService!!.stopForeground(true)
+                PlayerFragment.musicService!!.mediaPlayer!!.release()
                 PlayerFragment.musicService=null
                 exitProcess(1)
             }

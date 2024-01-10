@@ -41,6 +41,8 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         var musicService:MusicSevice?=null
         @SuppressLint("StaticFieldLeak")
         lateinit var binding: ActivityPlayerBinding
+
+        var repeat:Boolean=false
     }
 
 
@@ -117,7 +119,25 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             override fun onStopTrackingTouch(seekBar: SeekBar?) =Unit
 
         })
+        binding.repeatBTN.setOnClickListener{
+            if(!repeat){
+                repeat=true
+                binding.repeatBTN.setImageResource(R.drawable.baseline_repeat_one_24)
+            }
+            else{
+                repeat=false
+                binding.repeatBTN.setImageResource(R.drawable.baseline_repeat_24)
+            }
+        }
     }
+    override fun onDestroy() {
+        super.onDestroy()
+        //musicService!!.mediaPlayer!!.stop()
+        //requireContext().unbindService(this)
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+    }
+
+
     private fun songInitialization(){
     songPosition= arguments?.getInt("index",0)!!
     val classType = arguments?.getString("class")
@@ -147,6 +167,10 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             .into(binding.albumIMG)
         binding.songTITLE.text= musicListPA[songPosition].title +"\n"+musicListPA[songPosition].artist
 
+        if(repeat){
+            repeat=true
+            binding.repeatBTN.setImageResource(R.drawable.baseline_repeat_one_24)
+        }
     }
     private fun createMP(){
         try {
@@ -170,7 +194,6 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             return
         }
     }
-
     private fun playMusic(){
         binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
         musicService!!.showNotification(R.drawable.baseline_pause_24)
@@ -196,13 +219,6 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        musicService!!.mediaPlayer!!.stop()
-        //requireContext().unbindService(this)
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-    }
-
     //Service
     override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
         val binder=service as MusicSevice.MyBinder
@@ -221,8 +237,15 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         createMP()
         try {
             setLayout()
-
+            if(isFont==false) {
+                fontAnim.setTarget(binding.albumIMGback)
+                backAnim.setTarget(binding.albumIMG)
+                fontAnim.start()
+                backAnim.start()
+                isFont = true
+            }
         }
+
         catch (ex:Exception){
             return
         }
