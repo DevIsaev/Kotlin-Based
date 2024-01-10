@@ -3,12 +3,14 @@ package com.example.musicplayerbasics
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.annotation.SuppressLint
+import android.app.Activity.RESULT_OK
 import android.content.ComponentName
 import android.content.Context.BIND_AUTO_CREATE
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.ActivityInfo
 import android.media.MediaPlayer
+import android.media.audiofx.AudioEffect
 import android.os.Bundle
 import android.os.IBinder
 import android.view.LayoutInflater
@@ -127,6 +129,17 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             else{
                 repeat=false
                 binding.repeatBTN.setImageResource(R.drawable.baseline_repeat_24)
+            }
+        }
+        binding.equalizerBTN.setOnClickListener {
+            try {
+                val eqIntent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
+                eqIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, musicService!!.mediaPlayer!!.audioSessionId)
+                eqIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME,  context?.packageName)
+                eqIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+                startActivityForResult(eqIntent, 13)
+            }catch (e: Exception){
+
             }
         }
     }
@@ -251,6 +264,12 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode==13||requestCode==RESULT_OK){
+            return
+        }
+    }
 }
 
 

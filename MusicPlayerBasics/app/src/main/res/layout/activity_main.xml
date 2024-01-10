@@ -24,7 +24,7 @@
     <!-- buttons-->
     <LinearLayout
         android:layout_marginTop="20dp"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
@@ -32,7 +32,7 @@
         <Button
             android:id="@+id/shuffleBTN"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/ShuffleBTN"
             android:drawableTop="@drawable/baseline_shuffle_24"
@@ -56,6 +56,8 @@
         android:textColor="@color/black"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_music"
+        android:scrollbars="vertical"
+        android:scrollbarThumbVertical="@drawable/baseline_check_box_outline_blank_24"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </LinearLayout>
