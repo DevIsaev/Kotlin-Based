@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Таймер"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:layout_marginTop="2dp"
+        android:gravity="center"/>
+    <LinearLayout
+        android:id="@+id/min15"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="UseCompoundDrawables">
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/outline_timer_24"
+        android:layout_margin="8dp"
+        android:contentDescription="@string/min15"
+        app:tint="@color/pink" />
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:text="@string/min15"
+    android:textSize="16sp"
+    android:textColor="@color/black"
+    android:padding="8dp"/>
+</LinearLayout>
+    <LinearLayout
+        android:id="@+id/min30"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:contentDescription="@string/min30"
+            android:src="@drawable/outline_timer_24"
+            app:tint="@color/blue" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/min30"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:padding="8dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/min45"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/outline_timer_24"
+            android:layout_margin="8dp"
+            android:contentDescription="@string/min45"
+            app:tint="@color/highlightColor" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/min45"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:padding="8dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/min60"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/outline_timer_24"
+            android:layout_margin="8dp"
+            android:contentDescription="@string/min60"
+            app:tint="@color/colorPrimaryDark" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/min60"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:padding="8dp"/>
+    </LinearLayout>
+</LinearLayout>

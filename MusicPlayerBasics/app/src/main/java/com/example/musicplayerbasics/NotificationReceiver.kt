@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import kotlin.system.exitProcess
 
 class NotificationReceiver:BroadcastReceiver() {
     //воспроизведение фоном в виде уведомления
@@ -19,10 +18,7 @@ class NotificationReceiver:BroadcastReceiver() {
                 }
             }
             ApplicationClass.EXIT->{
-                PlayerFragment.musicService!!.stopForeground(true)
-                PlayerFragment.musicService!!.mediaPlayer!!.release()
-                PlayerFragment.musicService=null
-                exitProcess(1)
+                exitApp()
             }
             ApplicationClass.NEXT-> {
                 prevNextSong(increment = true,context=context!!)

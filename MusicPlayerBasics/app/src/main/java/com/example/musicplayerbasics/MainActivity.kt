@@ -19,11 +19,9 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.musicplayerbasics.PlayerFragment.Companion.musicService
 import com.example.musicplayerbasics.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
 import java.io.File
-import kotlin.system.exitProcess
 
 
 class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener {
@@ -61,11 +59,8 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
     override fun onDestroy() {
         super.onDestroy()
-        if(!PlayerFragment.isPlaying&&PlayerFragment.musicService!=null){
-            PlayerFragment.musicService!!.stopForeground(true)
-            PlayerFragment.musicService!!.mediaPlayer!!.release()
-            PlayerFragment.musicService=null
-            exitProcess(1)
+        if(!PlayerFragment.isPlaying && PlayerFragment.musicService != null){
+            exitApp()
         }
     }
 
@@ -227,8 +222,9 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         builder.setMessage("Вы действительно хотите выйти?")
         builder.setPositiveButton("Да",
             DialogInterface.OnClickListener { dialogInterface, i ->
-                musicService!!.mediaPlayer!!.stop()
-                finish()
+//                musicService!!.mediaPlayer!!.stop()
+//                finish()
+                exitApp()
             })
         builder.setNegativeButton("Нет",
             DialogInterface.OnClickListener { dialogInterface, i -> })
