@@ -14,37 +14,36 @@
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" >
+    </FrameLayout>
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <!-- buttons-->
     <LinearLayout
-        android:layout_marginTop="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-
-        <Button
-            android:id="@+id/shuffleBTN"
+        <!-- buttons-->
+        <LinearLayout
+            android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="@string/ShuffleBTN"
-            android:drawableTop="@drawable/baseline_shuffle_24"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:text="@string/ShuffleBTN"
-            android:textColor="@color/black"
-            android:textAllCaps="false"
-            android:textSize="12sp"
-            android:textStyle="bold"/>
+            android:orientation="horizontal">
 
+            <Button
+                android:id="@+id/shuffleBTN"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:contentDescription="@string/ShuffleBTN"
+                android:drawableTop="@drawable/baseline_shuffle_24"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:text="@string/ShuffleBTN"
+                android:textColor="@color/black"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:textStyle="bold"/>
 
-    </LinearLayout>
+        </LinearLayout>
     <!---->
     <TextView
         android:id="@+id/totalSongs"

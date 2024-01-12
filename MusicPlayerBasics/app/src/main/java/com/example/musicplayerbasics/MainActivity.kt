@@ -2,6 +2,8 @@ package com.example.musicplayerbasics
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.SearchManager
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,11 +11,13 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -32,6 +36,9 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     private lateinit var musicAdapter:AdapterMusicList
     companion object{
         lateinit var MusicListMA:ArrayList<Music>
+
+        lateinit var MusicListSearch:ArrayList<Music>
+        var search:Boolean=false
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -47,6 +54,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
         Navigation()
 
+        //кнопка "случайное"
         binding.shuffleBTN.setOnClickListener {
             val bottomSheet = PlayerFragment.newInstance()
             val bundle = Bundle()
@@ -67,6 +75,10 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     @RequiresApi(Build.VERSION_CODES.R)
     @SuppressLint("SetTextI18n")
     private fun initialization(){
+
+        //поиск
+        search=false
+
 
         MusicListMA = getAllAudio()
 
@@ -229,5 +241,38 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         builder.setNegativeButton("Нет",
             DialogInterface.OnClickListener { dialogInterface, i -> })
         builder.show()
+    }
+    //поиск из toolbar
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.search_view_menu, menu)
+        val manager=getSystemService(Context.SEARCH_SERVICE)as SearchManager
+        var searchItem=menu?.findItem(R.id.searchView)
+        var SW=searchItem?.actionView as SearchView
+        SW.setSearchableInfo(manager.getSearchableInfo(componentName))
+        SW.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                SW.clearFocus()
+                SW.setQuery(" ",false)
+                searchItem.collapseActionView()
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                MusicListSearch= ArrayList()
+                if (newText!=null){
+                    val input=newText.lowercase()
+                    for(song in MusicListMA) {
+                        if (song.title.lowercase().contains(input)) {
+                            MusicListSearch.add(song)
+                        }
+                        search=true
+                        musicAdapter.updateMusicList(MusicListSearch)
+                    }
+                }
+                return true
+            }
+
+        })
+        return true
     }
 }

@@ -4,7 +4,6 @@ import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
-import android.app.AlertDialog
 import android.content.ComponentName
 import android.content.Context.BIND_AUTO_CREATE
 import android.content.Intent
@@ -29,6 +28,7 @@ import com.example.musicplayerbasics.databinding.ActivityPlayerBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer.OnCompletionListener {
 
@@ -93,6 +93,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             })
         }
 
+        //изображение альбома
         binding.albumIMG.setOnClickListener {
             if (isFont) {
                 fontAnim.setTarget(binding.albumIMG)
@@ -116,6 +117,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
 
         songInitialization()
 
+        //воспроизведение\пауза
         binding.btnPAUSEPLAY.setOnClickListener {
             if (isPlaying) {
                 pauseMusic()
@@ -123,15 +125,16 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                 playMusic()
             }
         }
+        //назад
         binding.btnPREVIOUS.setOnClickListener {
             musicNextPrev(false)
         }
+        //далее
         binding.btnNEXT.setOnClickListener {
             musicNextPrev(true)
         }
-
-        binding.SeekBarDuration.setOnSeekBarChangeListener(object :
-            SeekBar.OnSeekBarChangeListener {
+        //длительность
+        binding.SeekBarDuration.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) musicService!!.mediaPlayer!!.seekTo(progress)
             }
@@ -140,6 +143,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             override fun onStopTrackingTouch(seekBar: SeekBar?) = Unit
 
         })
+        //повтор
         binding.repeatBTN.setOnClickListener {
             if (!repeat) {
                 repeat = true
@@ -149,6 +153,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                 binding.repeatBTN.setImageResource(R.drawable.baseline_repeat_24)
             }
         }
+        //эквалайзер
         binding.equalizerBTN.setOnClickListener {
             try {
                 val eqIntent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
@@ -163,14 +168,30 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                 Toast.makeText(context, "Эквалайзер не поддерживается", Toast.LENGTH_LONG).show()
             }
         }
-
+        //таймер
         binding.timerBTN.setOnClickListener {
-            if (!min15 || !min30 || !min45 || !min60) {
+            val timer = min15 || min30 || min60
+            if(!timer)
                 showSheetTimer()
-            } else {
-                Out()
+            else {
+                val builder = MaterialAlertDialogBuilder(requireContext())
+                builder.setTitle("Время вышло")
+                    .setMessage("Хотите остановить таймер?")
+                    .setPositiveButton("Yes"){ _, _ ->
+                        min15 = false
+                        min30 = false
+                        min45=false
+                        min60 = false
+                        binding.timerBTN.setColorFilter(ContextCompat.getColor(requireContext(), R.color.green))
+                    }
+                    .setNegativeButton("No"){dialog, _ ->
+                        dialog.dismiss()
+                    }
+                val customDialog = builder.create()
+                customDialog.show()
             }
         }
+        //поделиться
         binding.shareBTN.setOnClickListener {
             val shareIntent=Intent()
             shareIntent.action=Intent.ACTION_SEND
@@ -187,7 +208,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
     }
 
-
+//инициализация
     private fun songInitialization() {
         songPosition = arguments?.getInt("index", 0)!!
         val classType = arguments?.getString("class")
@@ -198,20 +219,26 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                     musicListPA = ArrayList()
                     musicListPA.addAll(MainActivity.MusicListMA)
                     setLayout()
-                    createMP()
+                    //createMP()
                 }
-
+                "MusicAdapterSearch" -> {
+                    musicListPA = ArrayList()
+                    musicListPA.addAll(MainActivity.MusicListSearch)
+                    setLayout()
+                    //createMP()
+                }
                 "MainActivity" -> {
                     musicListPA = ArrayList()
                     musicListPA.addAll(MainActivity.MusicListMA)
                     musicListPA.shuffle()
                     setLayout()
-                    createMP()
+                    //createMP()
                 }
             }
         }
     }
 
+//вид
     private fun setLayout() {
         Glide.with(this)
             .load(musicListPA[songPosition].artURI)
@@ -233,6 +260,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             )
     }
 
+//вызов медиаплеера
     private fun createMP() {
         try {
             if (musicService!!.mediaPlayer == null) musicService!!.mediaPlayer = MediaPlayer()
@@ -257,6 +285,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         }
     }
 
+//воспроизведение
     private fun playMusic() {
         binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
         musicService!!.showNotification(R.drawable.baseline_pause_24)
@@ -264,6 +293,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         musicService!!.mediaPlayer!!.start()
     }
 
+//пауза
     private fun pauseMusic() {
         binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_play_arrow_24)
         musicService!!.showNotification(R.drawable.baseline_play_arrow_24)
@@ -271,6 +301,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         musicService!!.mediaPlayer!!.pause()
     }
 
+//след\пред музыка
     private fun musicNextPrev(increment: Boolean) {
         if (increment) {
             songPosition(true)
@@ -291,7 +322,6 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         musicService!!.seekBarSetup()
 
     }
-
     override fun onServiceDisconnected(name: ComponentName?) {
         musicService = null
     }
@@ -328,100 +358,37 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         dialog.setContentView(R.layout.timer_sheet)
         dialog.show()
         dialog.findViewById<LinearLayout>(R.id.min15)?.setOnClickListener {
-            Toast.makeText(
-                context,
-                "Воспроизведение остановится через 15 минут",
-                Toast.LENGTH_SHORT
-            ).show()
-
-            binding.timerBTN.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.highlightColor
-                )
-            )
+            Toast.makeText(context,  "Воспроизведение закончится через 15 минут", Toast.LENGTH_SHORT).show()
+            binding.timerBTN.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
             min15 = true
-            Thread {
-                Thread.sleep(5000)
-                if (min15) exitApp()
-            }.start()
-
+            Thread{Thread.sleep((5000).toLong())
+                if(min15) exitApp()}.start()
             dialog.dismiss()
         }
         dialog.findViewById<LinearLayout>(R.id.min30)?.setOnClickListener {
-            Toast.makeText(
-                context,
-                "Воспроизведение остановится через 30 минут",
-                Toast.LENGTH_SHORT
-            ).show()
-            binding.timerBTN.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.highlightColor
-                )
-            )
+            Toast.makeText(context,  "Воспроизведение закончится через 30 минут", Toast.LENGTH_SHORT).show()
+            binding.timerBTN.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
             min30 = true
-            Thread {
-                Thread.sleep(30*60000)
-                if (min30) exitApp()
-            }.start()
-
+            Thread{Thread.sleep((30*60000).toLong())
+                if(min30) exitApp()}.start()
             dialog.dismiss()
         }
         dialog.findViewById<LinearLayout>(R.id.min45)?.setOnClickListener {
-            Toast.makeText(
-                context,
-                "Воспроизведение остановится через 45 минут",
-                Toast.LENGTH_SHORT
-            ).show()
-            binding.timerBTN.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.highlightColor
-                )
-            )
+            Toast.makeText(context,  "Воспроизведение закончится через 45 минут", Toast.LENGTH_SHORT).show()
+            binding.timerBTN.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
             min45 = true
-            Thread {
-                Thread.sleep(45*60000)
-                if (min45) exitApp()
-            }.start()
-
+            Thread{Thread.sleep((45*60000).toLong())
+                if(min45) exitApp()}.start()
             dialog.dismiss()
         }
         dialog.findViewById<LinearLayout>(R.id.min60)?.setOnClickListener {
-            Toast.makeText(context, "Воспроизведение остановится через 1 час", Toast.LENGTH_SHORT)
-                .show()
-            binding.timerBTN.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.highlightColor
-                )
-            )
+            Toast.makeText(context,  "Воспроизведение закончится через 1 час", Toast.LENGTH_SHORT).show()
+            binding.timerBTN.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow))
             min60 = true
-            Thread {
-                Thread.sleep(60*60000)
-                if (min60) exitApp()
-            }.start()
-
-            dialog.dismiss()
+            Thread{Thread.sleep((60*60000).toLong())
+                if(min60) exitApp()}.start()
             dialog.dismiss()
         }
-    }
-
-    fun Out() {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Время вышло")
-        builder.setMessage("Вы действительно хотите остановить таймер?")
-        builder.setPositiveButton("Да") { dialogInterface, i ->
-            min15 = false
-            min30 = false
-            min45 = false
-            min60 = false
-            binding.timerBTN.setColorFilter(ContextCompat.getColor(requireContext(),R.color.green))
-        }
-        builder.setNegativeButton("Нет") { dialogInterface, i ->
-        }
-        builder.show()
     }
 }
 

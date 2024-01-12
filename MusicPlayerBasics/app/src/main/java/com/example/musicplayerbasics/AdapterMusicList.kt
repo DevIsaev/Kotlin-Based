@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.musicplayerbasics.databinding.MusicViewBinding
 
-class AdapterMusicList(private val context: Context, private val musicList: ArrayList<Music>) : RecyclerView.Adapter<AdapterMusicList.MyHolder>(){
+class AdapterMusicList(private val context: Context, private var musicList: ArrayList<Music>) : RecyclerView.Adapter<AdapterMusicList.MyHolder>(){
     class MyHolder(binding: MusicViewBinding):RecyclerView.ViewHolder(binding.root) {
 
         val title=binding.songName
@@ -24,6 +24,7 @@ class AdapterMusicList(private val context: Context, private val musicList: Arra
         return MyHolder(MusicViewBinding.inflate(LayoutInflater.from(context),parent,false))
     }
 
+
     override fun onBindViewHolder(holder: AdapterMusicList.MyHolder, position: Int) {
         holder.title.text=musicList[position].title
         holder.artist.text=musicList[position].artist
@@ -36,23 +37,33 @@ class AdapterMusicList(private val context: Context, private val musicList: Arra
 
 
         holder.root.setOnClickListener {
-            val playerFragment = PlayerFragment.newInstance()
+            when{
+                MainActivity.search->openFragment("MusicAdapterSearch",position)
 
-            // Передача данных в PlayerFragment
-            val bundle = Bundle()
-            bundle.putInt("index", position)
-            bundle.putString("class", "MusicAdapter")
-            playerFragment.arguments = bundle
-
-            playerFragment.show(
-                (context as AppCompatActivity).supportFragmentManager,
-                playerFragment.tag
-            )
+                else->openFragment("MusicAdapter",position)
+            }
         }
     }
 
     override fun getItemCount(): Int {
         return musicList.size
+    }
+
+//поиск
+    fun updateMusicList(searchList:ArrayList<Music>){
+        musicList= ArrayList()
+        musicList.addAll(searchList)
+        notifyDataSetChanged()
+    }
+    private fun openFragment(reference: String,position:Int){
+        val playerFragment = PlayerFragment.newInstance()
+
+        val bundle = Bundle()
+        bundle.putInt("index", position)
+        bundle.putString("class", reference)
+        playerFragment.arguments = bundle
+
+        playerFragment.show((context as AppCompatActivity).supportFragmentManager, playerFragment.tag)
     }
 }
 
