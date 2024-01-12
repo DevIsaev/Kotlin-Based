@@ -95,6 +95,7 @@ class MusicSevice: Service() {
             PlayerFragment.binding.durationEND.text= DurationFormat(mediaPlayer!!.duration.toLong())
             PlayerFragment.binding.SeekBarDuration.progress=0
             PlayerFragment.binding.SeekBarDuration.max= mediaPlayer!!.duration
+
         }
         catch (ex:Exception){
             return

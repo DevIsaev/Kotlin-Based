@@ -160,7 +160,7 @@
         android:layout_height="30dp"
         android:layout_marginHorizontal="25dp"
         android:backgroundTint="@color/pink"
-        app:icon="@drawable/baseline_stop_24"
+        app:icon="@drawable/baseline_pause_24"
         app:iconSize="40dp"
         app:iconTint="@color/white"
         app:shapeAppearanceOverlay="@style/curved"

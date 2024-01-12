@@ -5,7 +5,7 @@ import android.animation.AnimatorSet
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.ComponentName
-import android.content.Context.BIND_AUTO_CREATE
+import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.ActivityInfo
@@ -67,10 +67,6 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
     ): View {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         binding = ActivityPlayerBinding.inflate(inflater, container, false)
-
-        //service
-        val intent = Intent(requireContext(), MusicSevice::class.java)
-        requireContext().bindService(intent, this, BIND_AUTO_CREATE)
         return binding.root
     }
 
@@ -206,6 +202,27 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         //musicService!!.mediaPlayer!!.stop()
         //requireContext().unbindService(this)
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        try {
+            if (PlayerFragment.musicService != null) {
+                NowPlaying.binding.root.visibility = View.VISIBLE
+                NowPlaying.binding.songNP.isSelected = true
+                Glide.with(requireContext())
+                    .load(PlayerFragment.musicListPA[PlayerFragment.songPosition].artURI)
+                    .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
+                    .into(NowPlaying.binding.albumNP)
+                NowPlaying.binding.songNP.text = PlayerFragment.musicListPA[PlayerFragment.songPosition].title
+                NowPlaying.binding.artistNP.text=PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
+
+                if (PlayerFragment.isPlaying) {
+                    NowPlaying.binding.playPauseBTNNP.setIconResource(R.drawable.baseline_pause_24)
+                } else {
+                    NowPlaying.binding.playPauseBTNNP.setIconResource(R.drawable.baseline_play_arrow_24)
+                }
+            }
+        }
+        catch (ex:Exception){
+            NowPlaying.binding.songNP.text="1"
+        }
     }
 
 //инициализация
@@ -216,22 +233,39 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         if (songPosition != null && classType != null) {
             when (classType) {
                 "MusicAdapter" -> {
+                    //service
+                    val intent = Intent(requireContext(), MusicSevice::class.java)
+                    requireContext().bindService(intent, this, Context.BIND_AUTO_CREATE)
                     musicListPA = ArrayList()
                     musicListPA.addAll(MainActivity.MusicListMA)
                     setLayout()
                     //createMP()
                 }
                 "MusicAdapterSearch" -> {
+                    //service
+                    val intent = Intent(requireContext(), MusicSevice::class.java)
+                    requireContext().bindService(intent, this, Context.BIND_AUTO_CREATE)
                     musicListPA = ArrayList()
                     musicListPA.addAll(MainActivity.MusicListSearch)
                     setLayout()
                     //createMP()
                 }
                 "MainActivity" -> {
+                    //service
+                    val intent = Intent(requireContext(), MusicSevice::class.java)
+                    requireContext().bindService(intent, this, Context.BIND_AUTO_CREATE)
                     musicListPA = ArrayList()
                     musicListPA.addAll(MainActivity.MusicListMA)
                     musicListPA.shuffle()
                     setLayout()
+                    //createMP()
+                }
+                "NowPlaying" -> {
+                    setLayout()
+                    binding.durationCURRENT.text= DurationFormat(musicService!!.mediaPlayer!!.currentPosition.toLong())
+                    binding.durationEND.text = DurationFormat(musicService!!.mediaPlayer!!.duration.toLong())
+                    binding.SeekBarDuration.progress= musicService!!.mediaPlayer!!.currentPosition
+                    binding.SeekBarDuration.max= musicService!!.mediaPlayer!!.duration
                     //createMP()
                 }
             }
@@ -244,8 +278,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             .load(musicListPA[songPosition].artURI)
             .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
             .into(binding.albumIMG)
-        binding.songTITLE.text =
-            musicListPA[songPosition].title + "\n" + musicListPA[songPosition].artist
+        binding.songTITLE.text = musicListPA[songPosition].title + "\n" + musicListPA[songPosition].artist
 
         if (repeat) {
             repeat = true
@@ -274,8 +307,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
 
             binding.durationCURRENT.text =
                 DurationFormat(musicService!!.mediaPlayer!!.currentPosition.toLong())
-            binding.durationEND.text =
-                DurationFormat(musicService!!.mediaPlayer!!.duration.toLong())
+            binding.durationEND.text = DurationFormat(musicService!!.mediaPlayer!!.duration.toLong())
             binding.SeekBarDuration.progress = 0
             binding.SeekBarDuration.max = musicService!!.mediaPlayer!!.duration
 

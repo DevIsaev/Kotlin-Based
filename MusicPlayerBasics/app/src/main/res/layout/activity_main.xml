@@ -17,11 +17,31 @@
         android:layout_height="match_parent" >
     </FrameLayout>
 
-    <LinearLayout
+    
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="8dp"
+            app:cardUseCompatPadding="true">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:queryHint="Искать композицию"
+                app:queryBackground="@android:color/transparent"
+                app:iconifiedByDefault="false"/>
+        </com.google.android.material.card.MaterialCardView>
         <!-- buttons-->
         <LinearLayout
             android:layout_marginTop="20dp"
@@ -43,6 +63,7 @@
                 android:textSize="12sp"
                 android:textStyle="bold"/>
 
+
         </LinearLayout>
     <!---->
     <TextView
@@ -53,13 +74,28 @@
         android:layout_margin="10dp"
         android:textSize="18sp"
         android:textColor="@color/black"/>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list_music"
-        android:scrollbars="vertical"
-        android:scrollbarThumbVertical="@drawable/baseline_check_box_outline_blank_24"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-</LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_music"
+                android:layout_width="match_parent"
+                android:layout_height="524dp"
+                android:scrollbarThumbVertical="@drawable/baseline_check_box_outline_blank_24"
+                android:scrollbars="vertical" />
+    </LinearLayout>
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/nowPlaying"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
+            android:name="com.example.musicplayerbasics.NowPlaying"
+            tools:layout="@layout/fragment_now_playing"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    
+    
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/NavView"
         android:fitsSystemWindows="true"

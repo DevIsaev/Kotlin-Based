@@ -33,12 +33,14 @@ class NotificationReceiver:BroadcastReceiver() {
     PlayerFragment.musicService!!.mediaPlayer!!.start()
     PlayerFragment.musicService!!.showNotification(R.drawable.baseline_pause_24)
     PlayerFragment.binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
+        NowPlaying.binding.playPauseBTNNP.setIconResource(R.drawable.baseline_pause_24)
 }
     private fun pauseMusic(){
         PlayerFragment.isPlaying=false
         PlayerFragment.musicService!!.mediaPlayer!!.pause()
         PlayerFragment.musicService!!.showNotification(R.drawable.baseline_play_arrow_24)
         PlayerFragment.binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_play_arrow_24)
+        NowPlaying.binding.playPauseBTNNP.setIconResource(R.drawable.baseline_play_arrow_24)
     }
     private  fun prevNextSong(increment:Boolean,context: Context){
         songPosition(increment=increment)
@@ -48,6 +50,12 @@ class NotificationReceiver:BroadcastReceiver() {
             .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
             .into(PlayerFragment.binding.albumIMG)
         PlayerFragment.binding.songTITLE.text= PlayerFragment.musicListPA[PlayerFragment.songPosition].title +"\n"+ PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
+        Glide.with(context)
+            .load(PlayerFragment.musicListPA[PlayerFragment.songPosition].artURI)
+            .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
+            .into(NowPlaying.binding.albumNP)
+        NowPlaying.binding.songNP.text = PlayerFragment.musicListPA[PlayerFragment.songPosition].title
+        NowPlaying.binding.artistNP.text=PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
         playMusic()
     }
 }
