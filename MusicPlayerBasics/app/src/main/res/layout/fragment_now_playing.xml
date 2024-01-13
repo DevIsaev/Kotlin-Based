@@ -16,29 +16,40 @@
         app:shapeAppearanceOverlay="@style/curved"
         android:src="@drawable/icon"/>
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+    <ImageView
         android:id="@+id/nextBTN_NP"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="10dp"
-        android:backgroundTint="@color/colorPrimary"
-        app:icon="@drawable/baseline_skip_next_24"
+        android:backgroundTint="@color/backgroundColor"
+       android:background="@drawable/baseline_skip_next_24"
         app:iconSize="30dp"
         app:iconTint="@color/white"
         tools:ignore="SpeakableTextPresentCheck" />
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+    <ImageView
         android:id="@+id/playPauseBTN_NP"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_centerVertical="true"
         android:layout_marginHorizontal="5dp"
         android:layout_toStartOf="@id/nextBTN_NP"
-        android:backgroundTint="@color/colorPrimary"
-        app:icon="@drawable/baseline_play_arrow_24"
+        android:backgroundTint="@color/backgroundColor"
+        android:background="@drawable/baseline_play_arrow_24"
         app:iconSize="30dp"
+        app:iconTint="@color/white"
+        tools:ignore="SpeakableTextPresentCheck" />
+    <ImageView
+        android:id="@+id/prevBTN"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_centerVertical="true"
+        android:layout_marginHorizontal="5dp"
+        android:layout_toStartOf="@id/playPauseBTN_NP"
+        android:backgroundTint="@color/backgroundColor"
+        android:background="@drawable/baseline_skip_previous_24"
         app:iconTint="@color/white"
         tools:ignore="SpeakableTextPresentCheck" />
 
@@ -47,11 +58,11 @@
         android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
-        android:layout_toStartOf="@id/playPauseBTN_NP"
+        android:layout_toStartOf="@id/prevBTN"
         android:layout_toEndOf="@+id/album_NP"
         android:gravity="center_vertical"
         android:text="@string/Song"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:ellipsize="marquee"
 
         android:marqueeRepeatLimit="marquee_forever"
@@ -62,11 +73,11 @@
         android:layout_width="wrap_content"
         android:layout_height="25dp"
         android:layout_marginTop="30dp"
-        android:layout_toStartOf="@id/playPauseBTN_NP"
+        android:layout_toStartOf="@id/prevBTN"
         android:layout_toEndOf="@+id/album_NP"
         android:gravity="center_vertical"
         android:text="@string/Song"
-        android:textSize="12sp"
+        android:textSize="11sp"
         android:ellipsize="marquee"
         android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true"/>

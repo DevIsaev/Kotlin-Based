@@ -59,6 +59,9 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         var min60: Boolean = false
 
         var nowPlayingId:String=""
+
+        var isFavourite:Boolean=false
+        var fIndex:Int=-1
     }
 
 
@@ -197,6 +200,19 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(musicListPA[songPosition].path))
             startActivity(Intent.createChooser(shareIntent,"Поделиться композицией?"))
         }
+        //избранное
+        binding.favouriteBTN.setOnClickListener {
+            if(isFavourite){
+                isFavourite=false
+                binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_border_24)
+                FavouritesActivity.favSong.removeAt(fIndex)
+            }
+            else{
+                isFavourite=true
+                binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_24)
+                FavouritesActivity.favSong.add(musicListPA[songPosition])
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -216,9 +232,9 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                 NowPlaying.binding.artistNP.text=PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
 
                 if (PlayerFragment.isPlaying) {
-                    NowPlaying.binding.playPauseBTNNP.setIconResource(R.drawable.baseline_pause_24)
+                    NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_pause_24)
                 } else {
-                    NowPlaying.binding.playPauseBTNNP.setIconResource(R.drawable.baseline_play_arrow_24)
+                    NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_play_arrow_24)
                 }
             }
         }
@@ -276,12 +292,20 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                     }
                     //createMP()
                 }
+                "Favourite"->{
+                    val intent = Intent(requireContext(), MusicSevice::class.java)
+                    requireContext().bindService(intent, this, Context.BIND_AUTO_CREATE)
+                    musicListPA = ArrayList()
+                    musicListPA.addAll(FavouritesActivity.favSong)
+                    setLayout()
+                }
             }
         }
     }
 
 //вид
     private fun setLayout() {
+        fIndex= FavouriteCheck(musicListPA[songPosition].id)
         Glide.with(this)
             .load(musicListPA[songPosition].artURI)
             .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
@@ -299,6 +323,12 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                     R.color.highlightColor
                 )
             )
+        if(isFavourite){
+            binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_24)
+        }
+        else{
+            binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_border_24)
+        }
     }
 
 //вызов медиаплеера

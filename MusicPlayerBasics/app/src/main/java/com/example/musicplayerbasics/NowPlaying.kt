@@ -38,7 +38,10 @@ companion object{
             }
         }
         binding.nextBTNNP.setOnClickListener {
-            prevNextSong(true,requireContext())
+           prevNextSong(true,requireContext())
+        }
+        binding.prevBTN.setOnClickListener {
+           prevNextSong(false,requireContext())
         }
         binding.root.setOnClickListener {
             val playerFragment = PlayerFragment.newInstance()
@@ -70,9 +73,9 @@ companion object{
                 binding.artistNP.text=PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
 
                 if (PlayerFragment.isPlaying) {
-                    binding.playPauseBTNNP.setIconResource(R.drawable.baseline_pause_24)
+                    binding.playPauseBTNNP.setImageResource(R.drawable.baseline_pause_24)
                 } else {
-                    binding.playPauseBTNNP.setIconResource(R.drawable.baseline_play_arrow_24)
+                    binding.playPauseBTNNP.setImageResource(R.drawable.baseline_play_arrow_24)
                 }
             }
         }
@@ -81,21 +84,18 @@ companion object{
         }
     }
     //воспроизведение
-    private fun playMusic() {
+    private fun playMusic(){
+        PlayerFragment.isPlaying = true
         PlayerFragment.musicService!!.mediaPlayer!!.start()
-        binding.playPauseBTNNP.setIconResource(R.drawable.baseline_pause_24)
+        binding.playPauseBTNNP.setImageResource(R.drawable.baseline_pause_24)
         PlayerFragment.musicService!!.showNotification(R.drawable.baseline_pause_24)
-        PlayerFragment.binding.btnNEXT.setIconResource(R.drawable.baseline_pause_24)
-        PlayerFragment.isPlaying=true
     }
-
     //пауза
-    private fun pauseMusic() {
+    private fun pauseMusic(){
+        PlayerFragment.isPlaying = false
         PlayerFragment.musicService!!.mediaPlayer!!.pause()
-        binding.playPauseBTNNP.setIconResource(R.drawable.baseline_play_arrow_24)
+        binding.playPauseBTNNP.setImageResource(R.drawable.baseline_play_arrow_24)
         PlayerFragment.musicService!!.showNotification(R.drawable.baseline_play_arrow_24)
-        PlayerFragment.binding.btnNEXT.setIconResource(R.drawable.baseline_play_arrow_24)
-        PlayerFragment.isPlaying=false
     }
     //след\пред композиция
     private  fun prevNextSong(increment:Boolean,context: Context){
@@ -107,7 +107,7 @@ companion object{
             .into(binding.albumNP)
         binding.songNP.text = PlayerFragment.musicListPA[PlayerFragment.songPosition].title
         binding.artistNP.text=PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
-        PlayerFragment.musicService!!.showNotification(R.drawable.baseline_pause_24)
+        //PlayerFragment.musicService!!.showNotification(R.drawable.baseline_pause_24)
         playMusic()
     }
 }

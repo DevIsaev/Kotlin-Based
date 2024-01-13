@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setTheme(R.style.coolPinkNav)
         binding=ActivityMainBinding.inflate(layoutInflater)
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
                 if (newText!=null){
                     val input=newText.lowercase()
                     for(song in MusicListMA) {
-                        if (song.title.lowercase().contains(input)) {
+                        if (song.title.lowercase().contains(input)||song.artist.lowercase().contains(input)||song.album.lowercase().contains(input)) {
                             MusicListSearch.add(song)
                         }
                         search=true
@@ -142,6 +143,9 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
                     val pathC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA))
                     val durationC = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION))
                     val albumIdC = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)).toString()
+
+
+
                     val uri = Uri.parse("content://media/external/audio/albumart")
                     val artUriC = Uri.withAppendedPath(uri, albumIdC).toString()
 

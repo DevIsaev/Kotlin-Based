@@ -7,19 +7,26 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.musicplayerbasics.databinding.ActivityFavouritesBinding
 import com.google.android.material.navigation.NavigationView
 
 class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener {
-    private lateinit var binding: ActivityFavouritesBinding
-    var drawer: DrawerLayout? = null
+    companion object {
+        private lateinit var binding: ActivityFavouritesBinding
+        private lateinit var adapter: AdapterMusicListFavourite
+        var drawer: DrawerLayout? = null
 
+        var favSong:ArrayList<Music> = ArrayList()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityFavouritesBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setTheme(R.style.coolPinkNav)
         Navigation()
+        initialization()
     }
     //Navigation drawer
     private fun Navigation(){
@@ -77,5 +84,16 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
         }
         drawer?.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    private fun initialization(){
+
+        var rv=findViewById<RecyclerView>(R.id.favouriteRV)
+        rv.setHasFixedSize(true)
+        rv.setItemViewCacheSize(13)
+        rv.layoutManager= GridLayoutManager(this@FavouritesActivity,4)
+        adapter=AdapterMusicListFavourite(this@FavouritesActivity, favSong)
+        rv.adapter=adapter
+
     }
 }

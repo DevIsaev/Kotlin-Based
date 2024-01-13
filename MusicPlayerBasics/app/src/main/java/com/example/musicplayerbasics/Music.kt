@@ -31,6 +31,19 @@ fun songPosition(increment: Boolean){
         }
     }
 }
+
+fun FavouriteCheck(id:String):Int{
+    PlayerFragment.isFavourite=false
+    FavouritesActivity.favSong.forEachIndexed{index, music ->
+        if(id==music.id){
+            PlayerFragment.isFavourite=true
+            return index
+        }
+    }
+
+    return  -1
+}
+
 fun exitApp(){
     if(PlayerFragment.musicService!=null){
         PlayerFragment.musicService!!.stopForeground(true)
