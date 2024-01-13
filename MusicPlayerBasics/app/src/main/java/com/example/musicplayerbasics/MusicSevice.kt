@@ -96,6 +96,7 @@ class MusicSevice: Service() {
             PlayerFragment.binding.SeekBarDuration.progress=0
             PlayerFragment.binding.SeekBarDuration.max= mediaPlayer!!.duration
 
+            PlayerFragment.nowPlayingId = PlayerFragment.musicListPA[PlayerFragment.songPosition].id
         }
         catch (ex:Exception){
             return

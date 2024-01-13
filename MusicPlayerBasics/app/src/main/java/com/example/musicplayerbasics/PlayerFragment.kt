@@ -57,6 +57,8 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         var min30: Boolean = false
         var min45: Boolean = false
         var min60: Boolean = false
+
+        var nowPlayingId:String=""
     }
 
 
@@ -266,6 +268,12 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                     binding.durationEND.text = DurationFormat(musicService!!.mediaPlayer!!.duration.toLong())
                     binding.SeekBarDuration.progress= musicService!!.mediaPlayer!!.currentPosition
                     binding.SeekBarDuration.max= musicService!!.mediaPlayer!!.duration
+                    if (isPlaying){
+                        binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
+                    }
+                    else{
+                        binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_play_arrow_24)
+                    }
                     //createMP()
                 }
             }
@@ -312,6 +320,8 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             binding.SeekBarDuration.max = musicService!!.mediaPlayer!!.duration
 
             musicService!!.mediaPlayer!!.setOnCompletionListener(this)
+
+            nowPlayingId= musicListPA[songPosition].id
         } catch (ex: Exception) {
             return
         }

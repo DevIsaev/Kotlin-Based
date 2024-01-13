@@ -39,6 +39,7 @@ class AdapterMusicList(private val context: Context, private var musicList: Arra
         holder.root.setOnClickListener {
             when{
                 MainActivity.search->openFragment("MusicAdapterSearch",position)
+                musicList[position].id==PlayerFragment.nowPlayingId->openFragment("NowPlaying",position)
 
                 else->openFragment("MusicAdapter",position)
             }
