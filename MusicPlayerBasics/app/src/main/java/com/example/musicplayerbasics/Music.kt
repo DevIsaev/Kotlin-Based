@@ -32,16 +32,15 @@ fun songPosition(increment: Boolean){
     }
 }
 
-fun FavouriteCheck(id:String):Int{
-    PlayerFragment.isFavourite=false
-    FavouritesActivity.favSong.forEachIndexed{index, music ->
-        if(id==music.id){
-            PlayerFragment.isFavourite=true
+fun favouriteCheck(id: String): Int{
+    PlayerFragment.isFavourite = false
+    FavouritesActivity.favSong.forEachIndexed { index, music ->
+        if(id == music.id){
+            PlayerFragment.isFavourite = true
             return index
         }
     }
-
-    return  -1
+    return -1
 }
 
 fun exitApp(){

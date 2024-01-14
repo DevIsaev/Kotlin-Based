@@ -50,6 +50,7 @@ class NotificationReceiver:BroadcastReceiver() {
             .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
             .into(PlayerFragment.binding.albumIMG)
         PlayerFragment.binding.songTITLE.text= PlayerFragment.musicListPA[PlayerFragment.songPosition].title +"\n"+ PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
+
         Glide.with(context)
             .load(PlayerFragment.musicListPA[PlayerFragment.songPosition].artURI)
             .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
@@ -58,7 +59,7 @@ class NotificationReceiver:BroadcastReceiver() {
         NowPlaying.binding.artistNP.text=PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
         playMusic()
 
-        PlayerFragment.fIndex= FavouriteCheck(PlayerFragment.musicListPA[PlayerFragment.songPosition].id)
+        PlayerFragment.fIndex= favouriteCheck(PlayerFragment.musicListPA[PlayerFragment.songPosition].id)
         if (PlayerFragment.isFavourite){
             PlayerFragment.binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_24)
         }

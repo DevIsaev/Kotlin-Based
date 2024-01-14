@@ -202,13 +202,13 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         }
         //избранное
         binding.favouriteBTN.setOnClickListener {
+            fIndex = favouriteCheck(musicListPA[songPosition].id)
             if(isFavourite){
-                isFavourite=false
+                isFavourite = false
                 binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_border_24)
                 FavouritesActivity.favSong.removeAt(fIndex)
-            }
-            else{
-                isFavourite=true
+            } else{
+                isFavourite = true
                 binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_24)
                 FavouritesActivity.favSong.add(musicListPA[songPosition])
             }
@@ -299,13 +299,21 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                     musicListPA.addAll(FavouritesActivity.favSong)
                     setLayout()
                 }
+                "FavouriteShuffle"->{
+                    val intent = Intent(requireContext(), MusicSevice::class.java)
+                    requireContext().bindService(intent, this, Context.BIND_AUTO_CREATE)
+                    musicListPA = ArrayList()
+                    musicListPA.addAll(FavouritesActivity.favSong)
+                    musicListPA.shuffle()
+                    setLayout()
+                }
             }
         }
     }
 
 //вид
     private fun setLayout() {
-        fIndex= FavouriteCheck(musicListPA[songPosition].id)
+        fIndex= favouriteCheck(musicListPA[songPosition].id)
         Glide.with(this)
             .load(musicListPA[songPosition].artURI)
             .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())

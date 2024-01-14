@@ -22,6 +22,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicplayerbasics.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import java.io.File
 
 
@@ -48,6 +50,16 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
         if(requestRuntimePermission()) {
             initialization()
+            //перезапись Избранного
+
+            FavouritesActivity.favSong = ArrayList()
+            val editor = getSharedPreferences("FAVOURITES", MODE_PRIVATE)
+            val jsonString = editor.getString("FavouriteSongs", null)
+            val typeToken = object : TypeToken<ArrayList<Music>>(){}.type
+            if(jsonString != null){
+                val data: ArrayList<Music> = GsonBuilder().create().fromJson(jsonString, typeToken)
+                FavouritesActivity.favSong.addAll(data)
+            }
         }
 
         Navigation()
@@ -68,7 +80,6 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
                 binding.searchView.setQuery("",false)
                 return true
             }
-
             override fun onQueryTextChange(newText: String?): Boolean {
                 MusicListSearch= ArrayList()
                 if (newText!=null){
@@ -92,7 +103,18 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         if(PlayerFragment.isPlaying && PlayerFragment.musicService != null){
             exitApp()
         }
+
     }
+
+    override fun onResume() {
+        super.onResume()
+        //сохранение в избранное
+        val editor = getSharedPreferences("FAVOURITES", MODE_PRIVATE).edit()
+        val jsonString = GsonBuilder().create().toJson(FavouritesActivity.favSong)
+        editor.putString("FavouriteSongs", jsonString)
+        editor.apply()
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.R)
     @SuppressLint("SetTextI18n")

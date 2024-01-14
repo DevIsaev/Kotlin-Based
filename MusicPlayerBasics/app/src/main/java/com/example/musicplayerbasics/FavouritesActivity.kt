@@ -3,20 +3,21 @@ package com.example.musicplayerbasics
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.musicplayerbasics.databinding.ActivityFavouritesBinding
 import com.google.android.material.navigation.NavigationView
 
 class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener {
+    private lateinit var binding: ActivityFavouritesBinding
+    private lateinit var adapter: AdapterMusicListFavourite
+    var drawer: DrawerLayout? = null
     companion object {
-        private lateinit var binding: ActivityFavouritesBinding
-        private lateinit var adapter: AdapterMusicListFavourite
-        var drawer: DrawerLayout? = null
+
 
         var favSong:ArrayList<Music> = ArrayList()
     }
@@ -25,8 +26,26 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
         binding= ActivityFavouritesBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setTheme(R.style.coolPinkNav)
+
+        binding.favouriteRV.setHasFixedSize(true)
+        binding.favouriteRV.setItemViewCacheSize(13)
+        binding.favouriteRV.layoutManager = GridLayoutManager(this, 4)
+        adapter = AdapterMusicListFavourite(this, favSong)
+        binding.favouriteRV.adapter = adapter
+
+        if (favSong.size<1) {
+            binding.shuffleBtn.visibility= View.INVISIBLE
+        }
+        binding.shuffleBtn.setOnClickListener {
+            val bottomSheet = PlayerFragment.newInstance()
+            val bundle = Bundle()
+            bundle.putInt("index", 0)
+            bundle.putString("class", "FavouriteShuffle")
+            bottomSheet.arguments = bundle
+            bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+        }
         Navigation()
-        initialization()
+
     }
     //Navigation drawer
     private fun Navigation(){
@@ -86,14 +105,4 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
         return true
     }
 
-    private fun initialization(){
-
-        var rv=findViewById<RecyclerView>(R.id.favouriteRV)
-        rv.setHasFixedSize(true)
-        rv.setItemViewCacheSize(13)
-        rv.layoutManager= GridLayoutManager(this@FavouritesActivity,4)
-        adapter=AdapterMusicListFavourite(this@FavouritesActivity, favSong)
-        rv.adapter=adapter
-
-    }
 }

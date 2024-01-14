@@ -31,7 +31,6 @@ class AdapterMusicListFavourite(private val context: Context, private var musicL
             .into(holder.img)
         holder.root.setOnClickListener {
             val playerFragment = PlayerFragment.newInstance()
-
             val bundle = Bundle()
             bundle.putInt("index", position)
             bundle.putString("class", "Favourite")
