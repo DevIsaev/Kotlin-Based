@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="15dp"
+    android:layout_margin="10dp"
+    tools:ignore="MissingDefaultResource">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/playlistIMG"
+        android:layout_width="150dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="110dp"
+        android:src="@drawable/icon"
+        app:shapeAppearanceOverlay="@style/curved"/>
+
+    <TextView
+        android:id="@+id/playlistName"
+        android:layout_width="110dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="115dp"
+        android:contentDescription="@string/Total"
+        android:gravity="center"
+        android:text="@string/Total"
+        android:textColor="@color/backgroundColor"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/delBTN"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        app:tint="@color/blue"
+        android:layout_marginEnd="5dp"
+
+        android:layout_marginTop="125dp"
+        android:layout_marginStart="110dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/baseline_delete_24"/>
+    
+</com.google.android.material.card.MaterialCardView>

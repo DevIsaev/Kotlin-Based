@@ -2,7 +2,6 @@ package com.example.musicplayerbasics
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -226,7 +225,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         when (item.itemId) {
             R.id.IDSignOut -> {
                 Toast.makeText(this, "IDSignOut", Toast.LENGTH_SHORT).show()
-                Out()
+                out()
             }
 
             R.id.IDMusicStorage -> {
@@ -275,18 +274,13 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         return true
     }
 
-    fun Out() {
+    fun out() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Выход")
-        builder.setMessage("Вы действительно хотите выйти?")
-        builder.setPositiveButton("Да",
-            DialogInterface.OnClickListener { dialogInterface, i ->
-//                musicService!!.mediaPlayer!!.stop()
-//                finish()
-                exitApp()
-            })
-        builder.setNegativeButton("Нет",
-            DialogInterface.OnClickListener { dialogInterface, i -> })
-        builder.show()
+            .setMessage("Вы действительно хотите выйти?")
+            .setPositiveButton("Да"){_,_ -> exitApp() }
+            .setNegativeButton("Нет"){dialog,_ -> dialog.dismiss()}
+        val customDialog=builder.create()
+        customDialog.show()
     }
 }
