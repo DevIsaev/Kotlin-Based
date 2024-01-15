@@ -4,30 +4,33 @@
 
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
-    <!-- permission for android 13-->
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
+        tools:ignore="ScopedStorage" /> <!-- permission for android 13 -->
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-<uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <application
         android:name=".ApplicationClass"
-
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/soundwavelogo"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/soundwavelogo"
         android:supportsRtl="true"
         android:theme="@style/Theme.MusicPlayerBasics"
-        android:requestLegacyExternalStorage="true"
         tools:targetApi="31">
+        <activity
+            android:name=".PlaylistDetailsFragment"
+            android:exported="false" />
+        <activity
+            android:name=".PlaylistDetails"
+            android:exported="false" />
         <activity
             android:name=".PlaylistsActivity"
             android:exported="false" />
-        
         <activity
             android:name=".FavouritesActivity"
             android:exported="false" />
@@ -41,8 +44,11 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".MusicSevice"/>
-        <receiver android:name=".NotificationReceiver" android:enabled="true"/>
+        <service android:name=".MusicSevice" />
+
+        <receiver
+            android:name=".NotificationReceiver"
+            android:enabled="true" />
     </application>
 
 </manifest>

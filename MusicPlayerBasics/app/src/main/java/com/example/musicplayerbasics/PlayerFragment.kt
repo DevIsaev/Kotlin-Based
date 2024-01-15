@@ -65,11 +65,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
     }
 
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         binding = ActivityPlayerBinding.inflate(inflater, container, false)
         return binding.root

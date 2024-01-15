@@ -1,10 +1,13 @@
 package com.example.musicplayerbasics
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicplayerbasics.databinding.PlaylistViewBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class AdapterMusicListPlaylist(private val context: Context, private var playlistList: ArrayList<Playlist>) : RecyclerView.Adapter<AdapterMusicListPlaylist.MyHolder>(){
 
@@ -12,6 +15,8 @@ class AdapterMusicListPlaylist(private val context: Context, private var playlis
         val img=binding.playlistIMG
         val name=binding.playlistName
         var root=binding.root
+
+        var delete=binding.delBTN
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdapterMusicListPlaylist.MyHolder {
@@ -22,6 +27,29 @@ class AdapterMusicListPlaylist(private val context: Context, private var playlis
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         holder.name.text=playlistList[position].name
         holder.name.isSelected=true
+
+        holder.delete.setOnClickListener {
+            val builder = MaterialAlertDialogBuilder(context)
+            builder.setTitle(playlistList[position].name)
+                .setMessage("Вы действительно хотите удалить этот плейлист?")
+                .setPositiveButton("Да"){dialog,_ ->
+                    PlaylistsActivity.musicPlaylist.ref.removeAt(position)
+                    refrershPlaylist()
+                    dialog.dismiss()
+                }
+                .setNegativeButton("Нет"){dialog,_ -> dialog.dismiss()}
+            val customDialog=builder.create()
+            customDialog.show()
+        }
+
+        holder.root.setOnClickListener {
+            val bottomSheet = PlaylistDetailsFragment()
+            val bundle = Bundle()
+
+            bundle.putInt("index", position)
+            bottomSheet .arguments = bundle
+            bottomSheet .show((context as AppCompatActivity).supportFragmentManager, bottomSheet .tag)
+        }
     }
 
     override fun getItemCount(): Int {
