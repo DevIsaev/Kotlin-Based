@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.musicplayerbasics.databinding.PlaylistViewBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -49,6 +51,12 @@ class AdapterMusicListPlaylist(private val context: Context, private var playlis
             bundle.putInt("index", position)
             bottomSheet .arguments = bundle
             bottomSheet .show((context as AppCompatActivity).supportFragmentManager, bottomSheet .tag)
+        }
+        if(PlaylistsActivity.musicPlaylist.ref[position].playlist.size>0){
+            Glide.with(context)
+                .load(PlaylistsActivity.musicPlaylist.ref[position].playlist[0].artURI)
+                .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
+                .into(holder.img)
         }
     }
 

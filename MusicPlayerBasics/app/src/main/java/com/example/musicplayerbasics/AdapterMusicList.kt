@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.musicplayerbasics.databinding.MusicViewBinding
 
-class AdapterMusicList(private val context: Context, private var musicList: ArrayList<Music>) : RecyclerView.Adapter<AdapterMusicList.MyHolder>(){
+class AdapterMusicList(private val context: Context, private var musicList: ArrayList<Music>, private  var playlistDetails:Boolean=false) : RecyclerView.Adapter<AdapterMusicList.MyHolder>(){
     class MyHolder(binding: MusicViewBinding):RecyclerView.ViewHolder(binding.root) {
 
         val title=binding.songName
@@ -26,9 +26,9 @@ class AdapterMusicList(private val context: Context, private var musicList: Arra
 
 
     override fun onBindViewHolder(holder: AdapterMusicList.MyHolder, position: Int) {
-        holder.title.text=musicList[position].title
-        holder.artist.text=musicList[position].artist
-        holder.duration.text= DurationFormat(musicList[position].duration)
+        holder.title.text = musicList[position].title
+        holder.artist.text = musicList[position].artist
+        holder.duration.text = DurationFormat(musicList[position].duration)
 
         Glide.with(context)
             .load(musicList[position].artURI)
@@ -36,14 +36,26 @@ class AdapterMusicList(private val context: Context, private var musicList: Arra
             .into(holder.img)
 
 
-        holder.root.setOnClickListener {
-            when{
-                MainActivity.search->openFragment("MusicAdapterSearch",position)
-                musicList[position].id==PlayerFragment.nowPlayingId->openFragment("NowPlaying",position)
-
-                else->openFragment("MusicAdapter",position)
+        when {
+            playlistDetails ->{
+                holder.root.setOnClickListener {
+                    openFragment("AdapterMusicListPlaylist", position)
+                }
+            }
+            else->{
+                holder.root.setOnClickListener {
+                    when {
+                        MainActivity.search -> openFragment("MusicAdapterSearch", position)
+                        musicList[position].id == PlayerFragment.nowPlayingId -> openFragment(
+                            "NowPlaying",
+                            position
+                        )
+                        else -> openFragment("MusicAdapter", position)
+                    }
+                }
             }
         }
+
     }
 
     override fun getItemCount(): Int {
