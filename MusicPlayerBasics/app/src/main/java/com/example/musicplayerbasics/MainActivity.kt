@@ -49,8 +49,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
         if(requestRuntimePermission()) {
             initialization()
-            //перезапись Избранного
-
+            //перезапись
             FavouritesActivity.favSong = ArrayList()
             val editor = getSharedPreferences("FAVOURITES", MODE_PRIVATE)
             val jsonString = editor.getString("FavouriteSongs", null)
@@ -58,6 +57,14 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             if(jsonString != null){
                 val data: ArrayList<Music> = GsonBuilder().create().fromJson(jsonString, typeToken)
                 FavouritesActivity.favSong.addAll(data)
+            }
+            PlaylistsActivity.musicPlaylist = PlaylistMusic()
+            //val editorPL = getSharedPreferences("FAVOURITES", MODE_PRIVATE)
+            val jsonStringPL = editor.getString("MusicPlaylist", null)
+            //val typeTokenPL = object : TypeToken<PlaylistMusic>(){}.type
+            if(jsonStringPL != null){
+                val dataPL: PlaylistMusic = GsonBuilder().create().fromJson(jsonStringPL, PlaylistMusic::class.java)
+                PlaylistsActivity.musicPlaylist=dataPL
             }
         }
 
@@ -107,10 +114,13 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
     override fun onResume() {
         super.onResume()
-        //сохранение в избранное
+        //сохранение
         val editor = getSharedPreferences("FAVOURITES", MODE_PRIVATE).edit()
         val jsonString = GsonBuilder().create().toJson(FavouritesActivity.favSong)
         editor.putString("FavouriteSongs", jsonString)
+
+        val jsonStringPL = GsonBuilder().create().toJson(PlaylistsActivity.musicPlaylist)
+        editor.putString("MusicPlaylist", jsonStringPL)
         editor.apply()
     }
 

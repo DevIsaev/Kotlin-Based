@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -15,6 +16,7 @@ import com.example.musicplayerbasics.databinding.ActivityPlaylistDetailsFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.gson.GsonBuilder
 
 class PlaylistDetailsFragment : BottomSheetDialogFragment() {
 
@@ -108,11 +110,24 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
             binding.shuffleBtnPD.visibility = View.VISIBLE
         }
         adapter.notifyDataSetChanged()
+//        PlaylistsActivity.musicPlaylist = PlaylistMusic()
+//        val editor = getSharedPreferences("FAVOURITES", AppCompatActivity.MODE_PRIVATE)
+//        //val editorPL = getSharedPreferences("FAVOURITES", MODE_PRIVATE)
+//        val jsonStringPL = editor.getString("MusicPlaylist", null)
+//        //val typeTokenPL = object : TypeToken<PlaylistMusic>(){}.type
+//        if(jsonStringPL != null){
+//            val dataPL: PlaylistMusic = GsonBuilder().create().fromJson(jsonStringPL, PlaylistMusic::class.java)
+//            PlaylistsActivity.musicPlaylist=dataPL
+//        }
+        //сохранение
+        val editor = requireActivity().getSharedPreferences("FAVOURITES", AppCompatActivity.MODE_PRIVATE).edit()
+        val jsonStringPL = GsonBuilder().create().toJson(PlaylistsActivity.musicPlaylist)
+        editor.putString("MusicPlaylist", jsonStringPL)
+        editor.apply()
     }
     override fun onDestroy() {
         super.onDestroy()
 
 
     }
-
 }
