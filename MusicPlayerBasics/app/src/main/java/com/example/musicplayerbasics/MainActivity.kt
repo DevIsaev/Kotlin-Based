@@ -229,8 +229,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             }
 
             R.id.IDMusicStorage -> {
-                val itent=Intent(this,MainActivity::class.java)
-                startActivity(itent)
+
             }
 
             R.id.IDMusicFavourite -> {

@@ -1,6 +1,7 @@
 package com.example.musicplayerbasics
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.musicplayerbasics.databinding.ActivityPlaylistDetailsFragmentBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class PlaylistDetailsFragment : BottomSheetDialogFragment() {
 
@@ -57,32 +59,59 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
         binding.playlistDetailsRV.setItemViewCacheSize(10)
         binding.playlistDetailsRV.setHasFixedSize(true)
         binding.playlistDetailsRV.layoutManager=LinearLayoutManager(context)
-        PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist.addAll(MainActivity.MusicListMA)
+
         adapter= AdapterMusicList(requireContext(),PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist,playlistDetails = true)
         binding.playlistDetailsRV.adapter= adapter
 
+
         binding.shuffleBtnPD.setOnClickListener {
+            val bottomSheet = PlayerFragment.newInstance()
+            val bundle = Bundle()
+            bundle.putInt("index", 0)
+            bundle.putString("class", "PlaylistShuffle")
+            bottomSheet.arguments = bundle
+            bottomSheet.show(childFragmentManager, bottomSheet.tag)
+        }
+        binding.addBtnPD.setOnClickListener {
+            startActivity(Intent(requireContext(), SelectionToPlaylistActivity::class.java))
+        }
+        binding.removeAllPD.setOnClickListener {
+            val builder = MaterialAlertDialogBuilder(requireContext())
+            builder.setTitle("Удаление")
+                .setMessage("Вы хотите удалить все композиции?")
+                .setPositiveButton("Yes"){ dialog, _ ->
+                    PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist.clear()
+                    adapter.refreshPlaylist()
+                    dialog.dismiss()
+                }
+                .setNegativeButton("No"){dialog, _ ->
+                    dialog.dismiss()
+                }
+            val customDialog = builder.create()
+            customDialog.show()
 
         }
     }
 
     override fun onResume() {
         super.onResume()
-        binding.playlistNamePD.text=PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].name
-        binding.moreInfoPD.text="Всего композиций: ${adapter.itemCount}. \n\n"+
-                "Создано: ${PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].createdOn}. \n\n"+
-                "--${PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].createdBy}"
-        if(adapter.itemCount>0){
-            Glide.with(requireContext())
+        binding.playlistNamePD.text = PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].name
+        binding.moreInfoPD.text = "Всего ${adapter.itemCount} композиций.\n\n" +
+                "Created On:\n${PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].createdOn}\n\n" +
+                "  -- ${PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].createdBy}"
+        if(adapter.itemCount > 0)
+        {
+            Glide.with(this)
                 .load(PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist[0].artURI)
                 .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
                 .into(binding.playlistImgPD)
-
-            binding.shuffleBtnPD.visibility=View.VISIBLE
+            binding.shuffleBtnPD.visibility = View.VISIBLE
         }
+        adapter.notifyDataSetChanged()
     }
     override fun onDestroy() {
         super.onDestroy()
+
 
     }
 

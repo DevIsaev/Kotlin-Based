@@ -310,6 +310,14 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                     musicListPA.addAll(PlaylistsActivity.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist)
                     setLayout()
                 }
+                "PlaylistShuffle"->{
+                    val intent = Intent(requireContext(), MusicSevice::class.java)
+                    requireContext().bindService(intent, this, Context.BIND_AUTO_CREATE)
+                    musicListPA = ArrayList()
+                    musicListPA.addAll(PlaylistsActivity.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist)
+                    musicListPA.shuffle()
+                    setLayout()
+                }
             }
         }
     }

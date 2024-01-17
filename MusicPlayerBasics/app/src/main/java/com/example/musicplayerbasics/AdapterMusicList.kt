@@ -1,16 +1,21 @@
 package com.example.musicplayerbasics
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.musicplayerbasics.databinding.MusicViewBinding
 
-class AdapterMusicList(private val context: Context, private var musicList: ArrayList<Music>, private  var playlistDetails:Boolean=false) : RecyclerView.Adapter<AdapterMusicList.MyHolder>(){
+class AdapterMusicList(private val context: Context,
+                       private var musicList: ArrayList<Music>,
+                       private  var playlistDetails:Boolean=false,
+                       private var selectionActivity:Boolean=false) : RecyclerView.Adapter<AdapterMusicList.MyHolder>(){
     class MyHolder(binding: MusicViewBinding):RecyclerView.ViewHolder(binding.root) {
 
         val title=binding.songName
@@ -40,6 +45,15 @@ class AdapterMusicList(private val context: Context, private var musicList: Arra
             playlistDetails ->{
                 holder.root.setOnClickListener {
                     openFragment("AdapterMusicListPlaylist", position)
+                }
+            }
+            selectionActivity ->{
+                holder.root.setOnClickListener {
+                    if(addSong(musicList[position]))
+                        holder.root.setBackgroundColor(ContextCompat.getColor(context, R.color.blue))
+                    else
+                        holder.root.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
+
                 }
             }
             else->{
@@ -78,5 +92,24 @@ class AdapterMusicList(private val context: Context, private var musicList: Arra
 
         playerFragment.show((context as AppCompatActivity).supportFragmentManager, playerFragment.tag)
     }
+
+    //добавление композиции в плейлист
+    private fun addSong(song: Music): Boolean{
+        PlaylistsActivity.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist.forEachIndexed { index, music ->
+            if(song.id == music.id){
+                PlaylistsActivity.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist.removeAt(index)
+                return false
+            }
+        }
+        PlaylistsActivity.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist.add(song)
+        return true
+    }
+    @SuppressLint("NotifyDataSetChanged")
+    fun refreshPlaylist(){
+        musicList = ArrayList()
+        musicList = PlaylistsActivity.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist
+        notifyDataSetChanged()
+    }
+
 }
 

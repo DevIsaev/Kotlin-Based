@@ -60,13 +60,11 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
             }
 
             R.id.IDMusicStorage -> {
-                val itent= Intent(this,MainActivity::class.java)
-                startActivity(itent)
+                finish()
             }
 
             R.id.IDMusicFavourite -> {
-                val itent= Intent(this,FavouritesActivity::class.java)
-                startActivity(itent)
+
             }
             R.id.IDMusicDownload -> {
                 Toast.makeText(this, "IDMusicDownload", Toast.LENGTH_SHORT).show()

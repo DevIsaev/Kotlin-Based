@@ -1,5 +1,6 @@
 package com.example.musicplayerbasics
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
@@ -42,6 +43,7 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         binding.addBtn.setOnClickListener {
             customAlertDialog()
         }
+
     }
 
     //Navigation drawer
@@ -57,8 +59,7 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             }
 
             R.id.IDMusicStorage -> {
-                val itent= Intent(this,MainActivity::class.java)
-                startActivity(itent)
+                finish()
             }
 
             R.id.IDMusicFavourite -> {
@@ -74,8 +75,7 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             }
 
             R.id.IDPlaylists -> {
-                val itent= Intent(this,PlaylistsActivity::class.java)
-                startActivity(itent)
+
             }
 
             R.id.IDStatistic -> {
@@ -147,4 +147,11 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             adapter.refrershPlaylist()
         }
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    override fun onResume() {
+        super.onResume()
+        adapter.notifyDataSetChanged()
+    }
+
 }
