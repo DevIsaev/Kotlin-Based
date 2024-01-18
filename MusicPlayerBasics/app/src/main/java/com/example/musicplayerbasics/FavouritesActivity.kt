@@ -27,6 +27,8 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
         setContentView(binding.root)
         setTheme(R.style.coolPinkNav)
 
+        favSong= playlistCheck(favSong)
+
         binding.favouriteRV.setHasFixedSize(true)
         binding.favouriteRV.setItemViewCacheSize(13)
         binding.favouriteRV.layoutManager = GridLayoutManager(this, 4)

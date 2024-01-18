@@ -1,6 +1,7 @@
 package com.example.musicplayerbasics
 
 import android.media.MediaMetadataRetriever
+import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
@@ -54,6 +55,20 @@ fun favouriteCheck(id: String): Int{
     return -1
 }
 
+fun playlistCheck(playlist: ArrayList<Music>):ArrayList<Music>{
+
+    var index: Int
+    index = 0
+    while (index < playlist.size) {
+        val file=File(playlist[index].path)
+        if (!file.exists()){
+            playlist.removeAt(index)
+        }
+        index++
+    }
+    return playlist
+
+}
 fun exitApp(){
     if(PlayerFragment.musicService!=null){
         PlayerFragment.musicService!!.stopForeground(true)

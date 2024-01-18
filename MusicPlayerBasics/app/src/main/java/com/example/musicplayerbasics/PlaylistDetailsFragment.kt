@@ -35,6 +35,7 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         binding = ActivityPlaylistDetailsFragmentBinding.inflate(inflater, container, false)
+        PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist= playlistCheck(PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist)
         return binding.root
     }
 
@@ -58,6 +59,9 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
         }
 
         currentPlaylistPos= arguments?.getInt("index", 0)!!
+
+
+
         binding.playlistDetailsRV.setItemViewCacheSize(10)
         binding.playlistDetailsRV.setHasFixedSize(true)
         binding.playlistDetailsRV.layoutManager=LinearLayoutManager(context)
@@ -110,15 +114,7 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
             binding.shuffleBtnPD.visibility = View.VISIBLE
         }
         adapter.notifyDataSetChanged()
-//        PlaylistsActivity.musicPlaylist = PlaylistMusic()
-//        val editor = getSharedPreferences("FAVOURITES", AppCompatActivity.MODE_PRIVATE)
-//        //val editorPL = getSharedPreferences("FAVOURITES", MODE_PRIVATE)
-//        val jsonStringPL = editor.getString("MusicPlaylist", null)
-//        //val typeTokenPL = object : TypeToken<PlaylistMusic>(){}.type
-//        if(jsonStringPL != null){
-//            val dataPL: PlaylistMusic = GsonBuilder().create().fromJson(jsonStringPL, PlaylistMusic::class.java)
-//            PlaylistsActivity.musicPlaylist=dataPL
-//        }
+
         //сохранение
         val editor = requireActivity().getSharedPreferences("FAVOURITES", AppCompatActivity.MODE_PRIVATE).edit()
         val jsonStringPL = GsonBuilder().create().toJson(PlaylistsActivity.musicPlaylist)
