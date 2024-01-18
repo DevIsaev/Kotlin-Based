@@ -35,7 +35,6 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         binding = ActivityPlaylistDetailsFragmentBinding.inflate(inflater, container, false)
-        PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist= playlistCheck(PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist)
         return binding.root
     }
 
@@ -60,7 +59,7 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
 
         currentPlaylistPos= arguments?.getInt("index", 0)!!
 
-
+        PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist= playlistCheck(PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist)
 
         binding.playlistDetailsRV.setItemViewCacheSize(10)
         binding.playlistDetailsRV.setHasFixedSize(true)

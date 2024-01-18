@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.Build
@@ -13,12 +14,13 @@ import android.os.IBinder
 import android.os.Looper
 import android.support.v4.media.session.MediaSessionCompat
 
-class MusicSevice: Service() {
+class MusicSevice: Service(),AudioManager.OnAudioFocusChangeListener {
     //сервис, принимающий поток и позволящий воспроизводить фоном
     private var myBinder=MyBinder()
     var mediaPlayer:MediaPlayer?=null
     private lateinit var mediasssion:MediaSessionCompat
     private lateinit var runnable:Runnable
+    lateinit var audioManager:AudioManager
 
     override fun onBind(intent: Intent?): IBinder {
         mediasssion= MediaSessionCompat(baseContext,"My Music")
@@ -33,11 +35,17 @@ class MusicSevice: Service() {
 
     @SuppressLint("ForegroundServiceType")
     fun showNotification(PlayPause: Int){
+
+        val intent = Intent(baseContext, MainActivity::class.java)
+
         val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.FLAG_IMMUTABLE
         } else {
             PendingIntent.FLAG_UPDATE_CURRENT
         }
+
+        //открытие вне приложения
+        val contentIntent=PendingIntent.getActivity(this@MusicSevice,0,intent,flag)
 
         //связь с кнопками из ApplicationClass
         val prevIntent = Intent(baseContext, NotificationReceiver::class.java).setAction(ApplicationClass.PREVIOUS)
@@ -64,6 +72,7 @@ class MusicSevice: Service() {
 
 //построение элемента уведомления
     val notification = androidx.core.app.NotificationCompat.Builder(baseContext, ApplicationClass.CHANNEL_ID)//канал
+            .setContentIntent(contentIntent)
             .setContentTitle(PlayerFragment.musicListPA[PlayerFragment.songPosition].title)
             .setContentText(PlayerFragment.musicListPA[PlayerFragment.songPosition].artist)
             .setSmallIcon(R.drawable.baseline_music_note_24)
@@ -103,7 +112,7 @@ class MusicSevice: Service() {
         }
     }
 
-    //
+    //SeekBar
     fun seekBarSetup(){
         runnable= Runnable {
             PlayerFragment.binding.durationCURRENT.text= DurationFormat(mediaPlayer!!.currentPosition.toLong())
@@ -111,5 +120,25 @@ class MusicSevice: Service() {
             Handler(Looper.getMainLooper()).postDelayed(runnable,200)
         }
         Handler(Looper.getMainLooper()).postDelayed(runnable,0)
+    }
+
+    //если происходит звонок(?)
+    override fun onAudioFocusChange(focusChange: Int) {
+        if(focusChange<=0){
+        //пауза
+            PlayerFragment.binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_play_arrow_24)
+            NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_play_arrow_24)
+            showNotification(R.drawable.baseline_play_arrow_24)
+            PlayerFragment.isPlaying = false
+            mediaPlayer!!.pause()
+        }
+        else{
+            //воспроизведение
+            PlayerFragment.binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
+            NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_pause_24)
+            showNotification(R.drawable.baseline_pause_24)
+            PlayerFragment.isPlaying = true
+            mediaPlayer!!.start()
+        }
     }
 }

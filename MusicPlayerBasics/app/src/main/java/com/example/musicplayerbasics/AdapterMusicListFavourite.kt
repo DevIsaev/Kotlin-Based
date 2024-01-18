@@ -43,5 +43,9 @@ class AdapterMusicListFavourite(private val context: Context, private var musicL
     override fun getItemCount(): Int {
         return musicList.size
     }
-
+    fun updateFavourites(newList: ArrayList<Music>){
+        musicList = ArrayList()
+        musicList.addAll(newList)
+        notifyDataSetChanged()
+    }
 }

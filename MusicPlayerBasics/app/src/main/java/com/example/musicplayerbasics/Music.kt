@@ -71,11 +71,11 @@ fun playlistCheck(playlist: ArrayList<Music>):ArrayList<Music>{
 }
 fun exitApp(){
     if(PlayerFragment.musicService!=null){
+        PlayerFragment.musicService!!.audioManager.abandonAudioFocus(PlayerFragment.musicService)
         PlayerFragment.musicService!!.stopForeground(true)
         PlayerFragment.musicService!!.mediaPlayer!!.release()
         PlayerFragment.musicService=null
     }
     exitProcess(1)
-
-
 }
+

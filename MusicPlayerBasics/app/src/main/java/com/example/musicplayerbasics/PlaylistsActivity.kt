@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.musicplayerbasics.databinding.ActivityPlaylistsBinding
 import com.example.musicplayerbasics.databinding.CustomAlertdialogAddPlaylistBinding
 import com.google.android.material.navigation.NavigationView
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -32,6 +34,24 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         setContentView(binding.root)
         setTheme(R.style.coolPinkNav)
         Navigation()
+
+        //перезапись
+        FavouritesActivity.favSong = ArrayList()
+        val editor = getSharedPreferences("FAVOURITES", MODE_PRIVATE)
+        val jsonString = editor.getString("FavouriteSongs", null)
+        val typeToken = object : TypeToken<ArrayList<Music>>(){}.type
+        if(jsonString != null){
+            val data: ArrayList<Music> = GsonBuilder().create().fromJson(jsonString, typeToken)
+            FavouritesActivity.favSong.addAll(data)
+        }
+        PlaylistsActivity.musicPlaylist = PlaylistMusic()
+        //val editorPL = getSharedPreferences("FAVOURITES", MODE_PRIVATE)
+        val jsonStringPL = editor.getString("MusicPlaylist", null)
+        //val typeTokenPL = object : TypeToken<PlaylistMusic>(){}.type
+        if(jsonStringPL != null){
+            val dataPL: PlaylistMusic = GsonBuilder().create().fromJson(jsonStringPL, PlaylistMusic::class.java)
+            PlaylistsActivity.musicPlaylist=dataPL
+        }
 
 
         binding.playlistsRV.setHasFixedSize(true)

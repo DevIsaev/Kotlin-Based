@@ -11,13 +11,14 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.musicplayerbasics.databinding.ActivityFavouritesBinding
 import com.google.android.material.navigation.NavigationView
+import com.google.gson.GsonBuilder
 
 class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener {
     private lateinit var binding: ActivityFavouritesBinding
     private lateinit var adapter: AdapterMusicListFavourite
     var drawer: DrawerLayout? = null
     companion object {
-
+        var favouritesChanged: Boolean = false
 
         var favSong:ArrayList<Music> = ArrayList()
     }
@@ -34,6 +35,8 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
         binding.favouriteRV.layoutManager = GridLayoutManager(this, 4)
         adapter = AdapterMusicListFavourite(this, favSong)
         binding.favouriteRV.adapter = adapter
+
+        favouritesChanged = false
 
         if (favSong.size<1) {
             binding.shuffleBtn.visibility= View.INVISIBLE
@@ -104,5 +107,18 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
         drawer?.closeDrawer(GravityCompat.START)
         return true
     }
+
+    override fun onResume() {
+        super.onResume()
+        //сохранение
+        val editor = getSharedPreferences("FAVOURITES", MODE_PRIVATE).edit()
+        val jsonString = GsonBuilder().create().toJson(FavouritesActivity.favSong)
+        editor.putString("FavouriteSongs", jsonString)
+
+        val jsonStringPL = GsonBuilder().create().toJson(PlaylistsActivity.musicPlaylist)
+        editor.putString("MusicPlaylist", jsonStringPL)
+        editor.apply()
+    }
+
 
 }

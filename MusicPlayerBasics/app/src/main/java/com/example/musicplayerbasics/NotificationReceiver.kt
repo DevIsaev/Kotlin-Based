@@ -48,7 +48,7 @@ class NotificationReceiver:BroadcastReceiver() {
         Glide.with(context)
             .load(PlayerFragment.musicListPA[PlayerFragment.songPosition].artURI)
             .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
-            .into(PlayerFragment.binding.albumIMG)
+            .into(PlayerFragment.binding.albumIMGFont)
         PlayerFragment.binding.songTITLE.text= PlayerFragment.musicListPA[PlayerFragment.songPosition].title +"\n"+ PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
 
         Glide.with(context)

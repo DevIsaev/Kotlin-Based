@@ -6,9 +6,11 @@ import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.ComponentName
 import android.content.Context
+import android.content.Context.AUDIO_SERVICE
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.ActivityInfo
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.audiofx.AudioEffect
 import android.net.Uri
@@ -91,24 +93,24 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         }
 
         //изображение альбома
-        binding.albumIMG.setOnClickListener {
+        binding.albumFont.setOnClickListener {
             if (isFont) {
-                fontAnim.setTarget(binding.albumIMG)
-                backAnim.setTarget(binding.albumIMGback)
+                fontAnim.setTarget(binding.albumFont)
+                backAnim.setTarget(binding.albumBack)
                 fontAnim.start()
                 backAnim.start()
                 isFont = false
             } else {
-                fontAnim.setTarget(binding.albumIMGback)
-                backAnim.setTarget(binding.albumIMG)
+                fontAnim.setTarget(binding.albumBack)
+                backAnim.setTarget(binding.albumFont)
                 fontAnim.start()
                 backAnim.start()
                 isFont = true
             }
         }
         val scale = requireContext().resources.displayMetrics.density
-        binding.albumIMG.cameraDistance = 8000 * scale
-        binding.albumIMGback.cameraDistance = 8000 * scale
+        binding.albumFont.cameraDistance = 8000 * scale
+        binding.albumBack.cameraDistance = 8000 * scale
         fontAnim = AnimatorInflater.loadAnimator(requireContext(), R.animator.font) as AnimatorSet
         backAnim = AnimatorInflater.loadAnimator(requireContext(), R.animator.back) as AnimatorSet
 
@@ -217,17 +219,17 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         //requireContext().unbindService(this)
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         try {
-            if (PlayerFragment.musicService != null) {
+            if (musicService != null) {
                 NowPlaying.binding.root.visibility = View.VISIBLE
                 NowPlaying.binding.songNP.isSelected = true
                 Glide.with(requireContext())
-                    .load(PlayerFragment.musicListPA[PlayerFragment.songPosition].artURI)
+                    .load(musicListPA[songPosition].artURI)
                     .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
                     .into(NowPlaying.binding.albumNP)
-                NowPlaying.binding.songNP.text = PlayerFragment.musicListPA[PlayerFragment.songPosition].title
-                NowPlaying.binding.artistNP.text=PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
+                NowPlaying.binding.songNP.text = musicListPA[songPosition].title
+                NowPlaying.binding.artistNP.text= musicListPA[songPosition].artist
 
-                if (PlayerFragment.isPlaying) {
+                if (isPlaying) {
                     NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_pause_24)
                 } else {
                     NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_play_arrow_24)
@@ -328,7 +330,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         Glide.with(this)
             .load(musicListPA[songPosition].artURI)
             .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
-            .into(binding.albumIMG)
+            .into(binding.albumIMGFont)
         binding.songTITLE.text = musicListPA[songPosition].title + "\n" + musicListPA[songPosition].artist
 
         if (repeat) {
@@ -405,14 +407,26 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         }
     }
 
-    //Service
+    // Service
     override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
         val binder = service as MusicSevice.MyBinder
-        musicService = binder.currentService()
-        createMP()
-        musicService!!.seekBarSetup()
 
+        if (musicService == null) {
+            musicService = binder.currentService()
+
+            val audioManager = requireContext().getSystemService(AUDIO_SERVICE) as AudioManager
+            musicService?.audioManager = audioManager
+            musicService?.audioManager?.requestAudioFocus(
+                musicService,
+                AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN
+            )
+
+            createMP()
+            musicService?.seekBarSetup()
+        }
     }
+
     override fun onServiceDisconnected(name: ComponentName?) {
         musicService = null
     }
@@ -424,8 +438,8 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         try {
             setLayout()
             if (isFont == false) {
-                fontAnim.setTarget(binding.albumIMGback)
-                backAnim.setTarget(binding.albumIMG)
+                fontAnim.setTarget(binding.albumBack)
+                backAnim.setTarget(binding.albumFont)
                 fontAnim.start()
                 backAnim.start()
                 isFont = true
