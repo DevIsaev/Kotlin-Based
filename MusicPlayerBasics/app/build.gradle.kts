@@ -55,4 +55,7 @@ dependencies {
 
 
     implementation("com.google.code.gson:gson:2.8.6")
+
+    implementation ("com.github.wseemann:FFmpegMediaMetadataRetriever-core:1.0.19")
+    implementation ("com.github.wseemann:FFmpegMediaMetadataRetriever-native:1.0.19")
 }

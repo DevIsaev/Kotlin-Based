@@ -175,12 +175,10 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
                     val durationC = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION))
                     val albumIdC = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)).toString()
 
-
-
                     val uri = Uri.parse("content://media/external/audio/albumart")
                     val artUriC = Uri.withAppendedPath(uri, albumIdC).toString()
 
-                    // Добавьте проверку, чтобы загружать аудио только из папки "Music"
+
                     if (pathC != null && pathC.contains("/Music/")) {
                         val music = Music(id = idC, title = titleC, album = albumC, artist = artistC, path = pathC, duration = durationC, artURI = artUriC)
                         val file = File(music.path)

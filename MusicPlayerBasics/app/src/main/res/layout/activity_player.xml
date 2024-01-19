@@ -74,7 +74,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/curved"
         android:orientation="vertical">
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/albumIMGFont"
             android:layout_width="250dp"
             android:layout_height="250dp"
@@ -99,7 +99,7 @@
         app:shapeAppearanceOverlay="@style/curved"
         android:orientation="vertical">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/albumIMGBack"
             android:layout_width="250dp"
             android:layout_height="250dp"
@@ -109,11 +109,13 @@
             app:strokeColor="@color/black"/>
 
         <TextView
+            android:id="@+id/metadata"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/Total"
             android:textColor="@color/white"
-            android:textSize="22sp"
+            android:textSize="12sp"
+            android:layout_marginTop="10dp"
             android:gravity="center" />
     </FrameLayout>
 

@@ -11,6 +11,9 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.ActivityInfo
 import android.media.AudioManager
+import android.media.MediaExtractor
+import android.media.MediaFormat
+import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.media.audiofx.AudioEffect
 import android.net.Uri
@@ -31,6 +34,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+
 
 class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer.OnCompletionListener {
 
@@ -350,6 +354,9 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         else{
             binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_border_24)
         }
+
+    val metadataText = retrieveMetadata()
+    binding.metadata.text = metadataText
     }
 
 //вызов медиаплеера
@@ -494,6 +501,45 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                 if(min60) exitApp()}.start()
             dialog.dismiss()
         }
+    }
+
+    fun retrieveMetadata(): String {
+        val retriever = MediaMetadataRetriever()
+        var path=retriever.setDataSource(musicListPA[songPosition].path)
+
+        val title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)?:"Неизвестное название"
+        val artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)?:"Неизвестный исполнитель"
+        val album = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM)?:"Неизвестный альбом"
+        val bitrateT=retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE)?.toDoubleOrNull()?.div(1000)?.toInt()
+        val sampleRateT=retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_SAMPLERATE)?.toDoubleOrNull()?.div(1000)
+        val genre=retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE)?:"Неизвестный жанр"
+
+
+        val mex = MediaExtractor()
+        mex.setDataSource(musicListPA[songPosition].path)
+        val mf = mex.getTrackFormat(0)
+        val channels:Int=mf.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
+        val codec=mf.getString(MediaFormat.KEY_MIME)
+        val bitDepthString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITS_PER_SAMPLE)
+
+        retriever.release()
+
+        val bitDepth = bitDepthString?.toIntOrNull() ?: 16
+
+        // Извлечение расширения файла из пути
+        val filePath = musicListPA[songPosition].path
+        val fileExtension = filePath.substringAfterLast(".", "Неизвестно")
+
+        return "Название: $title\n" +
+                "Исполнитель: $artist\n" +
+                "Альбом: $album\n" +
+                "Скорость передачи бит. : $bitrateT Кбит/сек\n" +
+                "Частота дискретизации: $sampleRateT КГц\n" +
+                "Разрядность бит. : ${bitDepth} бит\n" +
+                "Жанр(ы): $genre\n" +
+                "Каналы: $channels\n" +
+                "Кодек: $codec\n" +
+                "Формат: ${fileExtension.toUpperCase()}"
     }
 }
 
