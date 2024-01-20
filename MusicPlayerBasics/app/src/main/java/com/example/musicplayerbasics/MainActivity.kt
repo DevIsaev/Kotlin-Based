@@ -37,15 +37,21 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
         lateinit var MusicListSearch:ArrayList<Music>
         var search:Boolean=false
+
+        var themeIndex: Int = 0
+        var currentTheme= arrayOf(R.style.coolPink,R.style.coolBlue,R.style.coolPurple,R.style.coolGreen,R.style.coolBlack)
+        var currentThemeNav= arrayOf(R.style.coolPinkNav,R.style.coolBlueNav,R.style.coolPurpleNav,R.style.coolGreenNav,R.style.coolBlackNav)
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
-        setTheme(R.style.coolPinkNav)
+        setTheme(currentThemeNav[themeIndex])
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        var themeEditor=getSharedPreferences("THEMES", MODE_PRIVATE)
+        themeIndex=themeEditor.getInt("theme",4)
 
         if(requestRuntimePermission()) {
             initialization()
@@ -262,7 +268,8 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             }
 
             R.id.IDSettings -> {
-                Toast.makeText(this, "IDSettings", Toast.LENGTH_SHORT).show()
+                val itent=Intent(this,Settings::class.java)
+                startActivity(itent)
             }
 
             R.id.IDPlugIn -> {
@@ -274,7 +281,8 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             }
 
             R.id.IDAbout -> {
-                Toast.makeText(this, "IDAbout", Toast.LENGTH_SHORT).show()
+                val itent=Intent(this,About::class.java)
+                startActivity(itent)
             }
         }
         drawer?.closeDrawer(GravityCompat.START)

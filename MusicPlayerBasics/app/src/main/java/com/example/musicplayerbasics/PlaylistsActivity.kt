@@ -32,7 +32,7 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         super.onCreate(savedInstanceState)
         binding= ActivityPlaylistsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setTheme(R.style.coolPinkNav)
+        setTheme(MainActivity.currentThemeNav[MainActivity.themeIndex])
         Navigation()
 
         //перезапись
@@ -103,7 +103,8 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             }
 
             R.id.IDSettings -> {
-                Toast.makeText(this, "IDSettings", Toast.LENGTH_SHORT).show()
+                val itent=Intent(this,Settings::class.java)
+                startActivity(itent)
             }
 
             R.id.IDPlugIn -> {
@@ -115,7 +116,8 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             }
 
             R.id.IDAbout -> {
-                Toast.makeText(this, "IDAbout", Toast.LENGTH_SHORT).show()
+                val itent=Intent(this,About::class.java)
+                startActivity(itent)
             }
         }
         drawer?.closeDrawer(GravityCompat.START)

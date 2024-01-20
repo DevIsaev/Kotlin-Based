@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Settings">
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/blue"
+        android:layout_marginTop="2dp">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Избранное"
+            android:gravity="center"
+            android:text="Настройки"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Установить тему"
+        android:background="@color/white"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="2dp"
+        android:gravity="center"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:background="@color/white">
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/coolPinkTheme"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/baseline_circle_24"
+            android:tint="@color/pink"/>
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/coolBlueTheme"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/baseline_circle_24"
+            android:tint="@color/blue"/>
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/coolPurpleTheme"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/baseline_circle_24"
+            android:tint="@color/purple500"/>
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/coolGreenTheme"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/baseline_circle_24"
+            android:tint="@color/green"/>
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/coolBlackTheme"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/baseline_circle_24"
+            android:tint="@color/black"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:paddingHorizontal="16dp"
+        android:layout_marginVertical="2dp">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:text="Сортировать по:"
+            android:background="@color/white"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:gravity="center|start"
+            android:layout_weight="1"
+            android:paddingStart="5dp"
+            tools:ignore="RtlSymmetry" />
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/sortBtn"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/baseline_sort_24"
+            android:tint="@color/black"
+            android:padding="5dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/versionName"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Версия: 1.0"
+        android:background="@color/white"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:padding="16dp"/>
+</LinearLayout>
+
+</LinearLayout>

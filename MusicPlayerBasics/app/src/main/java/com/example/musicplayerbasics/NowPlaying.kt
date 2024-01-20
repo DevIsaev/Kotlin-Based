@@ -29,6 +29,7 @@ companion object{
         binding=FragmentNowPlayingBinding.bind(view)
         binding.songNP.isSelected=true
         binding.root.visibility=View.INVISIBLE
+        requireContext().theme.applyStyle(MainActivity.currentTheme[MainActivity.themeIndex],true)
         binding.playPauseBTNNP.setOnClickListener {
             if(!PlayerFragment.isPlaying){
                 playMusic()

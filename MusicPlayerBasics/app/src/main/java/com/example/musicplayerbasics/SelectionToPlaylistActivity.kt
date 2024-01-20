@@ -16,7 +16,7 @@ class SelectionToPlaylistActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySelectionToPlaylistBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setTheme(R.style.coolPink)
+        setTheme(MainActivity.currentTheme[MainActivity.themeIndex])
 
         binding.selectionRV.setHasFixedSize(true)
         binding.selectionRV.setItemViewCacheSize(30)

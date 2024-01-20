@@ -40,6 +40,7 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val bottomSheet: FrameLayout =
             dialog?.findViewById(com.google.android.material.R.id.design_bottom_sheet)!!
         // Height of the view
@@ -56,6 +57,7 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             })
         }
+        requireContext().theme.applyStyle(MainActivity.currentTheme[MainActivity.themeIndex],true)
 
         currentPlaylistPos= arguments?.getInt("index", 0)!!
 

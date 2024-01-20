@@ -26,7 +26,7 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
         super.onCreate(savedInstanceState)
         binding= ActivityFavouritesBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setTheme(R.style.coolPinkNav)
+        setTheme(MainActivity.currentThemeNav[MainActivity.themeIndex])
 
         favSong= playlistCheck(favSong)
 
@@ -89,7 +89,8 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
             }
 
             R.id.IDSettings -> {
-                Toast.makeText(this, "IDSettings", Toast.LENGTH_SHORT).show()
+                val itent=Intent(this,Settings::class.java)
+                startActivity(itent)
             }
 
             R.id.IDPlugIn -> {
@@ -101,7 +102,8 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
             }
 
             R.id.IDAbout -> {
-                Toast.makeText(this, "IDAbout", Toast.LENGTH_SHORT).show()
+                val itent=Intent(this,About::class.java)
+                startActivity(itent)
             }
         }
         drawer?.closeDrawer(GravityCompat.START)

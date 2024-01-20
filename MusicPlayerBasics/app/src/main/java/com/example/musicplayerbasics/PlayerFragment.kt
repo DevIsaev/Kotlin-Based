@@ -95,6 +95,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             })
         }
+        requireContext().theme.applyStyle(MainActivity.currentTheme[MainActivity.themeIndex],true)
 
         //изображение альбома
         binding.albumFont.setOnClickListener {
