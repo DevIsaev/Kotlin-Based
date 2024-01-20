@@ -37,7 +37,7 @@
         android:layout_marginHorizontal="5dp"
         android:layout_toStartOf="@id/nextBTN_NP"
         android:backgroundTint="@color/backgroundColor"
-        android:background="@drawable/baseline_play_arrow_24"
+        android:background="@drawable/baseline_pause_24"
         app:iconSize="30dp"
         app:iconTint="@color/white"
         tools:ignore="SpeakableTextPresentCheck" />

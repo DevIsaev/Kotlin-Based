@@ -117,6 +117,14 @@
             android:textSize="12sp"
             android:layout_marginTop="10dp"
             android:gravity="center" />
+        <ImageView
+            android:id="@+id/hiresLogo"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="175dp"
+            android:visibility="invisible"
+            android:src="@drawable/hi_res_logo"/>
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

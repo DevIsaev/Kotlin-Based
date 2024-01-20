@@ -57,21 +57,26 @@ fun favouriteCheck(id: String): Int{
 
 fun playlistCheck(playlist: ArrayList<Music>):ArrayList<Music>{
 
-    var index: Int
-    index = 0
-    while (index < playlist.size) {
-        val file=File(playlist[index].path)
-        if (!file.exists()){
+//    var index: Int
+//    index = 0
+//    while (index < playlist.size) {
+//        val file=File(playlist[index].path)
+//        if (!file.exists()){
+//            playlist.removeAt(index)
+//        }
+//        index++
+//    }
+    playlist.forEachIndexed { index, music ->
+        val file = File(music.path)
+        if(!file.exists())
             playlist.removeAt(index)
-        }
-        index++
     }
     return playlist
 
 }
 fun exitApp(){
     if(PlayerFragment.musicService!=null){
-        PlayerFragment.musicService!!.audioManager.abandonAudioFocus(PlayerFragment.musicService)
+        //PlayerFragment.musicService!!.audioManager.abandonAudioFocus(PlayerFragment.musicService)
         PlayerFragment.musicService!!.stopForeground(true)
         PlayerFragment.musicService!!.mediaPlayer!!.release()
         PlayerFragment.musicService=null

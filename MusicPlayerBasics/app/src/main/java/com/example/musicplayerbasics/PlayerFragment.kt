@@ -416,22 +416,14 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
 
     // Service
     override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-        val binder = service as MusicSevice.MyBinder
-
-        if (musicService == null) {
+        if(musicService == null){
+            val binder = service as MusicSevice.MyBinder
             musicService = binder.currentService()
-
-            val audioManager = requireContext().getSystemService(AUDIO_SERVICE) as AudioManager
-            musicService?.audioManager = audioManager
-            musicService?.audioManager?.requestAudioFocus(
-                musicService,
-                AudioManager.STREAM_MUSIC,
-                AudioManager.AUDIOFOCUS_GAIN
-            )
-
-            createMP()
-            musicService?.seekBarSetup()
+            musicService!!.audioManager = requireContext().getSystemService(AUDIO_SERVICE) as AudioManager
+            musicService!!.audioManager.requestAudioFocus(musicService, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
         }
+        createMP()
+        musicService!!.seekBarSetup()
     }
 
     override fun onServiceDisconnected(name: ComponentName?) {
@@ -505,34 +497,37 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
 
     fun retrieveMetadata(): String {
         val retriever = MediaMetadataRetriever()
-        var path=retriever.setDataSource(musicListPA[songPosition].path)
+        var path = retriever.setDataSource(musicListPA[songPosition].path)
 
-        val title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)?:"Неизвестное название"
-        val artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)?:"Неизвестный исполнитель"
-        val album = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM)?:"Неизвестный альбом"
-        val bitrateT=retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE)?.toDoubleOrNull()?.div(1000)?.toInt()
-        val sampleRateT=retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_SAMPLERATE)?.toDoubleOrNull()?.div(1000)
-        val genre=retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE)?:"Неизвестный жанр"
-
+        val title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE) ?: "Неизвестное название"
+        val artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST) ?: "Неизвестный исполнитель"
+        val album = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM) ?: "Неизвестный альбом"
+        val bitrateT = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE)?.toDoubleOrNull()?.div(1000)?.toInt()
+        val sampleRateT = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_SAMPLERATE)?.toDoubleOrNull()?.div(1000)
+        val genre = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE) ?: "Неизвестный жанр"
 
         val mex = MediaExtractor()
         mex.setDataSource(musicListPA[songPosition].path)
         val mf = mex.getTrackFormat(0)
-        val channels:Int=mf.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
-        val codec=mf.getString(MediaFormat.KEY_MIME)
+        val channels: Int = mf.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
+        val codec = mf.getString(MediaFormat.KEY_MIME)
         val bitDepthString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITS_PER_SAMPLE)
 
         retriever.release()
 
         val bitDepth = bitDepthString?.toIntOrNull() ?: 16
 
+        // Проверка разрядности и частоты дискретизации
+        val isHighResolution = bitDepth >= 24 && sampleRateT != null && sampleRateT >= 48.0
+
+        // Отображение логотипа в зависимости от условий
+        binding.hiresLogo.visibility = if (isHighResolution) View.VISIBLE else View.GONE
+
         // Извлечение расширения файла из пути
         val filePath = musicListPA[songPosition].path
         val fileExtension = filePath.substringAfterLast(".", "Неизвестно")
 
-        return "Название: $title\n" +
-                "Исполнитель: $artist\n" +
-                "Альбом: $album\n" +
+        return "Альбом: $album\n" +
                 "Скорость передачи бит. : $bitrateT Кбит/сек\n" +
                 "Частота дискретизации: $sampleRateT КГц\n" +
                 "Разрядность бит. : ${bitDepth} бит\n" +
