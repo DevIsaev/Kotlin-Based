@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="65dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="2dp"
+    app:cardCornerRadius="15dp"
+    android:background="@color/white"
     android:layout_marginBottom="5dp">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/imgOfMusic"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginTop="5dp"
         android:src="@drawable/icon"
         app:shapeAppearanceOverlay="@style/curved"
         android:layout_marginStart="10dp"/>
@@ -17,39 +20,37 @@
     <TextView
         android:id="@+id/songName"
         android:layout_width="wrap_content"
-        android:layout_height="25dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginTop="5dp"
+        android:layout_height="35dp"
         android:layout_toStartOf="@id/songDuration"
-        android:layout_toEndOf="@+id/imgOfMusic"
+        android:layout_toEndOf="@id/imgOfMusic"
         android:gravity="center_vertical"
         android:singleLine="true"
-        android:text="songname"
-        android:textColor="@color/black"
-        android:textSize="12sp" />
+        android:text="@string/Song"
+        android:textColor="?colorOnPrimary"
+        android:layout_marginStart="70dp"
+        android:layout_marginEnd="50dp"/>
 
     <TextView
         android:id="@+id/songArtist"
-        android:textColor="@color/textColorSecondary"
         android:layout_width="wrap_content"
-        android:layout_height="15dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="30dp"
+        android:layout_height="25dp"
+        android:text="@string/Song"
+        android:layout_toEndOf="@id/imgOfMusic"
         android:layout_toStartOf="@id/songDuration"
-        android:layout_toEndOf="@+id/imgOfMusic"
+        android:layout_marginTop="35dp"
         android:gravity="center_vertical"
         android:singleLine="true"
-        android:text="songartist"
-        android:textSize="12sp" />
+        android:layout_marginStart="70dp"
+        android:layout_marginEnd="50dp"/>
     <TextView
         android:id="@+id/songDuration"
         android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_height="match_parent"
         android:text="@string/Start"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="15dp"
         android:gravity="center"
-        android:textColor="@color/black"/>
+        android:layout_gravity="end"
+        android:textColor="?colorOnPrimary"
+        android:layout_marginHorizontal="5dp"/>
 
-</RelativeLayout>
+</com.google.android.material.card.MaterialCardView>

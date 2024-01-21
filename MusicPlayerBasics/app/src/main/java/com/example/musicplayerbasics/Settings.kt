@@ -27,6 +27,10 @@ class Settings : AppCompatActivity() {
         binding.coolBlackTheme.setOnClickListener {saveTheme(4)}
 
         binding.versionName.text=setVersion()
+
+        binding.sortBtn.setOnClickListener {
+
+        }
     }
     private fun saveTheme(index:Int){
         if (MainActivity.themeIndex!=index){

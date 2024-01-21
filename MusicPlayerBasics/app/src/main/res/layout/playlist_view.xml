@@ -25,7 +25,7 @@
         android:contentDescription="@string/Total"
         android:gravity="center"
         android:text="@string/Total"
-        android:textColor="@color/white"
+        android:textColor="?colorOnPrimary"
         android:ellipsize="marquee"
         android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true"

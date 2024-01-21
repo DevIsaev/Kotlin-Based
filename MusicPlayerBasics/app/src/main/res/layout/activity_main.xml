@@ -9,7 +9,6 @@
     android:id="@+id/Drawer"
     app:menu="@menu/nav_menu"
     android:orientation="vertical"
-    android:background="@color/white"
     tools:context=".MainActivity">
 
     <FrameLayout
@@ -40,6 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:queryHint="Искать композицию"
+                android:textColor="?colorOnPrimary"
                 app:queryBackground="@android:color/transparent"
                 app:iconifiedByDefault="false"/>
         </com.google.android.material.card.MaterialCardView>
@@ -60,7 +60,7 @@
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:text="@string/ShuffleBTN"
                 android:drawableTint="?attr/themeColors"
-                android:textColor="@color/black"
+                android:textColor="?colorOnPrimary"
                 android:textAllCaps="false"
                 android:textSize="12sp"
                 android:textStyle="bold"/>
@@ -75,12 +75,13 @@
         android:text="@string/Total"
         android:layout_margin="10dp"
         android:textSize="18sp"
-        android:textColor="@color/black"/>
+        android:textColor="?colorOnPrimary"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_music"
                 android:layout_width="match_parent"
                 android:layout_height="524dp"
+                android:textColor="?colorOnPrimary"
                 android:scrollbarThumbVertical="@drawable/baseline_check_box_outline_blank_24"
                 android:scrollbars="vertical" />
     </LinearLayout>

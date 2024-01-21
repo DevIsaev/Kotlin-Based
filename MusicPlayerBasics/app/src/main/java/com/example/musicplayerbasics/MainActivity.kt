@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.MenuItem
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -41,6 +42,8 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         var themeIndex: Int = 0
         val currentTheme = arrayOf(R.style.coolPink, R.style.coolBlue, R.style.coolPurple, R.style.coolGreen, R.style.coolBlack)
         val currentThemeNav = arrayOf(R.style.coolPinkNav, R.style.coolBlueNav, R.style.coolPurpleNav, R.style.coolGreenNav, R.style.coolBlackNav)
+
+        val currentGradient = arrayOf(R.drawable.gradient_pink, R.drawable.gradient_blue, R.drawable.gradient_purple, R.drawable.gradient_green, R.drawable.gradient_black)
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -232,8 +235,18 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     }
     //Navigation drawer
     private fun Navigation(){
-        var NavView=findViewById<NavigationView>(R.id.NavView)
-        NavView.setNavigationItemSelectedListener(this)
+        val navView = findViewById<NavigationView>(R.id.NavView)
+        val headerView = navView.getHeaderView(0)
+        val linearHeader = headerView.findViewById<LinearLayout>(R.id.linearHeader)
+
+        if (linearHeader == null) {
+            val mainLayout = findViewById<LinearLayout>(R.id.linearHeader)
+            mainLayout?.setBackgroundResource(currentGradient[themeIndex])
+        } else {
+            linearHeader.setBackgroundResource(currentGradient[themeIndex])
+        }
+
+        navView.setNavigationItemSelectedListener(this)
         drawer = findViewById(R.id.Drawer)
     }
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -299,4 +312,5 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         val customDialog=builder.create()
         customDialog.show()
     }
+
 }

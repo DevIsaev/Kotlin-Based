@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -68,8 +69,18 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
     //Navigation drawer
     private fun Navigation(){
-        var NavView=findViewById<NavigationView>(R.id.NavView)
-        NavView.setNavigationItemSelectedListener(this)
+        val navView = findViewById<NavigationView>(R.id.NavView)
+        val headerView = navView.getHeaderView(0)
+        val linearHeader = headerView.findViewById<LinearLayout>(R.id.linearHeader)
+
+        if (linearHeader == null) {
+            val mainLayout = findViewById<LinearLayout>(R.id.linearHeader)
+            mainLayout?.setBackgroundResource(MainActivity.currentGradient[MainActivity.themeIndex])
+        } else {
+            linearHeader.setBackgroundResource(MainActivity.currentGradient[MainActivity.themeIndex])
+        }
+
+        navView.setNavigationItemSelectedListener(this)
         drawer = findViewById(R.id.Drawer)
     }
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
