@@ -66,18 +66,18 @@
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/black</item>
         <item name="colorOnPrimary">@color/black</item>
-        <item name="colorSecondary">@color/pink</item>
+<!--        <item name="colorSecondary">@color/pink</item>-->
         <item name="colorSecondaryVariant">@color/teal700</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/themeColors</item>
-        <!--        <item name="android:forceDarkAllowed">false</item>-->
+
     </style>
     <style name="coolBlueNav" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="themeColors">@color/blue</item>
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/black</item>
         <item name="colorOnPrimary">@color/black</item>
-        <item name="colorSecondary">@color/pink</item>
+<!--        <item name="colorSecondary">@color/pink</item>-->
         <item name="colorSecondaryVariant">@color/teal700</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/themeColors</item>
@@ -88,7 +88,7 @@
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/black</item>
         <item name="colorOnPrimary">@color/black</item>
-        <item name="colorSecondary">@color/pink</item>
+<!--        <item name="colorSecondary">@color/pink</item>-->
         <item name="colorSecondaryVariant">@color/teal700</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/themeColors</item>
@@ -99,7 +99,7 @@
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/black</item>
         <item name="colorOnPrimary">@color/black</item>
-        <item name="colorSecondary">@color/pink</item>
+<!--        <item name="colorSecondary">@color/pink</item>-->
         <item name="colorSecondaryVariant">@color/teal700</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/themeColors</item>
@@ -110,7 +110,7 @@
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/black</item>
         <item name="colorOnPrimary">@color/black</item>
-        <item name="colorSecondary">@color/pink</item>
+<!--        <item name="colorSecondary">@color/pink</item>-->
         <item name="colorSecondaryVariant">@color/teal700</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/themeColors</item>

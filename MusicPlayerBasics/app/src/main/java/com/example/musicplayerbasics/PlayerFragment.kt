@@ -95,7 +95,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             })
         }
-        requireContext().theme.applyStyle(MainActivity.currentTheme[MainActivity.themeIndex],true)
+        //requireContext().theme.applyStyle(MainActivity.currentTheme[MainActivity.themeIndex],true)
 
         //изображение альбома
         binding.albumFont.setOnClickListener {
@@ -123,10 +123,16 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
 
         //воспроизведение\пауза
         binding.btnPAUSEPLAY.setOnClickListener {
-            if (isPlaying) {
-                pauseMusic()
-            } else {
-                playMusic()
+            try {
+
+                if (isPlaying) {
+                    pauseMusic()
+                } else {
+                    playMusic()
+                }
+            }
+            catch (ex:Exception){
+                binding.songTITLE.text=ex.toString()
             }
         }
         //назад

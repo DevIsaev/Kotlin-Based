@@ -59,6 +59,7 @@
                 android:drawableTop="@drawable/baseline_shuffle_24"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:text="@string/ShuffleBTN"
+                android:drawableTint="?attr/themeColors"
                 android:textColor="@color/black"
                 android:textAllCaps="false"
                 android:textSize="12sp"

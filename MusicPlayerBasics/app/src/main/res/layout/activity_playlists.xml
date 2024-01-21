@@ -29,7 +29,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:background="?attr/themeColors"
-                android:layout_marginTop="2dp">
+                >
 
 
                 <TextView

@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:paddingBottom="25dp"
     android:paddingStart="20dp"
-    android:background="@drawable/round">
+    android:background="?attr/themeColors">
 
 <!--    <de.hdodenhof.circleimageview.CircleImageView-->
 <!--        android:id="@+id/circleAvatar"-->

@@ -24,9 +24,10 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(MainActivity.currentThemeNav[MainActivity.themeIndex])
         binding= ActivityFavouritesBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setTheme(MainActivity.currentThemeNav[MainActivity.themeIndex])
+
 
         favSong= playlistCheck(favSong)
 
@@ -69,7 +70,7 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
             }
 
             R.id.IDMusicFavourite -> {
-
+                return false
             }
             R.id.IDMusicDownload -> {
                 Toast.makeText(this, "IDMusicDownload", Toast.LENGTH_SHORT).show()
@@ -107,7 +108,7 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
             }
         }
         drawer?.closeDrawer(GravityCompat.START)
-        return true
+        return false
     }
 
     override fun onResume() {

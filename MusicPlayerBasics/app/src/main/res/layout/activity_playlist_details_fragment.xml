@@ -14,19 +14,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="?attr/themeColors"
-        android:layout_marginTop="2dp">
+        android:background="?attr/themeColors">
 
         <TextView
             android:id="@+id/playlistNamePD"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:singleLine="true"
             android:text="плейлист"
             android:textColor="@color/white"
             android:textSize="25sp"
-            android:textStyle="bold"
-            android:singleLine="true"/>
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
@@ -42,7 +41,7 @@
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/playlistImgPD"
             app:strokeWidth="2dp"
-            app:strokeColor="@color/green"
+            app:strokeColor="@color/black"
             android:layout_width="150dp"
             android:layout_height="match_parent"
             android:src="@drawable/icon"/>
@@ -106,6 +105,7 @@
             android:drawableLeft="@drawable/baseline_add_24"
             android:text="Добавить"
             android:textAllCaps="false"
+            android:drawableTint="?attr/themeColors"
             android:textColor="?colorOnPrimary"
             tools:ignore="RtlHardcoded" />
 
@@ -117,7 +117,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:drawableLeft="@drawable/baseline_delete_24"
-            android:drawableTint="@color/blue"
+            android:drawableTint="?attr/themeColors"
             android:text="Удалить"
             android:textAllCaps="false"
             android:textColor="?colorOnPrimary"

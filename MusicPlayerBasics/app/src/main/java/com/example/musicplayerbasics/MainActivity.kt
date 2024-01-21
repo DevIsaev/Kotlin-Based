@@ -39,19 +39,20 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         var search:Boolean=false
 
         var themeIndex: Int = 0
-        var currentTheme= arrayOf(R.style.coolPink,R.style.coolBlue,R.style.coolPurple,R.style.coolGreen,R.style.coolBlack)
-        var currentThemeNav= arrayOf(R.style.coolPinkNav,R.style.coolBlueNav,R.style.coolPurpleNav,R.style.coolGreenNav,R.style.coolBlackNav)
+        val currentTheme = arrayOf(R.style.coolPink, R.style.coolBlue, R.style.coolPurple, R.style.coolGreen, R.style.coolBlack)
+        val currentThemeNav = arrayOf(R.style.coolPinkNav, R.style.coolBlueNav, R.style.coolPurpleNav, R.style.coolGreenNav, R.style.coolBlackNav)
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        var themeEditor=getSharedPreferences("THEMES", MODE_PRIVATE)
+        themeIndex=themeEditor.getInt("theme",0)
         setTheme(currentThemeNav[themeIndex])
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        var themeEditor=getSharedPreferences("THEMES", MODE_PRIVATE)
-        themeIndex=themeEditor.getInt("theme",4)
+
 
         if(requestRuntimePermission()) {
             initialization()
@@ -243,7 +244,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             }
 
             R.id.IDMusicStorage -> {
-
+                return false
             }
 
             R.id.IDMusicFavourite -> {
@@ -286,7 +287,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             }
         }
         drawer?.closeDrawer(GravityCompat.START)
-        return true
+        return false
     }
 
     fun out() {

@@ -30,9 +30,9 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(MainActivity.currentThemeNav[MainActivity.themeIndex])
         binding= ActivityPlaylistsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setTheme(MainActivity.currentThemeNav[MainActivity.themeIndex])
         Navigation()
 
         //перезапись
@@ -95,7 +95,7 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             }
 
             R.id.IDPlaylists -> {
-
+                return false
             }
 
             R.id.IDStatistic -> {
@@ -121,7 +121,7 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             }
         }
         drawer?.closeDrawer(GravityCompat.START)
-        return true
+        return false
     }
 
     private fun  customAlertDialog(){

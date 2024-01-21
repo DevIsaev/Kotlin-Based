@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="?attr/themeColors"
     app:cardCornerRadius="15dp"
     android:layout_margin="5dp">
 
@@ -22,7 +22,7 @@
         android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:maxLines="2"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/backgroundColor"
         android:text="@string/Song"
         android:gravity="center"
         android:layout_marginTop="75dp"
