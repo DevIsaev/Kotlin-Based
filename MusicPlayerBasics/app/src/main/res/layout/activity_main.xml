@@ -83,7 +83,9 @@
                 android:layout_height="524dp"
                 android:textColor="?colorOnPrimary"
                 android:scrollbarThumbVertical="@drawable/baseline_check_box_outline_blank_24"
-                android:scrollbars="vertical" />
+                android:scrollbars="vertical"
+                android:layoutAnimation="@anim/layout_animation_rc"
+                />
     </LinearLayout>
 
         <androidx.fragment.app.FragmentContainerView

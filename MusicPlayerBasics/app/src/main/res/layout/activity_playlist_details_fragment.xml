@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+
     tools:context=".PlaylistDetailsFragment">
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -106,7 +106,7 @@
             android:text="Добавить"
             android:textAllCaps="false"
             android:drawableTint="?attr/themeColors"
-            android:textColor="?colorOnPrimary"
+            android:textColor="?attr/themeColors"
             tools:ignore="RtlHardcoded" />
 
         <!--Remove Button-->
@@ -120,7 +120,7 @@
             android:drawableTint="?attr/themeColors"
             android:text="Удалить"
             android:textAllCaps="false"
-            android:textColor="?colorOnPrimary"
+            android:textColor="?attr/themeColors"
             tools:ignore="RtlHardcoded" />
 
     </LinearLayout>

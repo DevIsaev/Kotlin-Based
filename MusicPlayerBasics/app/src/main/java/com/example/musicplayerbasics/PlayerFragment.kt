@@ -252,7 +252,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         }
     }
 
-//инициализация
+    //инициализация
     private fun songInitialization() {
         songPosition = arguments?.getInt("index", 0)!!
         val classType = arguments?.getString("class")
@@ -335,7 +335,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         }
     }
 
-//вид
+    //вид
     private fun setLayout() {
         fIndex= favouriteCheck(musicListPA[songPosition].id)
         Glide.with(this)
@@ -362,11 +362,11 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_border_24)
         }
 
-    val metadataText = retrieveMetadata()
-    binding.metadata.text = metadataText
+        val metadataText = retrieveMetadata()
+        binding.metadata.text = metadataText
     }
 
-//вызов медиаплеера
+    //вызов медиаплеера
     private fun createMP() {
         try {
             if (musicService!!.mediaPlayer == null) musicService!!.mediaPlayer = MediaPlayer()
@@ -392,15 +392,15 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         }
     }
 
-//воспроизведение
+    //воспроизведение
     private fun playMusic() {
         binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
-        musicService!!.showNotification(R.drawable.baseline_pause_24)
+        musicService!!.showNotification(R.drawable.baseline_pause_24,)
         isPlaying = true
         musicService!!.mediaPlayer!!.start()
     }
 
-//пауза
+    //пауза
     private fun pauseMusic() {
         binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_play_arrow_24)
         musicService!!.showNotification(R.drawable.baseline_play_arrow_24)
@@ -408,7 +408,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         musicService!!.mediaPlayer!!.pause()
     }
 
-//след\пред музыка
+    //след\пред музыка
     private fun musicNextPrev(increment: Boolean) {
         if (increment) {
             songPosition(true)
@@ -544,5 +544,3 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                 "Формат: ${fileExtension.toUpperCase()}"
     }
 }
-
-

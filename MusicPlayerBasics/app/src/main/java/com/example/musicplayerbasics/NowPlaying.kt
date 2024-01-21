@@ -107,7 +107,7 @@ companion object{
             .into(binding.albumNP)
         binding.songNP.text = PlayerFragment.musicListPA[PlayerFragment.songPosition].title
         binding.artistNP.text=PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
-        //PlayerFragment.musicService!!.showNotification(R.drawable.baseline_pause_24)
+        PlayerFragment.musicService!!.showNotification(R.drawable.baseline_pause_24)
         playMusic()
     }
 }

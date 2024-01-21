@@ -12,7 +12,9 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 
 class MusicSevice: Service(),AudioManager.OnAudioFocusChangeListener {
     //сервис, принимающий поток и позволящий воспроизводить фоном
@@ -71,23 +73,67 @@ class MusicSevice: Service(),AudioManager.OnAudioFocusChangeListener {
 
 
 //построение элемента уведомления
-    val notification = androidx.core.app.NotificationCompat.Builder(baseContext, ApplicationClass.CHANNEL_ID)//канал
-            .setContentIntent(contentIntent)
-            .setContentTitle(PlayerFragment.musicListPA[PlayerFragment.songPosition].title)
-            .setContentText(PlayerFragment.musicListPA[PlayerFragment.songPosition].artist)
-            .setSmallIcon(R.drawable.baseline_music_note_24)
-            .setLargeIcon(Art)
-            .setStyle(androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediasssion.sessionToken))
-            .setOnlyAlertOnce(true)
-            .setSound(null)
-            .addAction(R.drawable.baseline_skip_previous_24, "Previous", prevPendingIntent)
-            .addAction(PlayPause, "Play", playPendingIntent)
-            .addAction(R.drawable.baseline_skip_next_24, "Next", nextPendingIntent)
-            .addAction(R.drawable.baseline_clear_24, "Exit", exitPendingIntent)
-            .build()
+    var notification = androidx.core.app.NotificationCompat.Builder(baseContext, ApplicationClass.CHANNEL_ID)//канал
+        .setContentIntent(contentIntent)
+        .setContentTitle(PlayerFragment.musicListPA[PlayerFragment.songPosition].title)
+        .setContentText(PlayerFragment.musicListPA[PlayerFragment.songPosition].artist)
+        .setSmallIcon(R.drawable.logo)
+        .setLargeIcon(Art)
+        .setStyle(androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediasssion.sessionToken))
+        .setPriority(androidx.core.app.NotificationCompat.PRIORITY_HIGH)
+        .setVisibility(androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC)
+        .setOnlyAlertOnce(true)
+        .addAction(R.drawable.baseline_skip_previous_24, "Previous", prevPendingIntent)
+        .addAction(PlayPause, "Play", playPendingIntent)
+        .addAction(R.drawable.baseline_skip_next_24, "Next", nextPendingIntent)
+        .addAction(R.drawable.baseline_clear_24, "Exit", exitPendingIntent)
+        .build()
 
-    startForeground(13, notification)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+            val playbackSpeed = if(PlayerFragment.isPlaying) 1F else 0F
+            mediasssion.setMetadata(MediaMetadataCompat.Builder()
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, mediaPlayer!!.duration.toLong())
+                .build())
+            val playBackState = PlaybackStateCompat.Builder()
+                .setState(PlaybackStateCompat.STATE_PLAYING, mediaPlayer!!.currentPosition.toLong(), playbackSpeed)
+                .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
+                .build()
+            mediasssion.setPlaybackState(playBackState)
+            mediasssion.setCallback(object: MediaSessionCompat.Callback(){
 
+                //called when headphones buttons are pressed
+                //currently only pause or play music on button click
+                override fun onMediaButtonEvent(mediaButtonEvent: Intent?): Boolean {
+                    if(PlayerFragment.isPlaying){
+                        //pause music
+                        PlayerFragment.binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_play_arrow_24)
+                        NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_play_arrow_24)
+                        PlayerFragment.isPlaying = false
+                        mediaPlayer!!.pause()
+                        showNotification(R.drawable.baseline_play_arrow_24)
+                    }else{
+                        //play music
+                        PlayerFragment.binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
+                        NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_pause_24)
+                        PlayerFragment.isPlaying = true
+                        mediaPlayer!!.start()
+                        showNotification(R.drawable.baseline_pause_24)
+                    }
+                    return super.onMediaButtonEvent(mediaButtonEvent)
+                }
+                override fun onSeekTo(pos: Long) {
+                    super.onSeekTo(pos)
+                    mediaPlayer!!.seekTo(pos.toInt())
+                    val playBackStateNew = PlaybackStateCompat.Builder()
+                        .setState(PlaybackStateCompat.STATE_PLAYING, mediaPlayer!!.currentPosition.toLong(), playbackSpeed)
+                        .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
+                        .build()
+                    mediasssion.setPlaybackState(playBackStateNew)
+                }
+            })
+        }
+
+        startForeground(13, notification)
     }
     //вызов плеера
     fun createMP(){
