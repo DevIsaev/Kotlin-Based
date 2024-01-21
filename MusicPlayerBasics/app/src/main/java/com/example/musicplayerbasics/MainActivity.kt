@@ -44,6 +44,11 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         val currentThemeNav = arrayOf(R.style.coolPinkNav, R.style.coolBlueNav, R.style.coolPurpleNav, R.style.coolGreenNav, R.style.coolBlackNav)
 
         val currentGradient = arrayOf(R.drawable.gradient_pink, R.drawable.gradient_blue, R.drawable.gradient_purple, R.drawable.gradient_green, R.drawable.gradient_black)
+
+        var sort:Int=0
+        //добавить: по папкам, по количеству прослушиваний
+        var sortingList= arrayOf(MediaStore.Audio.Media.DATE_ADDED+ " DESC",MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.SIZE+" DESC")
+
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -122,9 +127,10 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onResume() {
         super.onResume()
-        //сохранение
+        //получение данных
         val editor = getSharedPreferences("FAVOURITES", MODE_PRIVATE).edit()
         val jsonString = GsonBuilder().create().toJson(FavouritesActivity.favSong)
         editor.putString("FavouriteSongs", jsonString)
@@ -132,6 +138,15 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         val jsonStringPL = GsonBuilder().create().toJson(PlaylistsActivity.musicPlaylist)
         editor.putString("MusicPlaylist", jsonStringPL)
         editor.apply()
+
+        //сортировка
+        var sortEditor=getSharedPreferences("SORTING", MODE_PRIVATE)
+        var sortValue=sortEditor.getInt("sortOrder",0)
+        if(sort!=sortValue){
+            sort= sortValue
+            MusicListMA = getAllAudio()
+            musicAdapter.updateMusicList(MusicListMA)
+        }
     }
 
 
@@ -142,6 +157,8 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         //поиск
         search=false
 
+        var sortEditor=getSharedPreferences("SORTING", MODE_PRIVATE)
+        sort=sortEditor.getInt("sortOrder",0)
 
         MusicListMA = getAllAudio()
 
@@ -162,17 +179,9 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     @RequiresApi(Build.VERSION_CODES.R)
     private fun getAllAudio(): ArrayList<Music> {
         val tempList = ArrayList<Music>()
-        val selection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
-        val projection = arrayOf(
-            MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ALBUM,
-            MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.DATE_ADDED,
-            MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ALBUM_ID,
-        )
-
-        val cursor = this.contentResolver.query(
-            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null,
-            MediaStore.Audio.Media.DATE_ADDED + " DESC", null
-        )
+        val selection = MediaStore.Audio.Media.IS_MUSIC +  " != 0"
+        val projection = arrayOf(MediaStore.Audio.Media._ID,MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.ARTIST,MediaStore.Audio.Media.DURATION,MediaStore.Audio.Media.DATE_ADDED, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ALBUM_ID)
+        val cursor = this.contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection,selection,null, sortingList[sort], null)
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
@@ -311,6 +320,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             .setNegativeButton("Нет"){dialog,_ -> dialog.dismiss()}
         val customDialog=builder.create()
         customDialog.show()
+
     }
 
 }

@@ -29,6 +29,21 @@ class Settings : AppCompatActivity() {
         binding.versionName.text=setVersion()
 
         binding.sortBtn.setOnClickListener {
+            var menuList= arrayOf("Последнее добавленное", "Название","Размер")
+            var currentSort=MainActivity.sort
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Сортировать композиции по:")
+                .setPositiveButton("Принять"){_,_ ->
+                    var editor=getSharedPreferences("SORTING", MODE_PRIVATE).edit()
+                    editor.putInt("sortOrder",currentSort)
+                    editor.apply()
+                }
+                .setSingleChoiceItems(menuList,currentSort){_,which ->
+                    currentSort=which
+                }
+
+            val customDialog=builder.create()
+            customDialog.show()
 
         }
     }
