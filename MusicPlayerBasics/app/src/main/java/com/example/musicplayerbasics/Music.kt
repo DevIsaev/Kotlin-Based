@@ -1,5 +1,7 @@
 package com.example.musicplayerbasics
 
+import android.content.Context
+import android.content.Intent
 import android.media.MediaMetadataRetriever
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -82,5 +84,13 @@ fun exitApp(){
         PlayerFragment.musicService=null
     }
     exitProcess(1)
+}
+fun restartApp(context: Context) {
+    val packageManager = context.packageManager
+    val intent = packageManager.getLaunchIntentForPackage(context.packageName)
+    val componentName = intent!!.component
+    val mainIntent = Intent.makeRestartActivityTask(componentName)
+    context.startActivity(mainIntent)
+    exitProcess(0)
 }
 

@@ -3,6 +3,7 @@ package com.example.musicplayerbasics
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +24,7 @@ class AdapterMusicList(private val context: Context,
         val img=binding.imgOfMusic
         val duration=binding.songDuration
         val root=binding.root
+        val card=binding.cardSong
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdapterMusicList.MyHolder {
@@ -40,6 +42,11 @@ class AdapterMusicList(private val context: Context,
             .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
             .into(holder.img)
 
+        val cardView = holder.card
+        val themeColors = TypedValue()
+        context.theme.resolveAttribute(R.attr.rcColor, themeColors, true)
+        cardView.setBackgroundColor(themeColors.data)
+
 
         when {
             playlistDetails ->{
@@ -52,8 +59,7 @@ class AdapterMusicList(private val context: Context,
                     if(addSong(musicList[position]))
                         holder.root.setBackgroundColor(ContextCompat.getColor(context, R.color.blue))
                     else
-                        holder.root.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
-
+                        holder.root.setBackgroundColor(themeColors.data)
                 }
             }
             else->{

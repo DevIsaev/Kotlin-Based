@@ -37,7 +37,7 @@
         android:layout_marginHorizontal="5dp"
         android:layout_toStartOf="@id/nextBTN_NP"
         android:backgroundTint="@color/backgroundColor"
-        android:background="@drawable/baseline_pause_24"
+
         app:iconSize="30dp"
         app:iconTint="@color/white"
         tools:ignore="SpeakableTextPresentCheck" />
@@ -64,7 +64,6 @@
         android:text="@string/Song"
         android:textSize="12sp"
         android:ellipsize="marquee"
-
         android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true"/>
     <TextView

@@ -16,7 +16,7 @@ class SelectionToPlaylistActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySelectionToPlaylistBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setTheme(MainActivity.currentTheme[MainActivity.themeIndex])
+        setTheme(MainActivity.currentThemeNav[MainActivity.themeIndex])
 
         binding.selectionRV.setHasFixedSize(true)
         binding.selectionRV.setItemViewCacheSize(30)
@@ -28,7 +28,7 @@ class SelectionToPlaylistActivity : AppCompatActivity() {
         binding.searchViewSA.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 binding.searchViewSA.clearFocus()
-                binding.searchViewSA.setQuery("", false)
+                binding.searchViewSA.setQuery(" ", false)
                 return true
             }
 

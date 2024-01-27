@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="100dp"
+    android:layout_height="130dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="?attr/themeColors"
@@ -10,17 +10,18 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/songFart"
-        android:layout_width="90dp"
+        android:layout_width="match_parent"
         android:layout_height="85dp"
         app:shapeAppearanceOverlay="@style/curved"
         android:contentDescription="@string/Song"
         android:src="@drawable/icon"
+
         android:padding="1dp"
         />
 
     <TextView
         android:id="@+id/nameSong"
-        android:layout_width="90dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="2"
         android:textColor="?colorOnPrimary"
@@ -28,6 +29,8 @@
         android:gravity="center"
         android:textSize="12sp"
         android:layout_marginTop="90dp"
-        android:padding="5dp"/>
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        />
 
 </com.google.android.material.card.MaterialCardView>

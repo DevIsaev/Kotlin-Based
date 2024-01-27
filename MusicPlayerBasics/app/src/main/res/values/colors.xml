@@ -51,4 +51,7 @@
     <color name="headerColorSecondary">#34A853</color>
     <color name="headerColorTertiary">#FBBC05</color>
     <color name="headerColorQuaternary">#EA4335</color>
+
+    <color name="rcDark">#3C3C3C</color>
+    <color name="rcLight">#EBEBEB</color>
 </resources>

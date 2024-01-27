@@ -34,7 +34,7 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
 
         binding.favouriteRV.setHasFixedSize(true)
         binding.favouriteRV.setItemViewCacheSize(13)
-        binding.favouriteRV.layoutManager = GridLayoutManager(this, 4)
+        binding.favouriteRV.layoutManager = GridLayoutManager(this, 3)
         adapter = AdapterMusicListFavourite(this, favSong)
         binding.favouriteRV.adapter = adapter
 
@@ -77,7 +77,8 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
             }
 
             R.id.IDMusicStorage -> {
-                finish()
+                val itent= Intent(this,MainActivity::class.java)
+                startActivity(itent)
             }
 
             R.id.IDMusicFavourite -> {
