@@ -54,4 +54,5 @@
 
     <color name="rcDark">#3C3C3C</color>
     <color name="rcLight">#EBEBEB</color>
+    <color name="bgColor"></color>
 </resources>

@@ -13,10 +13,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.musicplayerbasics.databinding.MusicViewBinding
 
-class AdapterMusicList(private val context: Context,
-                       private var musicList: ArrayList<Music>,
-                       private  var playlistDetails:Boolean=false,
-                       private var selectionActivity:Boolean=false) : RecyclerView.Adapter<AdapterMusicList.MyHolder>(){
+class AdapterMusicList(private val context: Context, private var musicList: ArrayList<Music>, private  var playlistDetails:Boolean=false, private var selectionActivity:Boolean=false) : RecyclerView.Adapter<AdapterMusicList.MyHolder>(){
     class MyHolder(binding: MusicViewBinding):RecyclerView.ViewHolder(binding.root) {
 
         val title=binding.songName
@@ -95,7 +92,6 @@ class AdapterMusicList(private val context: Context,
         bundle.putInt("index", position)
         bundle.putString("class", reference)
         playerFragment.arguments = bundle
-
         playerFragment.show((context as AppCompatActivity).supportFragmentManager, playerFragment.tag)
     }
 

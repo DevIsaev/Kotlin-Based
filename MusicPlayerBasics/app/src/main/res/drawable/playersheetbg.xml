@@ -4,7 +4,7 @@
     tools:ignore="MissingDefaultResource">
 
     <solid
-        android:color="#2196F3"
+        android:color="@android:color/transparent"
         android:alpha="0.0"/>
 
     <corners

@@ -3,6 +3,7 @@ package com.example.musicplayerbasics
 import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.musicplayerbasics.databinding.ActivitySettingsBinding
 
@@ -13,6 +14,8 @@ class Settings : AppCompatActivity() {
         setTheme(MainActivity.currentThemeNav[MainActivity.themeIndex])
         binding= ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        try {
+
         when(MainActivity.themeIndex){
             0->binding.coolPinkTheme.setBackgroundColor(Color.YELLOW)
             1->binding.coolBlueTheme.setBackgroundColor(Color.YELLOW)
@@ -46,6 +49,10 @@ class Settings : AppCompatActivity() {
             customDialog.show()
 
         }
+        }
+        catch (ex:Exception){
+            Toast.makeText(this,ex.toString(), Toast.LENGTH_SHORT).show()
+        }
     }
     private fun saveTheme(index:Int){
         if (MainActivity.themeIndex!=index){
@@ -58,7 +65,7 @@ class Settings : AppCompatActivity() {
             builder.setTitle("Применить тему")
                 .setMessage("Вы действительно хотите применить тему?")
                 .setPositiveButton("Да"){_, _ ->
-                    exitApp()
+                    restartApp(this)
                 }
                 .setNegativeButton("Нет"){dialog,_ -> dialog.dismiss()}
             val customDialog=builder.create()

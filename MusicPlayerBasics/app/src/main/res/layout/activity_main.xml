@@ -17,7 +17,10 @@
         android:layout_height="match_parent" >
     </FrameLayout>
 
-    
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -99,7 +102,7 @@
             tools:layout="@layout/fragment_now_playing"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
-    
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/NavView"

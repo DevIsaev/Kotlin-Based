@@ -24,6 +24,7 @@
         <item name="dialogBtnBackground">?attr/themeColors</item>
         <item name="dialogTextColor">@color/black</item>
         <item name="rcColor">@color/rcDark</item>
+        <item name="android:navigationBarColor">?attr/themeColors</item>
     </style>
     <style name="coolBlue" parent="Theme.MaterialComponents.DayNight.NoActionBar">
     <item name="themeColors">@color/blue</item>
@@ -37,6 +38,7 @@
         <item name="dialogBtnBackground">?attr/themeColors</item>
         <item name="dialogTextColor">@color/black</item>
         <item name="rcColor">@color/rcDark</item>
+        <item name="android:navigationBarColor">?attr/themeColors</item>
     </style>
     <style name="coolPurple" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="themeColors">@color/purple500</item>
@@ -50,6 +52,7 @@
         <item name="dialogBtnBackground">?attr/themeColors</item>
         <item name="dialogTextColor">@color/black</item>
         <item name="rcColor">@color/rcDark</item>
+        <item name="android:navigationBarColor">?attr/themeColors</item>
     </style>
     <style name="coolGreen" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="themeColors">@color/green</item>
@@ -63,6 +66,7 @@
         <item name="dialogBtnBackground">?attr/themeColors</item>
         <item name="dialogTextColor">@color/black</item>
         <item name="rcColor">@color/rcDark</item>
+        <item name="android:navigationBarColor">?attr/themeColors</item>
     </style>
     <style name="coolBlack" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="themeColors">@color/black</item>
@@ -76,6 +80,7 @@
         <item name="dialogBtnBackground">?attr/themeColors</item>
         <item name="dialogTextColor">@color/black</item>
         <item name="rcColor">@color/rcDark</item>
+        <item name="android:navigationBarColor">?attr/themeColors</item>
     </style>
     //navigation drawer
     <style name="coolPinkNav" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -90,7 +95,7 @@
         <item name="dialogBtnBackground">?attr/themeColors</item>
         <item name="dialogTextColor">@color/black</item>
         <item name="rcColor">@color/rcDark</item>
-
+        <item name="android:navigationBarColor">?attr/themeColors</item>
     </style>
     <style name="coolBlueNav" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="themeColors">@color/blue</item>
@@ -105,6 +110,7 @@
         <item name="dialogBtnBackground">?attr/themeColors</item>
         <item name="dialogTextColor">@color/black</item>
         <item name="rcColor">@color/rcDark</item>
+        <item name="android:navigationBarColor">?attr/themeColors</item>
     </style>
     <style name="coolPurpleNav" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="themeColors">@color/purple500</item>
@@ -119,6 +125,7 @@
         <item name="dialogBtnBackground">?attr/themeColors</item>
         <item name="dialogTextColor">@color/black</item>
         <item name="rcColor">@color/rcDark</item>
+        <item name="android:navigationBarColor">?attr/themeColors</item>
     </style>
     <style name="coolGreenNav" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="themeColors">@color/green</item>
@@ -133,6 +140,7 @@
         <item name="dialogBtnBackground">?attr/themeColors</item>
         <item name="dialogTextColor">@color/black</item>
         <item name="rcColor">@color/rcDark</item>
+        <item name="android:navigationBarColor">?attr/themeColors</item>
     </style>
     <style name="coolBlackNav" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="themeColors">@color/black</item>
@@ -147,5 +155,6 @@
         <item name="dialogBtnBackground">?attr/themeColors</item>
         <item name="dialogTextColor">@color/black</item>
         <item name="rcColor">@color/rcDark</item>
+        <item name="android:navigationBarColor">?attr/themeColors</item>
     </style>
 </resources>

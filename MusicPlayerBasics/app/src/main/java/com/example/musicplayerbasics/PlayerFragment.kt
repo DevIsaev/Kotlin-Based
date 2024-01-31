@@ -10,6 +10,10 @@ import android.content.Context.AUDIO_SERVICE
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.ActivityInfo
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.media.AudioManager
 import android.media.MediaExtractor
 import android.media.MediaFormat
@@ -19,6 +23,7 @@ import android.media.audiofx.AudioEffect
 import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
+import android.renderscript.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -96,131 +101,150 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             })
         }
         //requireContext().theme.applyStyle(MainActivity.currentTheme[MainActivity.themeIndex],true)
-
-        //изображение альбома
-        binding.albumFont.setOnClickListener {
-            if (isFont) {
-                fontAnim.setTarget(binding.albumFont)
-                backAnim.setTarget(binding.albumBack)
-                fontAnim.start()
-                backAnim.start()
-                isFont = false
-            } else {
-                fontAnim.setTarget(binding.albumBack)
-                backAnim.setTarget(binding.albumFont)
-                fontAnim.start()
-                backAnim.start()
-                isFont = true
-            }
-        }
-        val scale = requireContext().resources.displayMetrics.density
-        binding.albumFont.cameraDistance = 8000 * scale
-        binding.albumBack.cameraDistance = 8000 * scale
-        fontAnim = AnimatorInflater.loadAnimator(requireContext(), R.animator.font) as AnimatorSet
-        backAnim = AnimatorInflater.loadAnimator(requireContext(), R.animator.back) as AnimatorSet
-
-        songInitialization()
-
-        //воспроизведение\пауза
-        binding.btnPAUSEPLAY.setOnClickListener {
-            try {
-
-                if (isPlaying) {
-                    pauseMusic()
+        try {
+            //изображение альбома
+            binding.albumFont.setOnClickListener {
+                if (isFont) {
+                    fontAnim.setTarget(binding.albumFont)
+                    backAnim.setTarget(binding.albumBack)
+                    fontAnim.start()
+                    backAnim.start()
+                    isFont = false
                 } else {
-                    playMusic()
+                    fontAnim.setTarget(binding.albumBack)
+                    backAnim.setTarget(binding.albumFont)
+                    fontAnim.start()
+                    backAnim.start()
+                    isFont = true
                 }
             }
-            catch (ex:Exception){
-                binding.songTITLE.text=ex.toString()
-            }
-        }
-        //назад
-        binding.btnPREVIOUS.setOnClickListener {
-            musicNextPrev(false)
-        }
-        //далее
-        binding.btnNEXT.setOnClickListener {
-            musicNextPrev(true)
-        }
-        //длительность
-        binding.SeekBarDuration.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if (fromUser) musicService!!.mediaPlayer!!.seekTo(progress)
-            }
+            val scale = requireContext().resources.displayMetrics.density
+            binding.albumFont.cameraDistance = 8000 * scale
+            binding.albumBack.cameraDistance = 8000 * scale
+            fontAnim = AnimatorInflater.loadAnimator(requireContext(), R.animator.font) as AnimatorSet
+            backAnim = AnimatorInflater.loadAnimator(requireContext(), R.animator.back) as AnimatorSet
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) = Unit
-            override fun onStopTrackingTouch(seekBar: SeekBar?) = Unit
+            songInitialization()
 
-        })
-        //повтор
-        binding.repeatBTN.setOnClickListener {
-            if (!repeat) {
-                repeat = true
-                binding.repeatBTN.setImageResource(R.drawable.baseline_repeat_one_24)
-            } else {
-                repeat = false
-                binding.repeatBTN.setImageResource(R.drawable.baseline_repeat_24)
-            }
-        }
-        //эквалайзер
-        binding.equalizerBTN.setOnClickListener {
-            try {
-                val eqIntent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
-                eqIntent.putExtra(
-                    AudioEffect.EXTRA_AUDIO_SESSION,
-                    musicService!!.mediaPlayer!!.audioSessionId
-                )
-                eqIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context?.packageName)
-                eqIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-                startActivityForResult(eqIntent, 13)
-            } catch (e: Exception) {
-                Toast.makeText(context, "Эквалайзер не поддерживается", Toast.LENGTH_LONG).show()
-            }
-        }
-        //таймер
-        binding.timerBTN.setOnClickListener {
-            val timer = min15 || min30 || min60
-            if(!timer)
-                showSheetTimer()
-            else {
-                val builder = MaterialAlertDialogBuilder(requireContext())
-                builder.setTitle("Время вышло")
-                    .setMessage("Хотите остановить таймер?")
-                    .setPositiveButton("Yes"){ _, _ ->
-                        min15 = false
-                        min30 = false
-                        min45=false
-                        min60 = false
-                        binding.timerBTN.setColorFilter(ContextCompat.getColor(requireContext(), R.color.green))
+            //воспроизведение\пауза
+            binding.btnPAUSEPLAY.setOnClickListener {
+                try {
+
+                    if (isPlaying) {
+                        pauseMusic()
+                    } else {
+                        playMusic()
                     }
-                    .setNegativeButton("No"){dialog, _ ->
-                        dialog.dismiss()
-                    }
-                val customDialog = builder.create()
-                customDialog.show()
+                } catch (ex: Exception) {
+                    binding.songTITLE.text = ex.toString()
+                }
+            }
+            //назад
+            binding.btnPREVIOUS.setOnClickListener {
+                musicNextPrev(false)
+            }
+            //далее
+            binding.btnNEXT.setOnClickListener {
+                musicNextPrev(true)
+            }
+            //длительность
+            binding.SeekBarDuration.setOnSeekBarChangeListener(object :
+                SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(
+                    seekBar: SeekBar?,
+                    progress: Int,
+                    fromUser: Boolean
+                ) {
+                    if (fromUser) musicService!!.mediaPlayer!!.seekTo(progress)
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) = Unit
+                override fun onStopTrackingTouch(seekBar: SeekBar?) = Unit
+
+            })
+            //повтор
+            binding.repeatBTN.setOnClickListener {
+                if (!repeat) {
+                    repeat = true
+                    binding.repeatBTN.setImageResource(R.drawable.baseline_repeat_one_24)
+                } else {
+                    repeat = false
+                    binding.repeatBTN.setImageResource(R.drawable.baseline_repeat_24)
+                }
+            }
+            //эквалайзер
+            binding.equalizerBTN.setOnClickListener {
+                try {
+                    val eqIntent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
+                    eqIntent.putExtra(
+                        AudioEffect.EXTRA_AUDIO_SESSION,
+                        musicService!!.mediaPlayer!!.audioSessionId
+                    )
+                    eqIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context?.packageName)
+                    eqIntent.putExtra(
+                        AudioEffect.EXTRA_CONTENT_TYPE,
+                        AudioEffect.CONTENT_TYPE_MUSIC
+                    )
+                    startActivityForResult(eqIntent, 13)
+                } catch (e: Exception) {
+                    Toast.makeText(context, "Эквалайзер не поддерживается", Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+            //таймер
+            binding.timerBTN.setOnClickListener {
+                val timer = min15 || min30 || min60
+                if (!timer)
+                    showSheetTimer()
+                else {
+                    val builder = MaterialAlertDialogBuilder(requireContext())
+                    builder.setTitle("Время вышло")
+                        .setMessage("Хотите остановить таймер?")
+                        .setPositiveButton("Yes") { _, _ ->
+                            min15 = false
+                            min30 = false
+                            min45 = false
+                            min60 = false
+                            binding.timerBTN.setColorFilter(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    R.color.green
+                                )
+                            )
+                        }
+                        .setNegativeButton("No") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                    val customDialog = builder.create()
+                    customDialog.show()
+                }
+            }
+            //поделиться
+            binding.shareBTN.setOnClickListener {
+                val shareIntent = Intent()
+                shareIntent.action = Intent.ACTION_SEND
+                shareIntent.type = "audio/*"
+                shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(musicListPA[songPosition].path))
+                startActivity(Intent.createChooser(shareIntent, "Поделиться композицией?"))
+            }
+            //избранное
+            binding.favouriteBTN.setOnClickListener {
+                fIndex = favouriteCheck(musicListPA[songPosition].id)
+                if (isFavourite) {
+                    isFavourite = false
+                    binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_border_24)
+                    FavouritesActivity.favSong.removeAt(fIndex)
+                } else {
+                    isFavourite = true
+                    binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_24)
+                    FavouritesActivity.favSong.add(musicListPA[songPosition])
+                    Toast.makeText(requireContext(),"Композиция добавлена в Избранное",Toast.LENGTH_SHORT).show()
+                }
             }
         }
-        //поделиться
-        binding.shareBTN.setOnClickListener {
-            val shareIntent=Intent()
-            shareIntent.action=Intent.ACTION_SEND
-            shareIntent.type="audio/*"
-            shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(musicListPA[songPosition].path))
-            startActivity(Intent.createChooser(shareIntent,"Поделиться композицией?"))
-        }
-        //избранное
-        binding.favouriteBTN.setOnClickListener {
-            fIndex = favouriteCheck(musicListPA[songPosition].id)
-            if(isFavourite){
-                isFavourite = false
-                binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_border_24)
-                FavouritesActivity.favSong.removeAt(fIndex)
-            } else{
-                isFavourite = true
-                binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_24)
-                FavouritesActivity.favSong.add(musicListPA[songPosition])
-            }
+        catch (ex:Exception){
+            binding.songTITLE.text=ex.toString()
+            Toast.makeText(requireContext(),ex.toString(),Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -364,6 +388,63 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
 
         val metadataText = retrieveMetadata()
         binding.metadata.text = metadataText
+
+
+        val img = getImage(musicListPA[songPosition].path)
+        val image = if (img != null) {
+            BitmapFactory.decodeByteArray(img, 0, img.size)
+        } else {
+            BitmapFactory.decodeResource(resources, R.drawable.icon)
+        }
+        val bgColor = getMainColor(image)
+
+        val gradient = GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, intArrayOf(Color.WHITE, bgColor))
+        gradient.cornerRadius = resources.getDimension(R.dimen.corner_radius)
+        gradient.setStroke(resources.getDimensionPixelSize(R.dimen.stroke_width), Color.BLACK)
+        binding.bgPlayer.background = gradient
+
+//        val img = getImage(musicListPA[songPosition].path)
+//        if (img != null) {
+//            // Создаем Bitmap из полученных данных изображения
+//            val albumArtBitmap = BitmapFactory.decodeByteArray(img, 0, img.size)
+//
+//            // Применяем размытие к изображению альбома
+//            val blurredBitmap = blurBitmap(albumArtBitmap, 15f, requireContext())
+//
+//            // Создаем Drawable из размытого изображения
+//            val drawable = BitmapDrawable(resources, blurredBitmap)
+//
+//            // Создаем GradientDrawable для установки углов и обводки
+//            val gradientDrawable = GradientDrawable()
+//            gradientDrawable.cornerRadius = 60f // Здесь можно установить радиус скругления углов
+//            gradientDrawable.setStroke(5, Color.BLACK) // Устанавливаем обводку
+//
+//            // Объединяем Drawable с GradientDrawable
+//            val layersDrawable = LayerDrawable(arrayOf(drawable, gradientDrawable))
+//
+//            // Устанавливаем созданный Drawable в качестве фона
+//            binding.bgPlayer.background = layersDrawable
+//        } else {
+//            // Если изображение не получено, устанавливаем стандартный фон
+//            binding.bgPlayer.setBackgroundResource(R.drawable.grad)
+//        }
+
+
+    }
+
+
+    fun blurBitmap(bitmap: Bitmap, radius: Float, context: Context): Bitmap {
+        val rs = RenderScript.create(context)
+        val input = Allocation.createFromBitmap(rs, bitmap)
+        val output = Allocation.createTyped(rs, input.type)
+        val script = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs))
+
+        script.setRadius(radius)
+        script.setInput(input)
+        script.forEach(output)
+
+        output.copyTo(bitmap)
+        return bitmap
     }
 
     //вызов медиаплеера

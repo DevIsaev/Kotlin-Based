@@ -13,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     private lateinit var binding:ActivityMainBinding
 
     var drawer: DrawerLayout? = null
-
+    lateinit var toggle: ActionBarDrawerToggle
     private lateinit var musicAdapter:AdapterMusicList
     companion object{
         lateinit var MusicListMA:ArrayList<Music>
@@ -62,6 +63,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+try {
 
 
         if(requestRuntimePermission()) {
@@ -76,9 +78,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
                 FavouritesActivity.favSong.addAll(data)
             }
             PlaylistsActivity.musicPlaylist = PlaylistMusic()
-            //val editorPL = getSharedPreferences("FAVOURITES", MODE_PRIVATE)
             val jsonStringPL = editor.getString("MusicPlaylist", null)
-            //val typeTokenPL = object : TypeToken<PlaylistMusic>(){}.type
             if(jsonStringPL != null){
                 val dataPL: PlaylistMusic = GsonBuilder().create().fromJson(jsonStringPL, PlaylistMusic::class.java)
                 PlaylistsActivity.musicPlaylist=dataPL
@@ -119,6 +119,16 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             }
 
         })
+        binding.refreshLayout.setOnRefreshListener {
+            MusicListMA = getAllAudio()
+            musicAdapter.updateMusicList(MusicListMA)
+
+            binding.refreshLayout.isRefreshing = false
+        }
+}
+catch (ex:Exception){
+    Toast.makeText(this,ex.toString(),Toast.LENGTH_SHORT).show()
+}
     }
 
     override fun onDestroy() {

@@ -34,37 +34,43 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         setTheme(MainActivity.currentThemeNav[MainActivity.themeIndex])
         binding= ActivityPlaylistsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        Navigation()
+        try {
 
-        //перезапись
-        FavouritesActivity.favSong = ArrayList()
-        val editor = getSharedPreferences("FAVOURITES", MODE_PRIVATE)
-        val jsonString = editor.getString("FavouriteSongs", null)
-        val typeToken = object : TypeToken<ArrayList<Music>>(){}.type
-        if(jsonString != null){
-            val data: ArrayList<Music> = GsonBuilder().create().fromJson(jsonString, typeToken)
-            FavouritesActivity.favSong.addAll(data)
+            Navigation()
+
+            //перезапись
+            FavouritesActivity.favSong = ArrayList()
+            val editor = getSharedPreferences("FAVOURITES", MODE_PRIVATE)
+            val jsonString = editor.getString("FavouriteSongs", null)
+            val typeToken = object : TypeToken<ArrayList<Music>>() {}.type
+            if (jsonString != null) {
+                val data: ArrayList<Music> = GsonBuilder().create().fromJson(jsonString, typeToken)
+                FavouritesActivity.favSong.addAll(data)
+            }
+            PlaylistsActivity.musicPlaylist = PlaylistMusic()
+            //val editorPL = getSharedPreferences("FAVOURITES", MODE_PRIVATE)
+            val jsonStringPL = editor.getString("MusicPlaylist", null)
+            //val typeTokenPL = object : TypeToken<PlaylistMusic>(){}.type
+            if (jsonStringPL != null) {
+                val dataPL: PlaylistMusic =
+                    GsonBuilder().create().fromJson(jsonStringPL, PlaylistMusic::class.java)
+                PlaylistsActivity.musicPlaylist = dataPL
+            }
+
+
+            binding.playlistsRV.setHasFixedSize(true)
+            binding.playlistsRV.setItemViewCacheSize(13)
+            binding.playlistsRV.layoutManager = GridLayoutManager(this@PlaylistsActivity, 2)
+            adapter = AdapterMusicListPlaylist(this@PlaylistsActivity, musicPlaylist.ref)
+            binding.playlistsRV.adapter = adapter
+
+            binding.addBtn.setOnClickListener {
+                customAlertDialog()
+            }
         }
-        PlaylistsActivity.musicPlaylist = PlaylistMusic()
-        //val editorPL = getSharedPreferences("FAVOURITES", MODE_PRIVATE)
-        val jsonStringPL = editor.getString("MusicPlaylist", null)
-        //val typeTokenPL = object : TypeToken<PlaylistMusic>(){}.type
-        if(jsonStringPL != null){
-            val dataPL: PlaylistMusic = GsonBuilder().create().fromJson(jsonStringPL, PlaylistMusic::class.java)
-            PlaylistsActivity.musicPlaylist=dataPL
+        catch (ex:Exception){
+            Toast.makeText(this,ex.toString(),Toast.LENGTH_SHORT).show()
         }
-
-
-        binding.playlistsRV.setHasFixedSize(true)
-        binding.playlistsRV.setItemViewCacheSize(13)
-        binding.playlistsRV.layoutManager= GridLayoutManager(this@PlaylistsActivity,2)
-        adapter= AdapterMusicListPlaylist(this@PlaylistsActivity, musicPlaylist.ref)
-        binding.playlistsRV.adapter=adapter
-
-        binding.addBtn.setOnClickListener {
-            customAlertDialog()
-        }
-
     }
 
     //Navigation drawer

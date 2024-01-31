@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -40,7 +41,7 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+    try {
         val bottomSheet: FrameLayout =
             dialog?.findViewById(com.google.android.material.R.id.design_bottom_sheet)!!
         // Height of the view
@@ -57,18 +58,23 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             })
         }
-        requireContext().theme.applyStyle(MainActivity.currentTheme[MainActivity.themeIndex],true)
+        requireContext().theme.applyStyle(MainActivity.currentTheme[MainActivity.themeIndex], true)
 
-        currentPlaylistPos= arguments?.getInt("index", 0)!!
+        currentPlaylistPos = arguments?.getInt("index", 0)!!
 
-        PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist= playlistCheck(PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist)
+        PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist =
+            playlistCheck(PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist)
 
         binding.playlistDetailsRV.setItemViewCacheSize(10)
         binding.playlistDetailsRV.setHasFixedSize(true)
-        binding.playlistDetailsRV.layoutManager=LinearLayoutManager(context)
+        binding.playlistDetailsRV.layoutManager = LinearLayoutManager(context)
 
-        adapter= AdapterMusicList(requireContext(),PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist,playlistDetails = true)
-        binding.playlistDetailsRV.adapter= adapter
+        adapter = AdapterMusicList(
+            requireContext(),
+            PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist,
+            playlistDetails = true
+        )
+        binding.playlistDetailsRV.adapter = adapter
 
 
         binding.shuffleBtnPD.setOnClickListener {
@@ -86,18 +92,22 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
             val builder = MaterialAlertDialogBuilder(requireContext())
             builder.setTitle("Удаление")
                 .setMessage("Вы хотите удалить все композиции?")
-                .setPositiveButton("Yes"){ dialog, _ ->
+                .setPositiveButton("Yes") { dialog, _ ->
                     PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist.clear()
                     adapter.refreshPlaylist()
                     dialog.dismiss()
                 }
-                .setNegativeButton("No"){dialog, _ ->
+                .setNegativeButton("No") { dialog, _ ->
                     dialog.dismiss()
                 }
             val customDialog = builder.create()
             customDialog.show()
 
         }
+    }
+    catch (ex:Exception){
+        Toast.makeText(requireContext(),ex.toString(), Toast.LENGTH_SHORT).show()
+    }
     }
 
     override fun onResume() {

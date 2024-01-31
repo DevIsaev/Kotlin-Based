@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">MusicPlayerBasics</string>
     <string name="ShuffleBTN">Shuffle</string>
     <string name="FavouritesBTN">Favourites</string>
@@ -15,6 +15,6 @@
     <string name="min30">30 минут</string>
     <string name="min45">45 минут</string>
     <string name="min60">1 час</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="o" tools:ignore="ExtraTranslation">open</string>
+    <string name="c">close</string>
 </resources>

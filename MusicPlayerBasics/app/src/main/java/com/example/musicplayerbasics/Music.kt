@@ -2,6 +2,7 @@ package com.example.musicplayerbasics
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -94,3 +95,10 @@ fun restartApp(context: Context) {
     exitProcess(0)
 }
 
+
+fun getMainColor(img: Bitmap): Int {
+    val newImg = Bitmap.createScaledBitmap(img, 1,1 , true)
+    val color = newImg.getPixel(0, 0)
+    newImg.recycle()
+    return color
+}

@@ -29,30 +29,39 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
         binding= ActivityFavouritesBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        try {
+            favSong = playlistCheck(favSong)
 
-        favSong= playlistCheck(favSong)
+            binding.favouriteRV.setHasFixedSize(true)
+            binding.favouriteRV.setItemViewCacheSize(13)
+            binding.favouriteRV.layoutManager = GridLayoutManager(this, 3)
+            adapter = AdapterMusicListFavourite(this, favSong)
+            binding.favouriteRV.adapter = adapter
 
-        binding.favouriteRV.setHasFixedSize(true)
-        binding.favouriteRV.setItemViewCacheSize(13)
-        binding.favouriteRV.layoutManager = GridLayoutManager(this, 3)
-        adapter = AdapterMusicListFavourite(this, favSong)
-        binding.favouriteRV.adapter = adapter
+            favouritesChanged = false
 
-        favouritesChanged = false
+            if (favSong.size < 1) {
+                binding.shuffleBtn.visibility = View.INVISIBLE
+            }
+            binding.shuffleBtn.setOnClickListener {
+                val bottomSheet = PlayerFragment.newInstance()
+                val bundle = Bundle()
+                bundle.putInt("index", 0)
+                bundle.putString("class", "FavouriteShuffle")
+                bottomSheet.arguments = bundle
+                bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+            }
+            binding.refreshLayout.setOnRefreshListener {
+                adapter.updateFavourites(favSong)
+                favouritesChanged = false
 
-        if (favSong.size<1) {
-            binding.shuffleBtn.visibility= View.INVISIBLE
+                binding.refreshLayout.isRefreshing = false
+            }
+            Navigation()
         }
-        binding.shuffleBtn.setOnClickListener {
-            val bottomSheet = PlayerFragment.newInstance()
-            val bundle = Bundle()
-            bundle.putInt("index", 0)
-            bundle.putString("class", "FavouriteShuffle")
-            bottomSheet.arguments = bundle
-            bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+        catch (ex:Exception){
+            Toast.makeText(this,ex.toString(),Toast.LENGTH_SHORT).show()
         }
-        Navigation()
-
     }
     //Navigation drawer
     private fun Navigation(){
@@ -133,6 +142,11 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
         val jsonStringPL = GsonBuilder().create().toJson(PlaylistsActivity.musicPlaylist)
         editor.putString("MusicPlaylist", jsonStringPL)
         editor.apply()
+
+        if(favouritesChanged) {
+            adapter.updateFavourites(favSong)
+            favouritesChanged = false
+        }
     }
 
 
