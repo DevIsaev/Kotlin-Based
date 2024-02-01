@@ -16,6 +16,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
     var drawer: DrawerLayout? = null
     lateinit var toggle: ActionBarDrawerToggle
+
     private lateinit var musicAdapter:AdapterMusicList
     companion object{
         lateinit var MusicListMA:ArrayList<Music>
@@ -84,7 +86,7 @@ try {
                 PlaylistsActivity.musicPlaylist=dataPL
             }
         }
-
+        binding.toolbar.setTitle("Все композиции")
         Navigation()
 
         //кнопка "случайное"
@@ -256,7 +258,10 @@ catch (ex:Exception){
     }
     //Navigation drawer
     private fun Navigation(){
-        val navView = findViewById<NavigationView>(R.id.NavView)
+        drawer = findViewById(R.id.Drawer)
+        var toolbar=findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        var navView=findViewById<NavigationView>(R.id.NavView)
         val headerView = navView.getHeaderView(0)
         val linearHeader = headerView.findViewById<LinearLayout>(R.id.linearHeader)
 
@@ -266,9 +271,12 @@ catch (ex:Exception){
         } else {
             linearHeader.setBackgroundResource(currentGradient[themeIndex])
         }
-
         navView.setNavigationItemSelectedListener(this)
-        drawer = findViewById(R.id.Drawer)
+        toggle= ActionBarDrawerToggle(this,drawer,toolbar,R.string.o,R.string.c)
+        drawer?.addDrawerListener(toggle)
+        toggle.syncState()
+
+
     }
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -324,6 +332,14 @@ catch (ex:Exception){
         return false
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if (drawer?.isDrawerOpen(GravityCompat.START)!!) {
+            drawer?.closeDrawer(GravityCompat.START)
+        } else {
+            onBackPressedDispatcher.onBackPressed()
+        }
+    }
     fun out() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Выход")

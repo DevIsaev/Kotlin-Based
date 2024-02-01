@@ -6,7 +6,9 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,6 +20,7 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
     private lateinit var binding: ActivityFavouritesBinding
     private lateinit var adapter: AdapterMusicListFavourite
     var drawer: DrawerLayout? = null
+    lateinit var toggle: ActionBarDrawerToggle
     companion object {
         var favouritesChanged: Boolean = false
 
@@ -57,6 +60,7 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
 
                 binding.refreshLayout.isRefreshing = false
             }
+            binding.toolbar.setTitle("Избранное")
             Navigation()
         }
         catch (ex:Exception){
@@ -65,7 +69,10 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
     }
     //Navigation drawer
     private fun Navigation(){
-        val navView = findViewById<NavigationView>(R.id.NavView)
+        drawer = findViewById(R.id.Drawer)
+        var toolbar=findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        var navView=findViewById<NavigationView>(R.id.NavView)
         val headerView = navView.getHeaderView(0)
         val linearHeader = headerView.findViewById<LinearLayout>(R.id.linearHeader)
 
@@ -75,9 +82,10 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
         } else {
             linearHeader.setBackgroundResource(MainActivity.currentGradient[MainActivity.themeIndex])
         }
-
         navView.setNavigationItemSelectedListener(this)
-        drawer = findViewById(R.id.Drawer)
+        toggle= ActionBarDrawerToggle(this,drawer,toolbar,R.string.o,R.string.c)
+        drawer?.addDrawerListener(toggle)
+        toggle.syncState()
     }
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -131,7 +139,14 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
         drawer?.closeDrawer(GravityCompat.START)
         return false
     }
-
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if (drawer?.isDrawerOpen(GravityCompat.START)!!) {
+            drawer?.closeDrawer(GravityCompat.START)
+        } else {
+            onBackPressedDispatcher.onBackPressed()
+        }
+    }
     override fun onResume() {
         super.onResume()
         //сохранение

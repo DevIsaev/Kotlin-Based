@@ -11,12 +11,25 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
     </FrameLayout>
 
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/toolbar"
+        android:elevation="4dp"
+        android:background="?attr/themeColors"
+        android:tooltipText="MainActivity"
+        app:popupTheme="@style/Theme.AppCompat.Light"/>
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
@@ -103,7 +116,7 @@
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-    
+</LinearLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/NavView"
         android:fitsSystemWindows="true"

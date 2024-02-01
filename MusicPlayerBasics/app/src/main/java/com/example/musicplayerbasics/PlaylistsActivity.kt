@@ -8,7 +8,9 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -25,6 +27,7 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
     private lateinit var adapter:AdapterMusicListPlaylist
 
     var drawer: DrawerLayout? = null
+    lateinit var toggle: ActionBarDrawerToggle
 
     companion object{
         var musicPlaylist:PlaylistMusic=PlaylistMusic()
@@ -35,7 +38,7 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         binding= ActivityPlaylistsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         try {
-
+            binding.toolbar.setTitle("Плейлисты")
             Navigation()
 
             //перезапись
@@ -67,6 +70,10 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             binding.addBtn.setOnClickListener {
                 customAlertDialog()
             }
+            binding.refreshLayout.setOnRefreshListener {
+                adapter.refrershPlaylist()
+                binding.refreshLayout.isRefreshing = false
+            }
         }
         catch (ex:Exception){
             Toast.makeText(this,ex.toString(),Toast.LENGTH_SHORT).show()
@@ -75,7 +82,10 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
     //Navigation drawer
     private fun Navigation(){
-        val navView = findViewById<NavigationView>(R.id.NavView)
+        drawer = findViewById(R.id.Drawer)
+        var toolbar=findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        var navView=findViewById<NavigationView>(R.id.NavView)
         val headerView = navView.getHeaderView(0)
         val linearHeader = headerView.findViewById<LinearLayout>(R.id.linearHeader)
 
@@ -85,9 +95,10 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         } else {
             linearHeader.setBackgroundResource(MainActivity.currentGradient[MainActivity.themeIndex])
         }
-
         navView.setNavigationItemSelectedListener(this)
-        drawer = findViewById(R.id.Drawer)
+        toggle= ActionBarDrawerToggle(this,drawer,toolbar,R.string.o,R.string.c)
+        drawer?.addDrawerListener(toggle)
+        toggle.syncState()
     }
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -140,6 +151,14 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         }
         drawer?.closeDrawer(GravityCompat.START)
         return false
+    }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if (drawer?.isDrawerOpen(GravityCompat.START)!!) {
+            drawer?.closeDrawer(GravityCompat.START)
+        } else {
+            onBackPressedDispatcher.onBackPressed()
+        }
     }
 
     private fun  customAlertDialog(){
