@@ -161,4 +161,7 @@
         <item name="rcColor">@color/rcLight</item>
         <item name="android:navigationBarColor">?attr/themeColors</item>
     </style>
+    <style name="Player" parent="Theme.MaterialComponents.Light.NoActionBar">
+
+    </style>
 </resources>

@@ -50,14 +50,14 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 val data: ArrayList<Music> = GsonBuilder().create().fromJson(jsonString, typeToken)
                 FavouritesActivity.favSong.addAll(data)
             }
-            PlaylistsActivity.musicPlaylist = PlaylistMusic()
+            musicPlaylist = PlaylistMusic()
             //val editorPL = getSharedPreferences("FAVOURITES", MODE_PRIVATE)
             val jsonStringPL = editor.getString("MusicPlaylist", null)
             //val typeTokenPL = object : TypeToken<PlaylistMusic>(){}.type
             if (jsonStringPL != null) {
                 val dataPL: PlaylistMusic =
                     GsonBuilder().create().fromJson(jsonStringPL, PlaylistMusic::class.java)
-                PlaylistsActivity.musicPlaylist = dataPL
+                musicPlaylist = dataPL
             }
 
 
@@ -104,6 +104,14 @@ class PlaylistsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         when (item.itemId) {
             R.id.IDSignOut -> {
                 Toast.makeText(this, "IDSignOut", Toast.LENGTH_SHORT).show()
+                val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+                builder.setTitle("Выход")
+                builder.setMessage("Вы действительно хотите выйти?")
+                builder.setPositiveButton("Да", { dialogInterface, i -> exitApp()
+                    finish()
+                })
+                builder.setNegativeButton("Нет", { dialogInterface, i -> })
+                builder.show()
             }
 
             R.id.IDMusicStorage -> {

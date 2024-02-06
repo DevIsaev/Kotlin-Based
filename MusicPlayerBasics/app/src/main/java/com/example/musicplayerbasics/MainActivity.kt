@@ -1,19 +1,20 @@
 package com.example.musicplayerbasics
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -99,28 +100,7 @@ try {
             bottomSheet.show(supportFragmentManager, bottomSheet.tag)
         }
         //
-        binding.searchView.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(query: String?): Boolean{
-                binding.searchView.clearFocus()
-                binding.searchView.setQuery("",false)
-                return true
-            }
-            override fun onQueryTextChange(newText: String?): Boolean {
-                MusicListSearch= ArrayList()
-                if (newText!=null){
-                    val input=newText.lowercase()
-                    for(song in MusicListMA) {
-                        if (song.title.lowercase().contains(input)||song.artist.lowercase().contains(input)||song.album.lowercase().contains(input)) {
-                            MusicListSearch.add(song)
-                        }
-                        search=true
-                        musicAdapter.updateMusicList(MusicListSearch)
-                    }
-                }
-                return true
-            }
 
-        })
         binding.refreshLayout.setOnRefreshListener {
             MusicListMA = getAllAudio()
             musicAdapter.updateMusicList(MusicListMA)
@@ -138,7 +118,6 @@ catch (ex:Exception){
         if(PlayerFragment.isPlaying && PlayerFragment.musicService != null){
             exitApp()
         }
-
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -282,7 +261,13 @@ catch (ex:Exception){
         when (item.itemId) {
             R.id.IDSignOut -> {
                 Toast.makeText(this, "IDSignOut", Toast.LENGTH_SHORT).show()
-                out()
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Выход")
+                builder.setMessage("Вы действительно хотите выйти?")
+                builder.setPositiveButton("Да", { dialogInterface, i -> exitApp()
+                    })
+                builder.setNegativeButton("Нет", { dialogInterface, i -> })
+                builder.show()
             }
 
             R.id.IDMusicStorage -> {
@@ -331,7 +316,6 @@ catch (ex:Exception){
         drawer?.closeDrawer(GravityCompat.START)
         return false
     }
-
     override fun onBackPressed() {
         super.onBackPressed()
         if (drawer?.isDrawerOpen(GravityCompat.START)!!) {
@@ -340,15 +324,33 @@ catch (ex:Exception){
             onBackPressedDispatcher.onBackPressed()
         }
     }
-    fun out() {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Выход")
-            .setMessage("Вы действительно хотите выйти?")
-            .setPositiveButton("Да"){_,_ -> exitApp() }
-            .setNegativeButton("Нет"){dialog,_ -> dialog.dismiss()}
-        val customDialog=builder.create()
-        customDialog.show()
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.search_view_menu, menu)
+        findViewById<LinearLayout>(R.id.toolbar)
+        var sw=menu?.findItem(R.id.searchView)?.actionView as SearchView
+        sw.setOnQueryTextListener(object:SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean{
+                sw.clearFocus()
+                sw.setQuery("",false)
+                return true
+            }
+            override fun onQueryTextChange(newText: String?): Boolean {
+                MusicListSearch= ArrayList()
+                if (newText!=null){
+                    val input=newText.lowercase()
+                    for(song in MusicListMA) {
+                        if (song.title.lowercase().contains(input)||song.artist.lowercase().contains(input)||song.album.lowercase().contains(input)) {
+                            MusicListSearch.add(song)
+                        }
+                        search=true
+                        musicAdapter.updateMusicList(MusicListSearch)
+                    }
+                }
+                return true
+            }
+
+        })
+        return super.onCreateOptionsMenu(menu)
     }
-
 }

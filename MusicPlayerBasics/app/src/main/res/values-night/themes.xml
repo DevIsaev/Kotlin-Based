@@ -157,4 +157,10 @@
         <item name="rcColor">@color/rcDark</item>
         <item name="android:navigationBarColor">?attr/themeColors</item>
     </style>
+
+    <style name="Player" parent="Theme.Design.BottomSheetDialog">
+
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@android:color/transparent</item>
+    </style>
 </resources>

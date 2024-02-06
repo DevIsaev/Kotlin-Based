@@ -40,68 +40,38 @@
         <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
         android:orientation="vertical">
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/materialCardView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="8dp"
-            app:cardUseCompatPadding="true">
-
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/searchView"
+            <TextView
+                android:id="@+id/totalSongs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:queryHint="Искать композицию"
-                android:textColor="?colorOnPrimary"
-                app:queryBackground="@android:color/transparent"
-                app:iconifiedByDefault="false"/>
-        </com.google.android.material.card.MaterialCardView>
-        <!-- buttons-->
-        <LinearLayout
-            android:layout_marginTop="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
+                android:text="@string/Total"
+                android:layout_margin="10dp"
+                android:textSize="18sp"
+                android:textColor="?colorOnPrimary"/>
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/shuffleBTN"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:contentDescription="@string/ShuffleBTN"
-                android:drawableTop="@drawable/baseline_shuffle_24"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:text="@string/ShuffleBTN"
-                android:drawableTint="?colorOnPrimary"
-                android:textColor="?colorOnPrimary"
-                android:textAllCaps="false"
-                android:textSize="12sp"
-                android:textStyle="bold"/>
-
-
-        </LinearLayout>
-    <!---->
-    <TextView
-        android:id="@+id/totalSongs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/Total"
-        android:layout_margin="10dp"
-        android:textSize="18sp"
-        android:textColor="?colorOnPrimary"/>
-
+                android:layout_gravity="end"
+                android:backgroundTint="@color/white"
+                app:icon="@drawable/baseline_shuffle_24"
+                app:iconSize="35dp"
+                app:iconTint="?attr/themeColors"
+                app:strokeColor="?attr/themeColors"
+                app:strokeWidth="2dp" />
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_music"
                 android:layout_width="match_parent"
-                android:layout_height="425dp"
-                android:textColor="?colorOnPrimary"
+                android:layout_height="509dp"
+                android:layoutAnimation="@anim/layout_animation_rc"
                 android:scrollbarThumbVertical="@drawable/baseline_check_box_outline_blank_24"
                 android:scrollbars="vertical"
-                android:layoutAnimation="@anim/layout_animation_rc"
-                />
+                android:textColor="?colorOnPrimary" />
+
+    <!---->
+
     </LinearLayout>
 
         <androidx.fragment.app.FragmentContainerView

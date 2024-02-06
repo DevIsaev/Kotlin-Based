@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -91,6 +92,13 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
         when (item.itemId) {
             R.id.IDSignOut -> {
                 Toast.makeText(this, "IDSignOut", Toast.LENGTH_SHORT).show()
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Выход")
+                builder.setMessage("Вы действительно хотите выйти?")
+                builder.setPositiveButton("Да", { dialogInterface, i -> exitApp()
+                })
+                builder.setNegativeButton("Нет", { dialogInterface, i -> })
+                builder.show()
             }
 
             R.id.IDMusicStorage -> {
@@ -147,6 +155,7 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
             onBackPressedDispatcher.onBackPressed()
         }
     }
+
     override fun onResume() {
         super.onResume()
         //сохранение
@@ -163,6 +172,13 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
             favouritesChanged = false
         }
     }
-
+//@SuppressLint("NotifyDataSetChanged")
+//override fun onResume() {
+//    super.onResume()
+//    if(favouritesChanged) {
+//        adapter.updateFavourites(favSong)
+//        favouritesChanged = false
+//    }
+//}
 
 }
