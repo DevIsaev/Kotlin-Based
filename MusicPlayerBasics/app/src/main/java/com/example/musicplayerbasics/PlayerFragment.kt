@@ -22,14 +22,12 @@ import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.media.audiofx.AudioEffect
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.renderscript.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
@@ -43,6 +41,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.gson.GsonBuilder
 
 
 class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer.OnCompletionListener {
@@ -83,15 +82,12 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         activity?.window?.apply {
-            decorView.systemUiVisibility = (  View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+            decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                     View.SYSTEM_UI_FLAG_FULLSCREEN or
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
-            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.R){
-                decorView.windowInsetsController?.hide(WindowInsets.Type.statusBars())
-            }
         }
 
         // Устанавливаем флаги для прозрачности и full screen
@@ -99,7 +95,6 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         }
 
-        //setStyle(STYLE_NORMAL,MainActivity.currentThemeNav[MainActivity.themeIndex])
         binding = ActivityPlayerBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -109,11 +104,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         activity?.window?.apply {
             clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
             decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
-            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.R){
-                decorView.windowInsetsController?.show(WindowInsets.Type.statusBars())
-            }
         }
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -181,8 +172,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                 musicNextPrev(true)
             }
             //длительность
-            binding.SeekBarDuration.setOnSeekBarChangeListener(object :
-                SeekBar.OnSeekBarChangeListener {
+            binding.SeekBarDuration.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(
                     seekBar: SeekBar?,
                     progress: Int,
@@ -274,6 +264,12 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                     Toast.makeText(requireContext(),"Композиция добавлена в Избранное",Toast.LENGTH_SHORT).show()
                 }
             }
+            binding.shuffleBTN.setOnClickListener {
+                musicListPA.shuffle() // Shuffle the music list
+                songPosition = 0 // Reset the song position to start from the beginning after shuffling
+                setLayout() // Update the layout with the shuffled music
+                createMP() // Create media player with the newly shuffled music
+            }
         }
         catch (ex:Exception){
             binding.songTITLE.text=ex.toString()
@@ -296,7 +292,6 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                     .into(NowPlaying.binding.albumNP)
                 NowPlaying.binding.songNP.text = musicListPA[songPosition].title
                 NowPlaying.binding.artistNP.text= musicListPA[songPosition].artist
-
                 if (isPlaying) {
                     NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_pause_24)
                 } else {
@@ -307,6 +302,10 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         catch (ex:Exception){
             NowPlaying.binding.songNP.text="1"
         }
+        val editor = requireContext().getSharedPreferences("FAVOURITES", Context.MODE_PRIVATE).edit()
+        val jsonString = GsonBuilder().create().toJson(FavouritesActivity.favSong)
+        editor.putString("FavouriteSongs", jsonString)
+        editor.apply()
     }
 
     //инициализация
@@ -439,8 +438,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         val img = getImage(musicListPA[songPosition].path)
         if (img != null) {
             // Создаем Bitmap из полученных данных изображения
-            val albumArtBitmap = BitmapFactory.decodeByteArray(img, 0, img.size)
-
+            var albumArtBitmap = BitmapFactory.decodeByteArray(img, 0, img.size)
             // Применяем размытие к изображению альбома
             val blurredBitmap1 = blurBitmap(albumArtBitmap, 25f, requireContext())
             val blurredBitmap2 = blurBitmap(blurredBitmap1, 25f, requireContext())
@@ -449,23 +447,18 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             val blurredBitmap5 = blurBitmap(blurredBitmap4, 25f, requireContext())
             val blurredBitmap6 = blurBitmap(blurredBitmap5, 25f, requireContext())
             val blurredBitmap = blurBitmap(blurredBitmap6, 25f, requireContext())
-
             // Создаем Drawable из размытого изображения
             val drawable = BitmapDrawable(resources, blurredBitmap)
-
             // Создаем GradientDrawable для установки углов и обводки
             val gradientDrawable = GradientDrawable()
             gradientDrawable.cornerRadius = 110f // Здесь можно установить радиус скругления углов
-            //gradientDrawable.setStroke(5, Color.WHITE) // Устанавливаем обводку
-
             // Объединяем Drawable с GradientDrawable
             val layersDrawable = LayerDrawable(arrayOf(drawable, gradientDrawable))
-
             // Устанавливаем созданный Drawable в качестве фона
             binding.bgPlayer.background = layersDrawable
         } else {
             // Если изображение не получено, устанавливаем стандартный фон
-            binding.bgPlayer.setBackgroundResource(R.drawable.grad)
+            binding.bgPlayer.setBackgroundResource(MainActivity.currentGradient[MainActivity.themeIndex])
         }
 
 

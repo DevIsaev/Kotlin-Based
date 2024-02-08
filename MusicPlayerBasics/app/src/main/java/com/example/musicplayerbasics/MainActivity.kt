@@ -91,14 +91,14 @@ try {
         Navigation()
 
         //кнопка "случайное"
-        binding.shuffleBTN.setOnClickListener {
-            val bottomSheet = PlayerFragment.newInstance()
-            val bundle = Bundle()
-            bundle.putInt("index", 0)
-            bundle.putString("class", "MainActivity")
-            bottomSheet.arguments = bundle
-            bottomSheet.show(supportFragmentManager, bottomSheet.tag)
-        }
+//        binding.shuffleBTN.setOnClickListener {
+//            val bottomSheet = PlayerFragment.newInstance()
+//            val bundle = Bundle()
+//            bundle.putInt("index", 0)
+//            bundle.putString("class", "MainActivity")
+//            bottomSheet.arguments = bundle
+//            bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+//        }
         //
 
         binding.refreshLayout.setOnRefreshListener {

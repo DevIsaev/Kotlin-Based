@@ -158,7 +158,7 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
 
     override fun onResume() {
         super.onResume()
-        //сохранение
+        // Сохранение данных в SharedPreferences
         val editor = getSharedPreferences("FAVOURITES", MODE_PRIVATE).edit()
         val jsonString = GsonBuilder().create().toJson(FavouritesActivity.favSong)
         editor.putString("FavouriteSongs", jsonString)
@@ -167,7 +167,8 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
         editor.putString("MusicPlaylist", jsonStringPL)
         editor.apply()
 
-        if(favouritesChanged) {
+        // Если произошли изменения в избранном, обновите список
+        if (favouritesChanged) {
             adapter.updateFavourites(favSong)
             favouritesChanged = false
         }
