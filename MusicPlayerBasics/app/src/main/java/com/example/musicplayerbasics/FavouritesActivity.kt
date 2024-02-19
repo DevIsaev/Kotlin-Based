@@ -3,7 +3,6 @@ package com.example.musicplayerbasics
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -44,17 +43,6 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
 
             favouritesChanged = false
 
-            if (favSong.size < 1) {
-                binding.shuffleBtn.visibility = View.INVISIBLE
-            }
-            binding.shuffleBtn.setOnClickListener {
-                val bottomSheet = PlayerFragment.newInstance()
-                val bundle = Bundle()
-                bundle.putInt("index", 0)
-                bundle.putString("class", "FavouriteShuffle")
-                bottomSheet.arguments = bundle
-                bottomSheet.show(supportFragmentManager, bottomSheet.tag)
-            }
             binding.refreshLayout.setOnRefreshListener {
                 adapter.updateFavourites(favSong)
                 favouritesChanged = false

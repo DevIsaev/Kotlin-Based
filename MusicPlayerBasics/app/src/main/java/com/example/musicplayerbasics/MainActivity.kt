@@ -22,7 +22,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.musicplayerbasics.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.GsonBuilder
@@ -38,7 +37,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
     private lateinit var musicAdapter:AdapterMusicList
     companion object{
-        lateinit var MusicListMA:ArrayList<Music>
+        lateinit var MusicListMA: ArrayList<Music>
 
         lateinit var MusicListSearch:ArrayList<Music>
         var search:Boolean=false
@@ -52,9 +51,6 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         var sort:Int=0
         //добавить: по папкам, по количеству прослушиваний
         var sortingList= arrayOf(MediaStore.Audio.Media.DATE_ADDED+ " DESC",MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.SIZE+" DESC")
-
-
-
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -67,8 +63,6 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         setContentView(binding.root)
 
 try {
-
-
         if(requestRuntimePermission()) {
             initialization()
             //перезапись
@@ -90,17 +84,8 @@ try {
         binding.toolbar.setTitle("Все композиции")
         Navigation()
 
-        //кнопка "случайное"
-//        binding.shuffleBTN.setOnClickListener {
-//            val bottomSheet = PlayerFragment.newInstance()
-//            val bundle = Bundle()
-//            bundle.putInt("index", 0)
-//            bundle.putString("class", "MainActivity")
-//            bottomSheet.arguments = bundle
-//            bottomSheet.show(supportFragmentManager, bottomSheet.tag)
-//        }
-        //
 
+        //
         binding.refreshLayout.setOnRefreshListener {
             MusicListMA = getAllAudio()
             musicAdapter.updateMusicList(MusicListMA)
@@ -109,8 +94,10 @@ try {
         }
 }
 catch (ex:Exception){
-    Toast.makeText(this,ex.toString(),Toast.LENGTH_SHORT).show()
+binding.totalSongs.text=ex.toString()
 }
+        var fragments= arrayListOf(AllMusicFragment(),AlbumsFragment(),FavouritesFragment(),PlaylistsFragment())
+
     }
 
     override fun onDestroy() {
@@ -146,24 +133,35 @@ catch (ex:Exception){
     @RequiresApi(Build.VERSION_CODES.R)
     @SuppressLint("SetTextI18n")
     private fun initialization(){
-
         //поиск
-        search=false
-
-        var sortEditor=getSharedPreferences("SORTING", MODE_PRIVATE)
-        sort=sortEditor.getInt("sortOrder",0)
-
+        search = false
+        var sortEditor = getSharedPreferences("SORTING", MODE_PRIVATE)
+        sort = sortEditor.getInt("sortOrder", 0)
         MusicListMA = getAllAudio()
 
-        var rv=findViewById<RecyclerView>(R.id.list_music)
-        rv.setHasFixedSize(true)
-        rv.setItemViewCacheSize(13)
-        rv.layoutManager= LinearLayoutManager(this@MainActivity)
+        binding.listMusic.setHasFixedSize(true)
+        binding.listMusic.setItemViewCacheSize(13)
+        binding.listMusic.layoutManager= LinearLayoutManager(this@MainActivity)
         musicAdapter=AdapterMusicList(this@MainActivity, MusicListMA)
-        rv.adapter=musicAdapter
+        binding.listMusic.adapter=musicAdapter
+
 
         var totalSongs = findViewById<TextView>(R.id.totalSongs)
         totalSongs.text = "Всего песен: ${musicAdapter.itemCount}"
+
+
+//        // Проверяем, существует ли уже фрагмент с помощью метода findFragmentByTag
+//        var allMusicFragment = supportFragmentManager.findFragmentByTag("AllMusicFragment") as AllMusicFragment?
+//
+//        // Если фрагмент не был создан ранее, создаем новый экземпляр
+//        if (allMusicFragment == null) {
+//            allMusicFragment = AllMusicFragment()
+//            // Добавляем фрагмент в контейнер, используя транзакцию
+//            supportFragmentManager.beginTransaction().add(R.id.fragment_container, allMusicFragment, "AllMusicFragment").commit()
+//        }
+//
+//        // Затем вызываем метод setMusicList и передаем список музыкальных треков
+//        allMusicFragment.setMusicList(MusicListMA)
     }
 
 

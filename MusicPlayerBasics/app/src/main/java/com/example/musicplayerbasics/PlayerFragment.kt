@@ -26,6 +26,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.renderscript.*
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -77,8 +78,6 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         var isFavourite:Boolean=false
         var fIndex:Int=-1
     }
-
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         activity?.window?.apply {
@@ -89,12 +88,10 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
         }
-
-        // Устанавливаем флаги для прозрачности и full screen
+        // прозрачность и полный экран
         dialog?.window?.apply {
             setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         }
-
         binding = ActivityPlayerBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -107,6 +104,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val bottomSheet: FrameLayout = dialog?.findViewById(com.google.android.material.R.id.design_bottom_sheet)!!
@@ -118,9 +116,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             peekHeight = resources.displayMetrics.heightPixels // Pop-up height
             state = BottomSheetBehavior.STATE_EXPANDED // Expanded state
             addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                }
-
+                override fun onStateChanged(bottomSheet: View, newState: Int) {}
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             })
         }
@@ -264,12 +260,89 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                     Toast.makeText(requireContext(),"Композиция добавлена в Избранное",Toast.LENGTH_SHORT).show()
                 }
             }
+            //shuffle
             binding.shuffleBTN.setOnClickListener {
-                musicListPA.shuffle() // Shuffle the music list
-                songPosition = 0 // Reset the song position to start from the beginning after shuffling
-                setLayout() // Update the layout with the shuffled music
-                createMP() // Create media player with the newly shuffled music
+                musicListPA.shuffle()
+                songPosition = 0
+                setLayout()
+                createMP()
             }
+
+            //свайпы и жесты
+            view.setOnTouchListener(object : View.OnTouchListener {
+                private val MIN_DISTANCE = 200
+                private var x1 = 0f
+                private var x2 = 0f
+                private var screenWidth = 0
+
+                private var lastTapTimeLeft: Long = 0
+                private var lastTapTimeRight: Long = 0
+                private val DOUBLE_TAP_DELAY: Long = 500 // Время задержки для двойного нажатия (в миллисекундах)
+                private val MAX_SWIPES = 2 // Количество свайпов для множественного нажатия
+                private var swipeCountLeft = 1
+                private var swipeCountRight = 1
+
+                override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                    when (event?.action) {
+                        MotionEvent.ACTION_DOWN -> {
+                            x1 = event.rawX
+                            return true
+                        }
+                        MotionEvent.ACTION_UP -> {
+
+                            val time = System.currentTimeMillis()
+
+                            // Проверка для двойного нажатия влево
+                            if (x2 < x1 && time - lastTapTimeLeft < DOUBLE_TAP_DELAY) {
+                                swipeCountLeft++
+                                if (swipeCountLeft >= MAX_SWIPES) {
+                                    // Выполнить перемотку влево на 5 секунд
+                                    seekBackward(5000)
+                                    Toast.makeText(requireContext(), "backward", Toast.LENGTH_SHORT).show()
+                                    swipeCountLeft = 0
+                                }
+                            } else {
+                                swipeCountLeft = 1
+                            }
+                            lastTapTimeLeft = time
+
+                            // Проверка для двойного нажатия вправо
+                            if (x2 > x1 && time - lastTapTimeRight < DOUBLE_TAP_DELAY) {
+                                swipeCountRight++
+                                if (swipeCountRight >= MAX_SWIPES) {
+                                    // Выполнить перемотку вправо на 5 секунд
+                                    seekForward(5000)
+                                    Toast.makeText(requireContext(), "forward", Toast.LENGTH_SHORT).show()
+                                    swipeCountRight = 0
+                                }
+                            } else {
+                                swipeCountRight = 1
+                            }
+                            lastTapTimeRight = time
+
+
+                            x2 = event.rawX
+                            val deltaX = x2 - x1
+                            val threshold = MIN_DISTANCE.coerceAtMost(screenWidth / 2)
+                            if (Math.abs(deltaX) > threshold) {
+                                // Обработка свайпа
+                                if (x2 < x1) {
+                                    // Свайп влево
+                                    Toast.makeText(requireContext(), "right", Toast.LENGTH_SHORT).show()
+                                    musicNextPrev(true)
+                                }
+                                else {
+                                    // Свайп вправо
+                                    Toast.makeText(requireContext(), "left", Toast.LENGTH_SHORT).show()
+                                    musicNextPrev(false)
+                                }
+                                return true
+                            }
+                        }
+                    }
+                    return false
+                }
+            })
         }
         catch (ex:Exception){
             binding.songTITLE.text=ex.toString()
@@ -418,23 +491,13 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_border_24)
         }
 
-        val metadataText = retrieveMetadata()
-        binding.metadata.text = metadataText
+        retrieveMetadata()
+        //binding.metadata.text = metadataText
+        BG()
+    }
 
-
-//        val img = getImage(musicListPA[songPosition].path)
-//        val image = if (img != null) {
-//            BitmapFactory.decodeByteArray(img, 0, img.size)
-//        } else {
-//            BitmapFactory.decodeResource(resources, R.drawable.icon)
-//        }
-//        val bgColor = getMainColor(image)
-//
-//        val gradient = GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, intArrayOf(bgColor, bgColor))
-//        gradient.cornerRadius = resources.getDimension(R.dimen.corner_radius)
-//        gradient.setStroke(resources.getDimensionPixelSize(R.dimen.stroke_width), Color.BLACK)
-//        binding.bgPlayer.background = gradient
-
+    //задний фон
+    fun BG(){
         val img = getImage(musicListPA[songPosition].path)
         if (img != null) {
             // Создаем Bitmap из полученных данных изображения
@@ -456,15 +519,23 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             val layersDrawable = LayerDrawable(arrayOf(drawable, gradientDrawable))
             // Устанавливаем созданный Drawable в качестве фона
             binding.bgPlayer.background = layersDrawable
+
+            //
+            val image = if (img != null) {
+                BitmapFactory.decodeByteArray(img, 0, img.size)
+            } else {
+                BitmapFactory.decodeResource(resources, R.drawable.icon)
+            }
+            val bgColor = getMainColor(image)
+            val gradient = GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, intArrayOf(bgColor, bgColor))
+            gradient.cornerRadius = resources.getDimension(R.dimen.corner_radius)
+            binding.albumIMGBack.background = gradient
         } else {
             // Если изображение не получено, устанавливаем стандартный фон
             binding.bgPlayer.setBackgroundResource(MainActivity.currentGradient[MainActivity.themeIndex])
         }
-
-
     }
-
-
+    //блюр
     fun blurBitmap(bitmap: Bitmap, radius: Float, context: Context): Bitmap {
         val rs = RenderScript.create(context)
         val input = Allocation.createFromBitmap(rs, bitmap)
@@ -523,6 +594,13 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
 
     //след\пред музыка
     private fun musicNextPrev(increment: Boolean) {
+        if (!isFont) {
+            fontAnim.setTarget(binding.albumBack)
+            backAnim.setTarget(binding.albumFont)
+            fontAnim.start()
+            backAnim.start()
+            isFont = true
+        }
         if (increment) {
             songPosition(true)
             setLayout()
@@ -545,12 +623,11 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         createMP()
         musicService!!.seekBarSetup()
     }
-
     override fun onServiceDisconnected(name: ComponentName?) {
         musicService = null
     }
 
-    //song completed
+    //завершение песни
     override fun onCompletion(mp: MediaPlayer?) {
         songPosition(increment = true)
         createMP()
@@ -576,7 +653,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         }
     }
 
-    //timer
+    //таймер
     private fun showSheetTimer() {
         val dialog = BottomSheetDialog(requireContext())
         dialog.setContentView(R.layout.timer_sheet)
@@ -614,18 +691,14 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             dialog.dismiss()
         }
     }
-
-    fun retrieveMetadata(): String {
+    //метаданные
+    fun retrieveMetadata() {
         val retriever = MediaMetadataRetriever()
         var path = retriever.setDataSource(musicListPA[songPosition].path)
-
-        val title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE) ?: "Неизвестное название"
-        val artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST) ?: "Неизвестный исполнитель"
-        val album = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM) ?: "Неизвестный альбом"
+        val album = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM) ?: "-"
         val bitrateT = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE)?.toDoubleOrNull()?.div(1000)?.toInt()
         val sampleRateT = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_SAMPLERATE)?.toDoubleOrNull()?.div(1000)
-        val genre = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE) ?: "Неизвестный жанр"
-
+        val genre = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE) ?: "-"
         val mex = MediaExtractor()
         mex.setDataSource(musicListPA[songPosition].path)
         val mf = mex.getTrackFormat(0)
@@ -636,10 +709,8 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         retriever.release()
 
         val bitDepth = bitDepthString?.toIntOrNull() ?: 16
-
         // Проверка разрядности и частоты дискретизации
         val isHighResolution = bitDepth >= 24 && sampleRateT != null && sampleRateT >= 48.0
-
         // Отображение логотипа в зависимости от условий
         binding.hiresLogo.visibility = if (isHighResolution) View.VISIBLE else View.GONE
 
@@ -647,13 +718,43 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         val filePath = musicListPA[songPosition].path
         val fileExtension = filePath.substringAfterLast(".", "Неизвестно")
 
-        return "Альбом: $album\n" +
-                "Скорость передачи бит. : $bitrateT Кбит/сек\n" +
-                "Частота дискретизации: $sampleRateT КГц\n" +
-                "Разрядность бит. : ${bitDepth} бит\n" +
-                "Жанр(ы): $genre\n" +
-                "Каналы: $channels\n" +
-                "Кодек: $codec\n" +
-                "Формат: ${fileExtension.toUpperCase()}"
+
+        binding.AlbumMETA.text="Альбом: $album"
+        binding.AlbumMETA.isSelected=true
+        binding.GenreMETA.text="Жанр(ы): $genre"
+        binding.BitrateMETA.text= "Битрейт: $bitrateT Кбит/сек"
+        binding.SampleRateMETA.text="Частота сэмплов: ${sampleRateT} КГц"
+        binding.ChannelsMETA.text=  "Каналы: $channels"
+        binding.DepthMETA.text="Разрядность: ${bitDepth} бит"
+        //binding.CodecMETA.text="Кодек: $codec"
+
+        when (fileExtension.toUpperCase()){
+            "FLAC"-> binding.formatLogo.setImageResource(R.drawable.flac)
+            "MP3"-> binding.formatLogo.setImageResource(R.drawable.mp3logo)
+            "M4A"-> binding.formatLogo.setImageResource(R.drawable.alac)
+            "WAV"-> binding.formatLogo.setImageResource(R.drawable.wav)
+            "DTS"-> binding.formatLogo.setImageResource(R.drawable.dts)
+            "AC3"-> binding.formatLogo.setImageResource(R.drawable.dolbylogo)
+        }
+
+    }
+    private fun seekForward(milliseconds: Int) {
+        val newPosition = musicService!!.mediaPlayer!!.currentPosition + milliseconds
+        if (newPosition < musicService!!.mediaPlayer!!.duration) {
+            musicService!!.mediaPlayer!!.seekTo(newPosition)
+        } else {
+            // Перемотка до конца композиции
+            musicService!!.mediaPlayer!!.seekTo(musicService!!.mediaPlayer!!.duration)
+        }
+    }
+
+    private fun seekBackward(milliseconds: Int) {
+        val newPosition = musicService!!.mediaPlayer!!.currentPosition - milliseconds
+        if (newPosition > 0) {
+            musicService!!.mediaPlayer!!.seekTo(newPosition)
+        } else {
+            // Перемотка до начала композиции
+            musicService!!.mediaPlayer!!.seekTo(0)
+        }
     }
 }

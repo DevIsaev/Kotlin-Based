@@ -29,10 +29,10 @@ class NotificationReceiver:BroadcastReceiver() {
         }
     }
     private fun playMusic(){
-    PlayerFragment.isPlaying=true
-    PlayerFragment.musicService!!.mediaPlayer!!.start()
-    PlayerFragment.musicService!!.showNotification(R.drawable.baseline_pause_24)
-    PlayerFragment.binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
+        PlayerFragment.isPlaying=true
+        PlayerFragment.musicService!!.mediaPlayer!!.start()
+        PlayerFragment.musicService!!.showNotification(R.drawable.baseline_pause_24)
+        PlayerFragment.binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
         NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_pause_24)
 }
     private fun pauseMusic(){
@@ -43,27 +43,29 @@ class NotificationReceiver:BroadcastReceiver() {
         NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_play_arrow_24)
     }
     private  fun prevNextSong(increment:Boolean,context: Context){
-        songPosition(increment=increment)
+        songPosition(increment = increment)
         PlayerFragment.musicService!!.createMP()
         Glide.with(context)
             .load(PlayerFragment.musicListPA[PlayerFragment.songPosition].artURI)
             .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
             .into(PlayerFragment.binding.albumIMGFont)
-        PlayerFragment.binding.songTITLE.text= PlayerFragment.musicListPA[PlayerFragment.songPosition].title +"\n"+ PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
+        PlayerFragment.binding.songTITLE.text =
+            PlayerFragment.musicListPA[PlayerFragment.songPosition].title + "\n" + PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
 
         Glide.with(context)
             .load(PlayerFragment.musicListPA[PlayerFragment.songPosition].artURI)
             .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
             .into(NowPlaying.binding.albumNP)
-        NowPlaying.binding.songNP.text = PlayerFragment.musicListPA[PlayerFragment.songPosition].title
-        NowPlaying.binding.artistNP.text=PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
+        NowPlaying.binding.songNP.text =
+            PlayerFragment.musicListPA[PlayerFragment.songPosition].title
+        NowPlaying.binding.artistNP.text =
+            PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
         playMusic()
 
-        PlayerFragment.fIndex= favouriteCheck(PlayerFragment.musicListPA[PlayerFragment.songPosition].id)
-        if (PlayerFragment.isFavourite){
+        PlayerFragment.fIndex = favouriteCheck(PlayerFragment.musicListPA[PlayerFragment.songPosition].id)
+        if (PlayerFragment.isFavourite) {
             PlayerFragment.binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_24)
-        }
-        else{
+        } else {
             PlayerFragment.binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_border_24)
         }
     }

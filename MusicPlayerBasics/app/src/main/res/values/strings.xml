@@ -17,4 +17,6 @@
     <string name="min60">1 час</string>
     <string name="o" tools:ignore="ExtraTranslation">open</string>
     <string name="c">close</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -60,15 +60,6 @@ fun favouriteCheck(id: String): Int{
 
 fun playlistCheck(playlist: ArrayList<Music>):ArrayList<Music>{
 
-//    var index: Int
-//    index = 0
-//    while (index < playlist.size) {
-//        val file=File(playlist[index].path)
-//        if (!file.exists()){
-//            playlist.removeAt(index)
-//        }
-//        index++
-//    }
     playlist.forEachIndexed { index, music ->
         val file = File(music.path)
         if(!file.exists())
@@ -94,7 +85,6 @@ fun restartApp(context: Context) {
     context.startActivity(mainIntent)
     exitProcess(0)
 }
-
 
 fun getMainColor(img: Bitmap): Int {
     val newImg = Bitmap.createScaledBitmap(img, 1,1 , true)

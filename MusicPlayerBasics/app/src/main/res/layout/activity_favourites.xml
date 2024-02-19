@@ -62,22 +62,6 @@
             android:layoutAnimation="@anim/layout_animation_rc"
             android:layout_marginTop="10dp"/>
 
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/shuffleBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/white"
-            app:icon="@drawable/baseline_shuffle_24"
-            app:iconSize="35dp"
-            app:iconTint="?attr/themeColors"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.892"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.829"
-            app:strokeColor="?attr/themeColors"
-            app:strokeWidth="2dp" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/nowPlaying"

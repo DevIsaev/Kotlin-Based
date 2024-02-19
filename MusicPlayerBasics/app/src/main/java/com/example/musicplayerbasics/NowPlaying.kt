@@ -60,6 +60,7 @@ companion object{
         super.onResume()
        initialized()
     }
+    //инициализация
     private fun initialized(){
         try {
             if (PlayerFragment.musicService != null) {
