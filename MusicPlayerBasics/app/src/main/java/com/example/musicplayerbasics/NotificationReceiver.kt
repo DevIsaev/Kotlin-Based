@@ -10,22 +10,12 @@ class NotificationReceiver:BroadcastReceiver() {
     //воспроизведение фоном в виде уведомления
     override fun onReceive(context:  Context?, intent: Intent?) {
         when(intent?.action){
-            ApplicationClass.PLAY-> {
-                if (PlayerFragment.isPlaying) {
-                    pauseMusic()
-                } else {
-                    playMusic()
-                }
-            }
-            ApplicationClass.EXIT->{
-                exitApp()
-            }
-            ApplicationClass.NEXT-> {
-                prevNextSong(increment = true,context=context!!)
-            }
-            ApplicationClass.PREVIOUS->{
-                prevNextSong(increment = false,context=context!!)
-            }
+
+
+            ApplicationClass.PREVIOUS -> if(PlayerFragment.musicListPA.size > 1) prevNextSong(increment = false, context = context!!)
+            ApplicationClass.PLAY -> if(PlayerFragment.isPlaying) pauseMusic() else playMusic()
+            ApplicationClass.NEXT -> if(PlayerFragment.musicListPA.size > 1) prevNextSong(increment = true, context = context!!)
+            ApplicationClass.EXIT ->{ exitApp() }
         }
     }
     private fun playMusic(){

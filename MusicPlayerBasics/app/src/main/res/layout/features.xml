@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/infoBtn"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:icon="@drawable/baseline_search_24"
+        android:text="info"
+        app:iconGravity="top"
+        android:textAllCaps="false"
+        android:layout_weight="1"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:textColor="@color/white"
+        app:iconTint="@color/white"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/favBtn"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:icon="@drawable/baseline_favorite_24"
+        android:text="Добавить в избранное"
+        app:iconGravity="top"
+        android:textAllCaps="false"
+        android:layout_weight="1"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:textColor="@color/white"
+        android:textSize="8sp"
+        app:iconTint="@color/white"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/playlistBtn"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:icon="@drawable/baseline_library_music_24"
+        android:text="Добавить в плейлист"
+        app:iconGravity="top"
+        android:textAllCaps="false"
+        android:layout_weight="1"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:textColor="@color/white"
+        android:textSize="8sp"
+        app:iconTint="@color/white"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/delBtn"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:icon="@drawable/baseline_delete_24"
+        android:text="info"
+        app:iconGravity="top"
+        android:textAllCaps="false"
+        android:layout_weight="1"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:textColor="@color/white"
+        app:iconTint="@color/white"/>
+</LinearLayout>

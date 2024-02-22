@@ -12,7 +12,9 @@ import android.content.ServiceConnection
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.media.AudioManager
@@ -21,6 +23,7 @@ import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.media.audiofx.AudioEffect
+import android.media.audiofx.LoudnessEnhancer
 import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
@@ -38,11 +41,13 @@ import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.musicplayerbasics.databinding.ActivityPlayerBinding
+import com.example.musicplayerbasics.databinding.AudioBoosterBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.GsonBuilder
+
 
 
 class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer.OnCompletionListener {
@@ -60,7 +65,6 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         lateinit var musicListPA: ArrayList<Music>
         var songPosition: Int = 0
 
-        //var mediaPlayer:MediaPlayer?=null
         var isPlaying: Boolean = false
         var musicService: MusicSevice? = null
 
@@ -77,6 +81,8 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
 
         var isFavourite:Boolean=false
         var fIndex:Int=-1
+
+        lateinit var loudnessEnhancer: LoudnessEnhancer
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -169,12 +175,11 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             }
             //длительность
             binding.SeekBarDuration.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(
-                    seekBar: SeekBar?,
-                    progress: Int,
-                    fromUser: Boolean
-                ) {
-                    if (fromUser) musicService!!.mediaPlayer!!.seekTo(progress)
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    if (fromUser){
+                        musicService!!.mediaPlayer!!.seekTo(progress)
+                        musicService!!.showNotification(if(isPlaying) R.drawable.baseline_pause_24 else R.drawable.baseline_play_arrow_24)
+                    }
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) = Unit
@@ -268,6 +273,11 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                 createMP()
             }
 
+            //увеличение громкости
+            binding.bassBTN.setOnClickListener {
+               showSheetBass()
+            }
+
             //свайпы и жесты
             view.setOnTouchListener(object : View.OnTouchListener {
                 private val MIN_DISTANCE = 200
@@ -349,6 +359,8 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             Toast.makeText(requireContext(),ex.toString(),Toast.LENGTH_SHORT).show()
         }
     }
+
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -557,20 +569,22 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             musicService!!.mediaPlayer!!.reset()
             musicService!!.mediaPlayer!!.setDataSource(musicListPA[songPosition].path)
             musicService!!.mediaPlayer!!.prepare()
-            musicService!!.mediaPlayer!!.start()
-            isPlaying = true
-            binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
-            musicService!!.showNotification(R.drawable.baseline_pause_24)
+            //musicService!!.mediaPlayer!!.start()
+//            isPlaying = true
+//            binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
+//            musicService!!.showNotification(R.drawable.baseline_pause_24)
 
-            binding.durationCURRENT.text =
-                DurationFormat(musicService!!.mediaPlayer!!.currentPosition.toLong())
+            binding.durationCURRENT.text = DurationFormat(musicService!!.mediaPlayer!!.currentPosition.toLong())
             binding.durationEND.text = DurationFormat(musicService!!.mediaPlayer!!.duration.toLong())
+
             binding.SeekBarDuration.progress = 0
             binding.SeekBarDuration.max = musicService!!.mediaPlayer!!.duration
 
             musicService!!.mediaPlayer!!.setOnCompletionListener(this)
-
             nowPlayingId= musicListPA[songPosition].id
+            playMusic()
+            loudnessEnhancer = LoudnessEnhancer(musicService!!.mediaPlayer!!.audioSessionId)
+            loudnessEnhancer.enabled = true
         } catch (ex: Exception) {
             return
         }
@@ -579,17 +593,17 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
     //воспроизведение
     private fun playMusic() {
         isPlaying = true
+        musicService!!.mediaPlayer!!.start()
         binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
         musicService!!.showNotification(R.drawable.baseline_pause_24,)
-        musicService!!.mediaPlayer!!.start()
     }
 
     //пауза
     private fun pauseMusic() {
         isPlaying = false
+        musicService!!.mediaPlayer!!.pause()
         binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_play_arrow_24)
         musicService!!.showNotification(R.drawable.baseline_play_arrow_24)
-        musicService!!.mediaPlayer!!.pause()
     }
 
     //след\пред музыка
@@ -691,6 +705,60 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             dialog.dismiss()
         }
     }
+
+    //увеличение громкости
+    private fun showSheetBass() {
+        try {
+//            val bottomSheetDialog = BottomSheetDialog(requireContext())
+//            val customDialogB =
+//                LayoutInflater.from(requireContext()).inflate(R.layout.audio_booster, null)
+//            val bindingB = AudioBoosterBinding.bind(customDialogB)
+//
+//            bottomSheetDialog.setContentView(customDialogB)
+//
+//            bottomSheetDialog.setOnCancelListener { playMusic() }
+//
+//            bindingB.verticalBar.progress = loudnessEnhancer.targetGain.toInt() / 100
+//            bindingB.progressText.text =
+//                "Audio Boost\n${loudnessEnhancer.targetGain.toInt() / 10} %"
+//
+//            bindingB.verticalBar.setOnProgressChangeListener {
+//                bindingB.progressText.text = "Audio Boost\n${it * 10} %"
+//            }
+//
+//            bindingB.okButton.setOnClickListener {
+//                loudnessEnhancer.setTargetGain(bindingB.verticalBar.progress * 100)
+//                playMusic()
+//                bottomSheetDialog.dismiss()
+//            }
+//
+//            bottomSheetDialog.show()
+
+            val customDialogB = LayoutInflater.from(requireContext()).inflate(R.layout.audio_booster, binding.root, false)
+            val bindingB = AudioBoosterBinding.bind(customDialogB)
+            val dialogB = MaterialAlertDialogBuilder(requireContext()).setView(customDialogB)
+                .setOnCancelListener { playMusic() }
+                .setPositiveButton("OK"){self, _ ->
+                    loudnessEnhancer.setTargetGain(bindingB.verticalBar.progress * 100)
+                    playMusic()
+                    self.dismiss()
+                }
+                .setBackground(ColorDrawable(Color.GREEN))
+                .create()
+            dialogB.show()
+
+            bindingB.verticalBar.progress = loudnessEnhancer.targetGain.toInt()/100
+            bindingB.progressText.text = "Audio Boost\n${loudnessEnhancer.targetGain.toInt()/10} %"
+            bindingB.verticalBar.setOnProgressChangeListener {
+                bindingB.progressText.text = "Audio Boost\n${it*10} %"
+            }
+            setDialogBtnBackground(requireContext(), dialogB)
+        }
+        catch (ex:Exception){
+            binding.songTITLE.text=ex.toString()
+        }
+    }
+
     //метаданные
     fun retrieveMetadata() {
         val retriever = MediaMetadataRetriever()
@@ -738,6 +806,8 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         }
 
     }
+
+    //перемотка назад
     private fun seekForward(milliseconds: Int) {
         val newPosition = musicService!!.mediaPlayer!!.currentPosition + milliseconds
         if (newPosition < musicService!!.mediaPlayer!!.duration) {
@@ -747,7 +817,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             musicService!!.mediaPlayer!!.seekTo(musicService!!.mediaPlayer!!.duration)
         }
     }
-
+    //перемотка вперед
     private fun seekBackward(milliseconds: Int) {
         val newPosition = musicService!!.mediaPlayer!!.currentPosition - milliseconds
         if (newPosition > 0) {
@@ -757,4 +827,6 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             musicService!!.mediaPlayer!!.seekTo(0)
         }
     }
+
+
 }

@@ -61,6 +61,8 @@ dependencies {
 
     implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
+    implementation ("com.github.lukelorusso:VerticalSeekBar:1.2.7")
 
+    implementation ("com.github.xeinebiu:android_audioeffects:1.4.2")
 
 }

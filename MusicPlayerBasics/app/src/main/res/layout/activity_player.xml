@@ -234,6 +234,7 @@
     android:textColor="@color/white"
     android:textSize="13sp"
     android:text="@string/Start"
+    android:layout_gravity="start"
     android:gravity="center"/>
         <androidx.appcompat.widget.AppCompatSeekBar
             android:id="@+id/SeekBarDuration"
@@ -249,6 +250,7 @@
             android:textColor="@color/white"
             android:textSize="13sp"
             android:text="@string/End"
+            android:layout_gravity="end"
             android:gravity="center"/>
 
     </LinearLayout>
@@ -358,6 +360,17 @@
             android:background="@android:color/transparent"
             android:contentDescription="@string/ShareBTN"
             android:src="@drawable/baseline_share_24"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <ImageButton
+            android:id="@+id/bassBTN"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/ShareBTN"
+            android:src="@drawable/baseline_settings_remote_24"
             tools:ignore="TouchTargetSizeCheck" />
     </LinearLayout>
 </LinearLayout>

@@ -3,7 +3,10 @@ package com.example.musicplayerbasics
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.media.MediaMetadataRetriever
+import androidx.appcompat.app.AlertDialog
+import com.google.android.material.color.MaterialColors
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
@@ -34,13 +37,13 @@ fun getImage(path: String): ByteArray? {
 }
 fun songPosition(increment: Boolean){
     if(!PlayerFragment.repeat){
-        if (increment){
-            if(PlayerFragment.musicListPA.size-1== PlayerFragment.songPosition)
-                PlayerFragment.songPosition =0
+        if(increment)
+        {
+            if(PlayerFragment.musicListPA.size - 1 == PlayerFragment.songPosition)
+                PlayerFragment.songPosition = 0
             else ++PlayerFragment.songPosition
-        }
-        else{
-            if(0== PlayerFragment.songPosition)
+        }else{
+            if(0 == PlayerFragment.songPosition)
                 PlayerFragment.songPosition = PlayerFragment.musicListPA.size-1
             else --PlayerFragment.songPosition
         }
@@ -91,4 +94,22 @@ fun getMainColor(img: Bitmap): Int {
     val color = newImg.getPixel(0, 0)
     newImg.recycle()
     return color
+}
+
+fun setDialogBtnBackground(context: Context, dialog: AlertDialog){
+    //setting button text
+    dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE)?.setTextColor(
+        MaterialColors.getColor(context, R.attr.dialogTextColor, Color.WHITE)
+    )
+    dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE)?.setTextColor(
+        MaterialColors.getColor(context, R.attr.dialogTextColor, Color.WHITE)
+    )
+
+    //setting button background
+    dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE)?.setBackgroundColor(
+        MaterialColors.getColor(context, R.attr.dialogBtnBackground, Color.RED)
+    )
+    dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE)?.setBackgroundColor(
+        MaterialColors.getColor(context, R.attr.dialogBtnBackground, Color.RED)
+    )
 }

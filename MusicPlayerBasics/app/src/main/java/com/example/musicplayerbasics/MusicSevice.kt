@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.media.audiofx.LoudnessEnhancer
 import android.os.Binder
 import android.os.Build
 import android.os.Handler
@@ -73,21 +74,21 @@ class MusicSevice: Service(),AudioManager.OnAudioFocusChangeListener {
 
 
 //построение элемента уведомления
-    var notification = androidx.core.app.NotificationCompat.Builder(baseContext, ApplicationClass.CHANNEL_ID)//канал
-        .setContentIntent(contentIntent)
-        .setContentTitle(PlayerFragment.musicListPA[PlayerFragment.songPosition].title)
-        .setContentText(PlayerFragment.musicListPA[PlayerFragment.songPosition].artist)
-        .setSmallIcon(R.drawable.logo)
-        .setLargeIcon(Art)
-        .setStyle(androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediasssion.sessionToken))
-        .setPriority(androidx.core.app.NotificationCompat.PRIORITY_HIGH)
-        .setVisibility(androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC)
-        .setOnlyAlertOnce(true)
-        .addAction(R.drawable.baseline_skip_previous_24, "Previous", prevPendingIntent)
-        .addAction(PlayPause, "Play", playPendingIntent)
-        .addAction(R.drawable.baseline_skip_next_24, "Next", nextPendingIntent)
-        .addAction(R.drawable.baseline_clear_24, "Exit", exitPendingIntent)
-        .build()
+        val notification = androidx.core.app.NotificationCompat.Builder(baseContext, ApplicationClass.CHANNEL_ID)
+            .setContentIntent(contentIntent)
+            .setContentTitle(PlayerFragment.musicListPA[PlayerFragment.songPosition].title)
+            .setContentText(PlayerFragment.musicListPA[PlayerFragment.songPosition].artist)
+            .setSmallIcon(R.drawable.logo)
+            .setLargeIcon(Art)
+            .setStyle(androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediasssion.sessionToken))
+            .setPriority(androidx.core.app.NotificationCompat.PRIORITY_HIGH)
+            .setVisibility(androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC)
+            .setOnlyAlertOnce(true)
+            .addAction(R.drawable.baseline_skip_previous_24, "Previous", prevPendingIntent)
+            .addAction(PlayPause, "Play", playPendingIntent)
+            .addAction(R.drawable.baseline_skip_next_24, "Next", nextPendingIntent)
+            .addAction(R.drawable.baseline_clear_24, "Exit", exitPendingIntent)
+            .build()
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
             val playbackSpeed = if(PlayerFragment.isPlaying) 1F else 0F
@@ -148,10 +149,14 @@ class MusicSevice: Service(),AudioManager.OnAudioFocusChangeListener {
 
             PlayerFragment.binding.durationCURRENT.text= DurationFormat(mediaPlayer!!.currentPosition.toLong())
             PlayerFragment.binding.durationEND.text= DurationFormat(mediaPlayer!!.duration.toLong())
+
             PlayerFragment.binding.SeekBarDuration.progress=0
             PlayerFragment.binding.SeekBarDuration.max= mediaPlayer!!.duration
 
             PlayerFragment.nowPlayingId = PlayerFragment.musicListPA[PlayerFragment.songPosition].id
+
+            PlayerFragment.loudnessEnhancer = LoudnessEnhancer(mediaPlayer!!.audioSessionId)
+            PlayerFragment.loudnessEnhancer.enabled = true
         }
         catch (ex:Exception){
             return
@@ -174,17 +179,18 @@ class MusicSevice: Service(),AudioManager.OnAudioFocusChangeListener {
         //пауза
             PlayerFragment.binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_play_arrow_24)
             NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_play_arrow_24)
-            showNotification(R.drawable.baseline_play_arrow_24)
             PlayerFragment.isPlaying = false
             mediaPlayer!!.pause()
+            showNotification(R.drawable.baseline_play_arrow_24)
         }
         else{
             //воспроизведение
             PlayerFragment.binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
             NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_pause_24)
-            showNotification(R.drawable.baseline_pause_24)
             PlayerFragment.isPlaying = true
             mediaPlayer!!.start()
+            showNotification(R.drawable.baseline_pause_24)
         }
     }
+
 }

@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="?attr/themeColors"
     >
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Таймер"
-        android:textColor="@color/black"
+        android:textColor="@color/backgroundColor"
         android:textSize="18sp"
         android:layout_marginTop="2dp"
         android:gravity="center"/>
@@ -33,7 +33,7 @@
     android:layout_height="match_parent"
     android:text="@string/min15"
     android:textSize="16sp"
-    android:textColor="@color/black"
+    android:textColor="@color/backgroundColor"
     android:padding="8dp"/>
 </LinearLayout>
     <LinearLayout
@@ -54,7 +54,7 @@
             android:layout_height="match_parent"
             android:text="@string/min30"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/backgroundColor"
             android:padding="8dp"/>
     </LinearLayout>
     <LinearLayout
@@ -75,7 +75,7 @@
             android:layout_height="match_parent"
             android:text="@string/min45"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/backgroundColor"
             android:padding="8dp"/>
     </LinearLayout>
     <LinearLayout
@@ -96,7 +96,7 @@
             android:layout_height="match_parent"
             android:text="@string/min60"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/backgroundColor"
             android:padding="8dp"/>
     </LinearLayout>
 </LinearLayout>
