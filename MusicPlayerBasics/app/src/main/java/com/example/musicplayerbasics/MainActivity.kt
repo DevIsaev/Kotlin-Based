@@ -1,6 +1,7 @@
 package com.example.musicplayerbasics
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -10,7 +11,6 @@ import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -35,11 +35,11 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     var drawer: DrawerLayout? = null
     lateinit var toggle: ActionBarDrawerToggle
 
-    private lateinit var musicAdapter: AdapterMusicList
+
 
     companion object {
         lateinit var MusicListMA: ArrayList<Music>
-
+        lateinit var musicAdapter: AdapterMusicList
         lateinit var MusicListSearch: ArrayList<Music>
         var search: Boolean = false
 
@@ -49,14 +49,24 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             R.style.coolBlue,
             R.style.coolPurple,
             R.style.coolGreen,
-            R.style.coolBlack
+            R.style.coolBlack,
+            R.style.coolCustom1,
+            R.style.coolCustom2,
+            R.style.coolCustom3,
+            R.style.coolCustom4,
+            R.style.coolCustom5,
         )
         val currentThemeNav = arrayOf(
             R.style.coolPinkNav,
             R.style.coolBlueNav,
             R.style.coolPurpleNav,
             R.style.coolGreenNav,
-            R.style.coolBlackNav
+            R.style.coolBlackNav,
+            R.style.coolCustom1Nav,
+            R.style.coolCustom2Nav,
+            R.style.coolCustom3Nav,
+            R.style.coolCustom4Nav,
+            R.style.coolCustom5Nav,
         )
 
         val currentGradient = arrayOf(
@@ -64,7 +74,12 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             R.drawable.gradient_blue,
             R.drawable.gradient_purple,
             R.drawable.gradient_green,
-            R.drawable.gradient_black
+            R.drawable.gradient_black,
+            R.drawable.gradient1,
+            R.drawable.gradient2,
+            R.drawable.gradient3,
+            R.drawable.gradient4,
+            R.drawable.gradient5,
         )
 
         var sort: Int = 0
@@ -85,7 +100,6 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         setTheme(currentThemeNav[themeIndex])
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         try {
             if (requestRuntimePermission()) {
                 initialization()
@@ -115,7 +129,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             binding.refreshLayout.setOnRefreshListener {
                 MusicListMA = getAllAudio()
                 musicAdapter.updateMusicList(MusicListMA)
-
+                binding.totalSongs.text = "Всего песен: ${musicAdapter.itemCount}"
                 binding.refreshLayout.isRefreshing = false
             }
         } catch (ex: Exception) {
@@ -176,15 +190,13 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         musicAdapter = AdapterMusicList(this@MainActivity, MusicListMA)
         binding.listMusic.adapter = musicAdapter
 
-
-        var totalSongs = findViewById<TextView>(R.id.totalSongs)
-        totalSongs.text = "Всего песен: ${musicAdapter.itemCount}"
+        binding.totalSongs.text = "Всего песен: ${musicAdapter.itemCount}"
 
     }
         //получение всех аудио
         @SuppressLint("Recycle", "Range")
         @RequiresApi(Build.VERSION_CODES.R)
-        private fun getAllAudio(): ArrayList<Music> {
+         fun getAllAudio(): ArrayList<Music> {
             val tempList = ArrayList<Music>()
             val selection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
             val projection = arrayOf(
@@ -254,61 +266,49 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             return tempList
         }
 
-        //запрос разрешения
-        private fun requestRuntimePermission(): Boolean {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                if (ActivityCompat.checkSelfPermission(
-                        this,
-                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    )
-                    != PackageManager.PERMISSION_GRANTED
-                ) {
-                    ActivityCompat.requestPermissions(
-                        this,
-                        arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                        13
-                    )
-                    return false
-                }
-            }
-            //android 13 permission request
-            else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
-                if (ActivityCompat.checkSelfPermission(
-                        this,
-                        android.Manifest.permission.READ_MEDIA_AUDIO
-                    )
-                    != PackageManager.PERMISSION_GRANTED
-                ) {
-                    ActivityCompat.requestPermissions(
-                        this,
-                        arrayOf(android.Manifest.permission.READ_MEDIA_AUDIO),
-                        13
-                    )
-                    return false
-                }
-            }
-            return true
-        }
-
-        @RequiresApi(Build.VERSION_CODES.R)
-        override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<out String>,
-            grantResults: IntArray
-        ) {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-            if (requestCode == 13) {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
-                    initialization()
-                } else
-                    ActivityCompat.requestPermissions(
-                        this,
-                        arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                        13
-                    )
+    // запрос разрешения
+    private fun requestRuntimePermission(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+                != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE
+                )
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE
+                    ),
+                    13
+                )
+                return true
             }
         }
+        // android 13 permission request
+        else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.READ_MEDIA_AUDIO
+                )
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(android.Manifest.permission.READ_MEDIA_AUDIO),
+                    13
+                )
+                return true
+            }
+        }
+        return true
+    }
 
         //Navigation drawer
         private fun Navigation() {
@@ -375,7 +375,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
                 R.id.IDSettings -> {
                     val itent = Intent(this, Settings::class.java)
-                    startActivity(itent)
+                    startActivityForResult(itent,SETTINGS_REQUEST_CODE)
                 }
 
                 R.id.IDPlugIn -> {
@@ -435,4 +435,17 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             })
             return super.onCreateOptionsMenu(menu)
         }
+
+    val SETTINGS_REQUEST_CODE = 1 // Уникальный код запроса
+
+
+
+    // Метод обработки результата обратного вызова из SettingsActivity
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == SETTINGS_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            // Обновите тему или выполните другие действия при изменении настроек в SettingsActivity
+            finishAffinity() // Пересоздаем Activity, чтобы применить новую тему
+        }
+    }
 }

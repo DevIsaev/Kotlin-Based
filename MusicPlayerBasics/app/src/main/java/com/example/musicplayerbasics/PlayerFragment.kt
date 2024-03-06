@@ -22,7 +22,6 @@ import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
-import android.media.audiofx.AudioEffect
 import android.media.audiofx.LoudnessEnhancer
 import android.net.Uri
 import android.os.Bundle
@@ -33,10 +32,13 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.SeekBar
+import android.widget.Spinner
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -47,7 +49,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.GsonBuilder
-
 
 
 class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer.OnCompletionListener {
@@ -83,6 +84,8 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         var fIndex:Int=-1
 
         lateinit var loudnessEnhancer: LoudnessEnhancer
+
+        var isBG=false
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -128,6 +131,8 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         }
 
         try {
+
+
             //изображение альбома
             binding.albumFont.setOnClickListener {
                 if (isFont) {
@@ -196,20 +201,26 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                     binding.repeatBTN.setImageResource(R.drawable.baseline_repeat_24)
                 }
             }
+//            val audioSessionId = musicService!!.mediaPlayer!!.audioSessionId
+//            val audioEffectManager = AudioEffectManager(audioSessionId)
             //эквалайзер
             binding.equalizerBTN.setOnClickListener {
                 try {
-                    val eqIntent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
-                    eqIntent.putExtra(
-                        AudioEffect.EXTRA_AUDIO_SESSION,
-                        musicService!!.mediaPlayer!!.audioSessionId
-                    )
-                    eqIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context?.packageName)
-                    eqIntent.putExtra(
-                        AudioEffect.EXTRA_CONTENT_TYPE,
-                        AudioEffect.CONTENT_TYPE_MUSIC
-                    )
-                    startActivityForResult(eqIntent, 13)
+//                    val eqIntent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
+//                    eqIntent.putExtra(
+//                        AudioEffect.EXTRA_AUDIO_SESSION,
+//                        musicService!!.mediaPlayer!!.audioSessionId
+//                    )
+//                    eqIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context?.packageName)
+//                    eqIntent.putExtra(
+//                        AudioEffect.EXTRA_CONTENT_TYPE,
+//                        AudioEffect.CONTENT_TYPE_MUSIC
+//                    )
+//                    startActivityForResult(eqIntent, 13)
+//
+//                    val audioEffectViewHelper = AudioEffectViewHelper(requireContext(), childFragmentManager, audioEffectManager)
+//                    audioEffectViewHelper.showAsDialog()
+                        openEqualizerDialog()
                 } catch (e: Exception) {
                     Toast.makeText(context, "Эквалайзер не поддерживается", Toast.LENGTH_LONG)
                         .show()
@@ -477,7 +488,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
     }
 
     //вид
-    private fun setLayout() {
+    fun setLayout() {
         fIndex= favouriteCheck(musicListPA[songPosition].id)
         Glide.with(this)
             .load(musicListPA[songPosition].artURI)
@@ -507,6 +518,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         //binding.metadata.text = metadataText
         BG()
     }
+
 
     //задний фон
     fun BG(){
@@ -544,7 +556,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             binding.albumIMGBack.background = gradient
         } else {
             // Если изображение не получено, устанавливаем стандартный фон
-            binding.bgPlayer.setBackgroundResource(MainActivity.currentGradient[MainActivity.themeIndex])
+            binding.bgPlayer.setBackgroundResource(R.drawable.gradient)
         }
     }
     //блюр
@@ -828,5 +840,40 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         }
     }
 
+    private fun openEqualizerDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.equalizer, null)
+        val builder = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setTitle("Equalizer")
 
+        val dialog = builder.create()
+        dialog.show()
+
+        // Находим элементы управления в диалоге
+        val seekBarFreq1 = dialogView.findViewById<SeekBar>(R.id.seekBarFreq1)
+        val seekBarBass = dialogView.findViewById<SeekBar>(R.id.seekBarBass)
+        val spinnerPresets = dialogView.findViewById<Spinner>(R.id.spinnerPresets)
+        val btnApply = dialogView.findViewById<Button>(R.id.btnApply)
+
+        // Обработчик нажатия на кнопку "Apply"
+        btnApply.setOnClickListener {
+            // Здесь можно получить значения из SeekBars и Spinner и применить их к вашему звуковому движку
+            applyEqualizerSettings(seekBarFreq1.progress, seekBarBass.progress, spinnerPresets.selectedItemPosition)
+
+            // Закрываем диалог
+            dialog.dismiss()
+        }
+
+        // Здесь вы можете настроить Spinner для списка предустановок эквалайзера и т. д.
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setLayout()
+        BG()
+    }
+    // Функция для применения настроек эквалайзера
+    private fun applyEqualizerSettings(freq1Level: Int, bassLevel: Int, presetIndex: Int) {
+        // Здесь вы можете применить настройки эквалайзера к вашему звуковому движку
+    }
 }

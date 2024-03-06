@@ -10,8 +10,6 @@ class NotificationReceiver:BroadcastReceiver() {
     //воспроизведение фоном в виде уведомления
     override fun onReceive(context:  Context?, intent: Intent?) {
         when(intent?.action){
-
-
             ApplicationClass.PREVIOUS -> if(PlayerFragment.musicListPA.size > 1) prevNextSong(increment = false, context = context!!)
             ApplicationClass.PLAY -> if(PlayerFragment.isPlaying) pauseMusic() else playMusic()
             ApplicationClass.NEXT -> if(PlayerFragment.musicListPA.size > 1) prevNextSong(increment = true, context = context!!)
@@ -37,20 +35,26 @@ class NotificationReceiver:BroadcastReceiver() {
         PlayerFragment.musicService!!.createMP()
         Glide.with(context)
             .load(PlayerFragment.musicListPA[PlayerFragment.songPosition].artURI)
-            .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
+            .apply(RequestOptions()
+                .placeholder(R.drawable.icon)
+                .override(600, 600) // Установите требуемые размеры изображения
+                .fitCenter()) // Сохраните пропорции при увеличении
             .into(PlayerFragment.binding.albumIMGFont)
-        PlayerFragment.binding.songTITLE.text =
-            PlayerFragment.musicListPA[PlayerFragment.songPosition].title + "\n" + PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
+        PlayerFragment.binding.songTITLE.text = PlayerFragment.musicListPA[PlayerFragment.songPosition].title + "\n" + PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
+
 
         Glide.with(context)
             .load(PlayerFragment.musicListPA[PlayerFragment.songPosition].artURI)
-            .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
-            .into(NowPlaying.binding.albumNP)
-        NowPlaying.binding.songNP.text =
-            PlayerFragment.musicListPA[PlayerFragment.songPosition].title
-        NowPlaying.binding.artistNP.text =
-            PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
+            .apply(
+                RequestOptions()
+                .placeholder(R.drawable.icon)
+                .override(600, 600) // Установите требуемые размеры изображения
+                .fitCenter()) // Сохраните пропорции при увеличении
+            .into(PlayerFragment.binding.albumIMGFont)
+        NowPlaying.binding.songNP.text = PlayerFragment.musicListPA [PlayerFragment.songPosition].title
+        NowPlaying.binding.artistNP.text = PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
         playMusic()
+
 
         PlayerFragment.fIndex = favouriteCheck(PlayerFragment.musicListPA[PlayerFragment.songPosition].id)
         if (PlayerFragment.isFavourite) {

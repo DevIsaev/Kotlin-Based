@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- dialog_equalizer.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!-- SeekBars for adjusting frequency levels -->
+    <SeekBar
+        android:id="@+id/seekBarFreq1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="50"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Add more SeekBars for other frequency levels as needed -->
+
+    <!-- SeekBar for adjusting bass level -->
+    <SeekBar
+        android:id="@+id/seekBarBass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="50"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Spinner for selecting equalizer presets -->
+    <Spinner
+        android:id="@+id/spinnerPresets"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Button to apply changes -->
+    <Button
+        android:id="@+id/btnApply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Apply"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"/>
+
+</LinearLayout>

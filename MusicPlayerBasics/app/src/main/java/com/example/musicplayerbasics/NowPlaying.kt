@@ -53,6 +53,20 @@ companion object{
 
             playerFragment.show((context as AppCompatActivity).supportFragmentManager, playerFragment.tag)
         }
+        binding.root.setOnLongClickListener {
+            if(PlayerFragment.musicService!=null) {
+                PlayerFragment.nowPlayingId=""
+                PlayerFragment.fIndex=-1
+                PlayerFragment.musicService!!.audioManager.abandonAudioFocus(PlayerFragment.musicService)
+                PlayerFragment.musicService!!.stopForeground(true)
+                PlayerFragment.musicService!!.mediaPlayer!!.stop()
+                PlayerFragment.musicService = null
+                binding.root.visibility = View.INVISIBLE
+            }
+            true
+        }
+
+
         return view
     }
 
@@ -112,3 +126,6 @@ companion object{
         playMusic()
     }
 }
+
+
+

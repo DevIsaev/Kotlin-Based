@@ -82,6 +82,77 @@
         <item name="rcColor">@color/rcDark</item>
         <item name="android:navigationBarColor">?attr/themeColors</item>
     </style>
+    //
+    <style name="coolCustom1" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="themeColors">@color/errorColor</item>
+        <item name="colorPrimary">@color/purple500</item>
+        <item name="colorPrimaryVariant">@color/black</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/teal200</item>
+        <item name="colorSecondaryVariant">@color/teal700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/themeColors</item>
+        <item name="dialogBtnBackground">?attr/themeColors</item>
+        <item name="dialogTextColor">@color/black</item>
+        <item name="rcColor">@color/rcDark</item>
+        <item name="android:navigationBarColor">?attr/themeColors</item>
+    </style>
+    <style name="coolCustom2" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="themeColors">@color/warningColor</item>
+        <item name="colorPrimary">@color/purple500</item>
+        <item name="colorPrimaryVariant">@color/black</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/teal200</item>
+        <item name="colorSecondaryVariant">@color/teal700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/themeColors</item>
+        <item name="dialogBtnBackground">?attr/themeColors</item>
+        <item name="dialogTextColor">@color/black</item>
+        <item name="rcColor">@color/rcDark</item>
+        <item name="android:navigationBarColor">?attr/themeColors</item>
+    </style>
+    <style name="coolCustom3" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="themeColors">@color/warningColor</item>
+        <item name="colorPrimary">@color/purple500</item>
+        <item name="colorPrimaryVariant">@color/black</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/teal200</item>
+        <item name="colorSecondaryVariant">@color/teal700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/themeColors</item>
+        <item name="dialogBtnBackground">?attr/themeColors</item>
+        <item name="dialogTextColor">@color/black</item>
+        <item name="rcColor">@color/rcDark</item>
+        <item name="android:navigationBarColor">?attr/themeColors</item>
+    </style>
+    <style name="coolCustom4" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="themeColors">@color/warningColor</item>
+        <item name="colorPrimary">@color/purple500</item>
+        <item name="colorPrimaryVariant">@color/black</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/teal200</item>
+        <item name="colorSecondaryVariant">@color/teal700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/themeColors</item>
+        <item name="dialogBtnBackground">?attr/themeColors</item>
+        <item name="dialogTextColor">@color/black</item>
+        <item name="rcColor">@color/rcDark</item>
+        <item name="android:navigationBarColor">?attr/themeColors</item>
+    </style>
+    <style name="coolCustom5" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="themeColors">@color/warningColor</item>
+        <item name="colorPrimary">@color/purple500</item>
+        <item name="colorPrimaryVariant">@color/black</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/teal200</item>
+        <item name="colorSecondaryVariant">@color/teal700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/themeColors</item>
+        <item name="dialogBtnBackground">?attr/themeColors</item>
+        <item name="dialogTextColor">@color/black</item>
+        <item name="rcColor">@color/rcDark</item>
+        <item name="android:navigationBarColor">?attr/themeColors</item>
+    </style>
     //navigation drawer
     <style name="coolPinkNav" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="themeColors">@color/pink</item>
@@ -157,7 +228,82 @@
         <item name="rcColor">@color/rcDark</item>
         <item name="android:navigationBarColor">?attr/themeColors</item>
     </style>
-
+    //
+    <style name="coolCustom1Nav" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="themeColors">@color/errorColor</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryVariant">@color/black</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!--        <item name="colorSecondary">@color/pink</item>-->
+        <item name="colorSecondaryVariant">@color/teal700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/themeColors</item>
+        <!--        <item name="android:forceDarkAllowed">false</item>-->
+        <item name="dialogBtnBackground">?attr/themeColors</item>
+        <item name="dialogTextColor">@color/black</item>
+        <item name="rcColor">@color/rcDark</item>
+        <item name="android:navigationBarColor">?attr/themeColors</item>
+    </style>
+    <style name="coolCustom2Nav" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="themeColors">@color/warningColor</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryVariant">@color/black</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!--        <item name="colorSecondary">@color/pink</item>-->
+        <item name="colorSecondaryVariant">@color/teal700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/themeColors</item>
+        <!--        <item name="android:forceDarkAllowed">false</item>-->
+        <item name="dialogBtnBackground">?attr/themeColors</item>
+        <item name="dialogTextColor">@color/black</item>
+        <item name="rcColor">@color/rcDark</item>
+        <item name="android:navigationBarColor">?attr/themeColors</item>
+    </style>
+    <style name="coolCustom3Nav" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="themeColors">@color/warningColor</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryVariant">@color/black</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!--        <item name="colorSecondary">@color/pink</item>-->
+        <item name="colorSecondaryVariant">@color/teal700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/themeColors</item>
+        <!--        <item name="android:forceDarkAllowed">false</item>-->
+        <item name="dialogBtnBackground">?attr/themeColors</item>
+        <item name="dialogTextColor">@color/black</item>
+        <item name="rcColor">@color/rcDark</item>
+        <item name="android:navigationBarColor">?attr/themeColors</item>
+    </style>
+    <style name="coolCustom4Nav" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="themeColors">@color/warningColor</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryVariant">@color/black</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!--        <item name="colorSecondary">@color/pink</item>-->
+        <item name="colorSecondaryVariant">@color/teal700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/themeColors</item>
+        <!--        <item name="android:forceDarkAllowed">false</item>-->
+        <item name="dialogBtnBackground">?attr/themeColors</item>
+        <item name="dialogTextColor">@color/black</item>
+        <item name="rcColor">@color/rcDark</item>
+        <item name="android:navigationBarColor">?attr/themeColors</item>
+    </style>
+    <style name="coolCustom5Nav" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="themeColors">@color/warningColor</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryVariant">@color/black</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!--        <item name="colorSecondary">@color/pink</item>-->
+        <item name="colorSecondaryVariant">@color/teal700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/themeColors</item>
+        <!--        <item name="android:forceDarkAllowed">false</item>-->
+        <item name="dialogBtnBackground">?attr/themeColors</item>
+        <item name="dialogTextColor">@color/black</item>
+        <item name="rcColor">@color/rcDark</item>
+        <item name="android:navigationBarColor">?attr/themeColors</item>
+    </style>
     <style name="Player" parent="Theme.Design.BottomSheetDialog">
 
         <item name="android:navigationBarColor">@android:color/transparent</item>
