@@ -35,7 +35,7 @@ class AdapterMusicListPlaylist(private val context: Context, private var playlis
             builder.setTitle(playlistList[position].name)
                 .setMessage("Вы действительно хотите удалить этот плейлист?")
                 .setPositiveButton("Да"){dialog,_ ->
-                    PlaylistsActivity.musicPlaylist.ref.removeAt(position)
+                    PlaylistsFragment.musicPlaylist.ref.removeAt(position)
                     refrershPlaylist()
                     dialog.dismiss()
                 }
@@ -52,9 +52,9 @@ class AdapterMusicListPlaylist(private val context: Context, private var playlis
             bottomSheet .arguments = bundle
             bottomSheet .show((context as AppCompatActivity).supportFragmentManager, bottomSheet .tag)
         }
-        if(PlaylistsActivity.musicPlaylist.ref[position].playlist.size>0){
+        if(PlaylistsFragment.musicPlaylist.ref[position].playlist.size>0){
             Glide.with(context)
-                .load(PlaylistsActivity.musicPlaylist.ref[position].playlist[0].artURI)
+                .load(PlaylistsFragment.musicPlaylist.ref[position].playlist[0].artURI)
                 .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
                 .into(holder.img)
         }
@@ -66,7 +66,7 @@ class AdapterMusicListPlaylist(private val context: Context, private var playlis
 
     fun refrershPlaylist(){
         playlistList=ArrayList()
-        playlistList.addAll(PlaylistsActivity.musicPlaylist.ref)
+        playlistList.addAll(PlaylistsFragment.musicPlaylist.ref)
         notifyDataSetChanged()
     }
 

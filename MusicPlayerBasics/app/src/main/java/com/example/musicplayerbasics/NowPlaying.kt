@@ -27,8 +27,8 @@ companion object{
         requireContext().theme.applyStyle(MainActivity.currentTheme[MainActivity.themeIndex],true)
         val  view=inflater.inflate(R.layout.fragment_now_playing, container, false)
         binding=FragmentNowPlayingBinding.bind(view)
-        binding.songNP.isSelected=true
         binding.root.visibility=View.INVISIBLE
+        binding.songNP.isSelected=true
         binding.playPauseBTNNP.setOnClickListener {
             if(!PlayerFragment.isPlaying){
                 playMusic()
@@ -86,6 +86,8 @@ companion object{
                     .into(binding.albumNP)
                 binding.songNP.text = PlayerFragment.musicListPA[PlayerFragment.songPosition].title
                 binding.artistNP.text=PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
+
+                PlayerFragment.musicService!!.showNotification(R.drawable.baseline_pause_24)
 
                 if (PlayerFragment.isPlaying) {
                     binding.playPauseBTNNP.setImageResource(R.drawable.baseline_pause_24)

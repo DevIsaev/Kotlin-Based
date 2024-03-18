@@ -11,10 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.GridLayoutManager
 import com.example.musicplayerbasics.databinding.ActivityFavouritesBinding
 import com.google.android.material.navigation.NavigationView
-import com.google.gson.GsonBuilder
 
 class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener {
     private lateinit var binding: ActivityFavouritesBinding
@@ -22,9 +20,9 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
     var drawer: DrawerLayout? = null
     lateinit var toggle: ActionBarDrawerToggle
     companion object {
-        var favouritesChanged: Boolean = false
-
-        var favSong:ArrayList<Music> = ArrayList()
+//        var favouritesChanged: Boolean = false
+//
+//        var favSong:ArrayList<Music> = ArrayList()
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,24 +31,24 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
         setContentView(binding.root)
 
         try {
-            favSong = playlistCheck(favSong)
-
-            binding.favouriteRV.setHasFixedSize(true)
-            binding.favouriteRV.setItemViewCacheSize(13)
-            binding.favouriteRV.layoutManager = GridLayoutManager(this, 3)
-            adapter = AdapterMusicListFavourite(this, favSong)
-            binding.favouriteRV.adapter = adapter
-
-            favouritesChanged = false
-
-            binding.refreshLayout.setOnRefreshListener {
-                adapter.updateFavourites(favSong)
-                favouritesChanged = false
-
-                binding.refreshLayout.isRefreshing = false
-            }
-            binding.toolbar.setTitle("Избранное")
-            Navigation()
+//            favSong = playlistCheck(favSong)
+//
+//            binding.favouriteRV.setHasFixedSize(true)
+//            binding.favouriteRV.setItemViewCacheSize(13)
+//            binding.favouriteRV.layoutManager = GridLayoutManager(this, 3)
+//            adapter = AdapterMusicListFavourite(this, favSong)
+//            binding.favouriteRV.adapter = adapter
+//
+//            favouritesChanged = false
+//
+//            binding.refreshLayout.setOnRefreshListener {
+//                adapter.updateFavourites(favSong)
+//                favouritesChanged = false
+//
+//                binding.refreshLayout.isRefreshing = false
+//            }
+//            binding.toolbar.setTitle("Избранное")
+//            Navigation()
         }
         catch (ex:Exception){
             Toast.makeText(this,ex.toString(),Toast.LENGTH_SHORT).show()
@@ -146,20 +144,20 @@ class FavouritesActivity : AppCompatActivity(),NavigationView.OnNavigationItemSe
 
     override fun onResume() {
         super.onResume()
-        // Сохранение данных в SharedPreferences
-        val editor = getSharedPreferences("FAVOURITES", MODE_PRIVATE).edit()
-        val jsonString = GsonBuilder().create().toJson(FavouritesActivity.favSong)
-        editor.putString("FavouriteSongs", jsonString)
-
-        val jsonStringPL = GsonBuilder().create().toJson(PlaylistsActivity.musicPlaylist)
-        editor.putString("MusicPlaylist", jsonStringPL)
-        editor.apply()
-
-        // Если произошли изменения в избранном, обновите список
-        if (favouritesChanged) {
-            adapter.updateFavourites(favSong)
-            favouritesChanged = false
-        }
+//        // Сохранение данных в SharedPreferences
+//        val editor = getSharedPreferences("FAVOURITES", MODE_PRIVATE).edit()
+//        val jsonString = GsonBuilder().create().toJson(FavouritesActivity.favSong)
+//        editor.putString("FavouriteSongs", jsonString)
+//
+//        val jsonStringPL = GsonBuilder().create().toJson(PlaylistsActivity.musicPlaylist)
+//        editor.putString("MusicPlaylist", jsonStringPL)
+//        editor.apply()
+//
+//        // Если произошли изменения в избранном, обновите список
+//        if (favouritesChanged) {
+//            adapter.updateFavourites(favSong)
+//            favouritesChanged = false
+//        }
     }
 //@SuppressLint("NotifyDataSetChanged")
 //override fun onResume() {

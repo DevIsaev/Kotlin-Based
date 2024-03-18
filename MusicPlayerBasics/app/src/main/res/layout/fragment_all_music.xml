@@ -4,28 +4,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@android:color/holo_purple"
     tools:context=".AllMusicFragment">
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-                <TextView
-                    android:id="@+id/totalSongs"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/Total"
-                    android:layout_margin="10dp"
-                    android:textSize="18sp"
-                    android:textColor="?colorOnPrimary"/>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list_music"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layoutAnimation="@anim/layout_animation_rc"
-        android:scrollbarThumbVertical="@drawable/baseline_check_box_outline_blank_24"
-        android:scrollbars="vertical"
-        android:textColor="?colorOnPrimary" />
-    </LinearLayout>
 
+
+        <TextView
+            android:id="@+id/totalSongs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="@string/Total"
+            android:textColor="?colorOnPrimary"
+            android:textSize="18sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_music"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbarThumbVertical="@drawable/baseline_check_box_outline_blank_24"
+            android:scrollbars="vertical"
+            android:textColor="?colorOnPrimary"/>
+        <!--            android:layoutAnimation="@anim/layout_animation_rc"-->
+    </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </FrameLayout>

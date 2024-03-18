@@ -1,59 +1,130 @@
 package com.example.musicplayerbasics
 
+import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import com.example.musicplayerbasics.databinding.CustomAlertdialogAddPlaylistBinding
+import com.example.musicplayerbasics.databinding.FragmentPlaylistsBinding
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [PlaylistsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class PlaylistsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var binding:FragmentPlaylistsBinding
+    private lateinit var adapter:AdapterMusicListPlaylist
+    companion object {
+        var musicPlaylist:PlaylistMusic=PlaylistMusic()
+    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        try {
+            //перезапись
+            FavouritesFragment.favSong = ArrayList()
+            val editor = requireContext().getSharedPreferences("FAVOURITES", AppCompatActivity.MODE_PRIVATE)
+            val jsonString = editor.getString("FavouriteSongs", null)
+            val typeToken = object : TypeToken<ArrayList<Music>>() {}.type
+            if (jsonString != null) {
+                val data: ArrayList<Music> = GsonBuilder().create().fromJson(jsonString, typeToken)
+                FavouritesFragment.favSong.addAll(data)
+            }
+            musicPlaylist = PlaylistMusic()
+            //val editorPL = getSharedPreferences("FAVOURITES", MODE_PRIVATE)
+            val jsonStringPL = editor.getString("MusicPlaylist", null)
+            //val typeTokenPL = object : TypeToken<PlaylistMusic>(){}.type
+            if (jsonStringPL != null) {
+                val dataPL: PlaylistMusic =
+                    GsonBuilder().create().fromJson(jsonStringPL, PlaylistMusic::class.java)
+                musicPlaylist = dataPL
+            }
+
+
+            binding.playlistsRV.setHasFixedSize(true)
+            binding.playlistsRV.setItemViewCacheSize(13)
+            binding.playlistsRV.layoutManager = GridLayoutManager(requireContext(), 2)
+            adapter = AdapterMusicListPlaylist(requireContext(), musicPlaylist.ref)
+            binding.playlistsRV.adapter = adapter
+
+            binding.addBtn.setOnClickListener {
+                customAlertDialog()
+            }
+        }
+        catch (ex:Exception){
+            Toast.makeText(requireContext(),ex.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_playlists, container, false)
+    override fun onDestroyView() {
+        super.onDestroyView()
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment PlaylistsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            PlaylistsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    override fun onResume() {
+        super.onResume()
+        adapter.notifyDataSetChanged()
+    }
+
+    private fun  customAlertDialog(){
+        val customDialog=LayoutInflater.from(requireContext()).inflate(R.layout.custom_alertdialog_add_playlist,binding.root,false)
+
+        val binder= CustomAlertdialogAddPlaylistBinding.bind(customDialog)
+
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setView(customDialog)
+            .setTitle("Создать плейлист")
+            .setPositiveButton("Создать"){dialog,_ ->
+                val plName=binder.playlistNAME.text
+                val plUName=binder.playlistUNAME.text
+                if(plName!=null&&plUName!=null){
+                    if(plName.isNotEmpty()&&plUName.isNotEmpty()){
+                        addPlayList(plName.toString(),plUName.toString())
+                    }
                 }
+                dialog.dismiss()
+            }.show()
+
+    }
+    private fun addPlayList(name:String,user:String){
+        var exist=false
+        for(i in musicPlaylist.ref){
+            if(name.equals(i.name)&&user.equals(i.createdBy)){
+                exist=true
+                break
             }
+        }
+        if(exist){
+            Toast.makeText(requireContext(),"Такой плейлист уже существует",Toast.LENGTH_SHORT).show()
+        }
+        else{
+            var tempPlaylist=Playlist()
+            tempPlaylist.name=name
+            tempPlaylist.playlist=ArrayList()
+            tempPlaylist.createdBy=user
+
+            var calendar=java.util.Calendar.getInstance().time
+            var sdf= SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH)
+            tempPlaylist.createdOn=sdf.format(calendar)
+
+            musicPlaylist.ref.add(tempPlaylist)
+            adapter.refrershPlaylist()
+        }
     }
 }

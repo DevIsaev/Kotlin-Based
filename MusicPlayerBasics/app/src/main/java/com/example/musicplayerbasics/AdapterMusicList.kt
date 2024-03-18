@@ -137,11 +137,11 @@ class AdapterMusicList(private val context: Context, private var musicList: Arra
                         PlayerFragment.fIndex = favouriteCheck(musicList[position].id)
                         if (PlayerFragment.isFavourite) {
                             PlayerFragment.isFavourite = false
-                            FavouritesActivity.favSong.removeAt(PlayerFragment.fIndex)
+                            FavouritesFragment.favSong.removeAt(PlayerFragment.fIndex)
                             dialog.dismiss()
                         } else {
                             PlayerFragment.isFavourite = true
-                            FavouritesActivity.favSong.add(musicList[position])
+                            FavouritesFragment.favSong.add(musicList[position])
                             Toast.makeText(
                                 context,
                                 "Композиция добавлена в Избранное",
@@ -223,19 +223,19 @@ class AdapterMusicList(private val context: Context, private var musicList: Arra
 
     //добавление композиции в плейлист
     private fun addSong(song: Music): Boolean{
-        PlaylistsActivity.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist.forEachIndexed { index, music ->
+        PlaylistsFragment.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist.forEachIndexed { index, music ->
             if(song.id == music.id){
-                PlaylistsActivity.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist.removeAt(index)
+                PlaylistsFragment.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist.removeAt(index)
                 return false
             }
         }
-        PlaylistsActivity.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist.add(song)
+        PlaylistsFragment.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist.add(song)
         return true
     }
     @SuppressLint("NotifyDataSetChanged")
     fun refreshPlaylist(){
         musicList = ArrayList()
-        musicList = PlaylistsActivity.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist
+        musicList = PlaylistsFragment.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist
         notifyDataSetChanged()
     }
 

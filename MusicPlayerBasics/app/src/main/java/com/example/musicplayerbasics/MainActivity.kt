@@ -1,15 +1,14 @@
 package com.example.musicplayerbasics
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -21,12 +20,13 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import com.example.musicplayerbasics.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import java.io.File
+import com.qamar.curvedbottomnaviagtion.CurvedBottomNavigation
 
 
 class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener {
@@ -34,9 +34,6 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
     var drawer: DrawerLayout? = null
     lateinit var toggle: ActionBarDrawerToggle
-
-
-
     companion object {
         lateinit var MusicListMA: ArrayList<Music>
         lateinit var musicAdapter: AdapterMusicList
@@ -68,7 +65,6 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             R.style.coolCustom4Nav,
             R.style.coolCustom5Nav,
         )
-
         val currentGradient = arrayOf(
             R.drawable.gradient_pink,
             R.drawable.gradient_blue,
@@ -81,7 +77,6 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             R.drawable.gradient4,
             R.drawable.gradient5,
         )
-
         var sort: Int = 0
 
         //добавить: по папкам, по количеству прослушиваний
@@ -101,48 +96,30 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         try {
+            BottomNavigation()
             if (requestRuntimePermission()) {
-                initialization()
                 //перезапись
-                FavouritesActivity.favSong = ArrayList()
+                FavouritesFragment.favSong = ArrayList()
                 val editor = getSharedPreferences("FAVOURITES", MODE_PRIVATE)
                 val jsonString = editor.getString("FavouriteSongs", null)
                 val typeToken = object : TypeToken<ArrayList<Music>>() {}.type
                 if (jsonString != null) {
                     val data: ArrayList<Music> =
                         GsonBuilder().create().fromJson(jsonString, typeToken)
-                    FavouritesActivity.favSong.addAll(data)
+                    FavouritesFragment.favSong.addAll(data)
                 }
-                PlaylistsActivity.musicPlaylist = PlaylistMusic()
+                PlaylistsFragment.musicPlaylist = PlaylistMusic()
                 val jsonStringPL = editor.getString("MusicPlaylist", null)
                 if (jsonStringPL != null) {
                     val dataPL: PlaylistMusic =
                         GsonBuilder().create().fromJson(jsonStringPL, PlaylistMusic::class.java)
-                    PlaylistsActivity.musicPlaylist = dataPL
+                    PlaylistsFragment.musicPlaylist = dataPL
                 }
             }
-            binding.toolbar.setTitle("Все композиции")
             Navigation()
-
-
-            //
-            binding.refreshLayout.setOnRefreshListener {
-                MusicListMA = getAllAudio()
-                musicAdapter.updateMusicList(MusicListMA)
-                binding.totalSongs.text = "Всего песен: ${musicAdapter.itemCount}"
-                binding.refreshLayout.isRefreshing = false
-            }
         } catch (ex: Exception) {
-            binding.totalSongs.text = ex.toString()
+            binding.toolbar.setTitle(ex.toString())
         }
-
-        var fragments = arrayListOf(
-            AllMusicFragment(),
-            AlbumsFragment(),
-            FavouritesFragment(),
-            PlaylistsFragment()
-        )
-
     }
 
     override fun onDestroy() {
@@ -157,10 +134,10 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         super.onResume()
         //получение данных
         val editor = getSharedPreferences("FAVOURITES", MODE_PRIVATE).edit()
-        val jsonString = GsonBuilder().create().toJson(FavouritesActivity.favSong)
+        val jsonString = GsonBuilder().create().toJson(FavouritesFragment.favSong)
         editor.putString("FavouriteSongs", jsonString)
 
-        val jsonStringPL = GsonBuilder().create().toJson(PlaylistsActivity.musicPlaylist)
+        val jsonStringPL = GsonBuilder().create().toJson(PlaylistsFragment.musicPlaylist)
         editor.putString("MusicPlaylist", jsonStringPL)
         editor.apply()
 
@@ -169,102 +146,16 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         var sortValue = sortEditor.getInt("sortOrder", 0)
         if (sort != sortValue) {
             sort = sortValue
-            MusicListMA = getAllAudio()
+            var almf=AllMusicFragment()
+            MusicListMA = almf.getAllAudio()
             musicAdapter.updateMusicList(MusicListMA)
         }
-    }
-
-
-    @RequiresApi(Build.VERSION_CODES.R)
-    @SuppressLint("SetTextI18n")
-    private fun initialization() {
-        //поиск
-        search = false
-        var sortEditor = getSharedPreferences("SORTING", MODE_PRIVATE)
-        sort = sortEditor.getInt("sortOrder", 0)
-        MusicListMA = getAllAudio()
-
-        binding.listMusic.setHasFixedSize(true)
-        binding.listMusic.setItemViewCacheSize(13)
-        binding.listMusic.layoutManager = LinearLayoutManager(this@MainActivity)
-        musicAdapter = AdapterMusicList(this@MainActivity, MusicListMA)
-        binding.listMusic.adapter = musicAdapter
-
-        binding.totalSongs.text = "Всего песен: ${musicAdapter.itemCount}"
-
-    }
-        //получение всех аудио
-        @SuppressLint("Recycle", "Range")
-        @RequiresApi(Build.VERSION_CODES.R)
-         fun getAllAudio(): ArrayList<Music> {
-            val tempList = ArrayList<Music>()
-            val selection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
-            val projection = arrayOf(
-                MediaStore.Audio.Media._ID,
-                MediaStore.Audio.Media.TITLE,
-                MediaStore.Audio.Media.ALBUM,
-                MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.DATE_ADDED,
-                MediaStore.Audio.Media.DATA,
-                MediaStore.Audio.Media.ALBUM_ID
-            )
-            val cursor = this.contentResolver.query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                projection,
-                selection,
-                null,
-                sortingList[sort],
-                null
-            )
-
-            if (cursor != null) {
-                if (cursor.moveToFirst()) {
-                    do {
-                        val titleC =
-                            cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
-                                ?: "Неизвестно"
-                        val idC =
-                            cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID))
-                                ?: "Неизвестно"
-                        val albumC =
-                            cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM))
-                                ?: "Неизвестный"
-                        val artistC =
-                            cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
-                                ?: "Неизвестно"
-                        val pathC =
-                            cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA))
-                        val durationC =
-                            cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION))
-                        val albumIdC =
-                            cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID))
-                                .toString()
-
-                        val uri = Uri.parse("content://media/external/audio/albumart")
-                        val artUriC = Uri.withAppendedPath(uri, albumIdC).toString()
-
-
-                        if (pathC != null && pathC.contains("/Music/")) {
-                            val music = Music(
-                                id = idC,
-                                title = titleC,
-                                album = albumC,
-                                artist = artistC,
-                                path = pathC,
-                                duration = durationC,
-                                artURI = artUriC
-                            )
-                            val file = File(music.path)
-                            if (file.exists())
-                                tempList.add(music)
-                        }
-                    } while (cursor.moveToNext())
-                }
-                cursor.close()
-            }
-            return tempList
+        if(PlayerFragment.musicService != null){
+            var nowPlaying=findViewById<FragmentContainerView>(R.id.nowPlaying)
+            nowPlaying.visibility= View.VISIBLE
         }
+    }
+
 
     // запрос разрешения
     private fun requestRuntimePermission(): Boolean {
@@ -332,7 +223,6 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
 
         }
-
         override fun onNavigationItemSelected(item: MenuItem): Boolean {
             when (item.itemId) {
                 R.id.IDSignOut -> {
@@ -394,7 +284,6 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             drawer?.closeDrawer(GravityCompat.START)
             return false
         }
-
         override fun onBackPressed() {
             super.onBackPressed()
             if (drawer?.isDrawerOpen(GravityCompat.START)!!) {
@@ -403,7 +292,6 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
                 onBackPressedDispatcher.onBackPressed()
             }
         }
-
         override fun onCreateOptionsMenu(menu: Menu?): Boolean {
             menuInflater.inflate(R.menu.search_view_menu, menu)
             findViewById<LinearLayout>(R.id.toolbar)
@@ -436,10 +324,8 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             return super.onCreateOptionsMenu(menu)
         }
 
+
     val SETTINGS_REQUEST_CODE = 1 // Уникальный код запроса
-
-
-
     // Метод обработки результата обратного вызова из SettingsActivity
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -447,5 +333,45 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             // Обновите тему или выполните другие действия при изменении настроек в SettingsActivity
             finishAffinity() // Пересоздаем Activity, чтобы применить новую тему
         }
+    }
+
+    fun BottomNavigation(){
+        var bottomNavigation=findViewById<CurvedBottomNavigation>(R.id.bottomNavigation)
+        bottomNavigation.add(CurvedBottomNavigation.Model(1,"", R.drawable.baseline_favorite_242))
+        bottomNavigation.add(CurvedBottomNavigation.Model(2,"", R.drawable.baseline_house_24))
+        bottomNavigation.add(CurvedBottomNavigation.Model(3,"", R.drawable.baseline_library_music_24))
+
+        bottomNavigation.setOnClickMenuListener {
+            when(it.id){
+                1->{
+                    //replaceFragment(First())
+                    binding.toolbar.setTitle("Избранное")
+                    replaceFragment(FavouritesFragment())
+                    //Toast.makeText(this,it.id.toString(),Toast.LENGTH_SHORT).show()
+                }
+                2->{
+                    //replaceFragment(Second())
+                    binding.toolbar.setTitle("Все композиции")
+                    replaceFragment(AllMusicFragment())
+                    //Toast.makeText(this,it.id.toString(),Toast.LENGTH_SHORT).show()
+                }
+                3->{
+                    //replaceFragment(Third())
+                    binding.toolbar.setTitle("Плейлисты")
+                    replaceFragment(PlaylistsFragment())
+                    //Toast.makeText(this,it.id.toString(),Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        replaceFragment(AllMusicFragment())
+        binding.toolbar.setTitle("Все композиции")
+        bottomNavigation.show(2)
+    }
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container_view_tag,fragment)
+            .commit()
     }
 }

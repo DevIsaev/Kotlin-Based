@@ -26,19 +26,19 @@ import android.media.audiofx.LoudnessEnhancer
 import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
-import android.renderscript.*
+import android.renderscript.Allocation
+import android.renderscript.Element
+import android.renderscript.RenderScript
+import android.renderscript.ScriptIntrinsicBlur
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.SeekBar
-import android.widget.Spinner
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -85,7 +85,8 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
 
         lateinit var loudnessEnhancer: LoudnessEnhancer
 
-        var isBG=false
+        private lateinit var audioEffectManager: AudioEffectManager
+        private lateinit var audioEffectViewHelper: AudioEffectViewHelper
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -131,7 +132,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         }
 
         try {
-
+            songInitialization()
 
             //изображение альбома
             binding.albumFont.setOnClickListener {
@@ -155,7 +156,6 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             fontAnim = AnimatorInflater.loadAnimator(requireContext(), R.animator.font) as AnimatorSet
             backAnim = AnimatorInflater.loadAnimator(requireContext(), R.animator.back) as AnimatorSet
 
-            songInitialization()
 
             //воспроизведение\пауза
             binding.btnPAUSEPLAY.setOnClickListener {
@@ -201,25 +201,10 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                     binding.repeatBTN.setImageResource(R.drawable.baseline_repeat_24)
                 }
             }
-//            val audioSessionId = musicService!!.mediaPlayer!!.audioSessionId
-//            val audioEffectManager = AudioEffectManager(audioSessionId)
+
             //эквалайзер
             binding.equalizerBTN.setOnClickListener {
                 try {
-//                    val eqIntent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
-//                    eqIntent.putExtra(
-//                        AudioEffect.EXTRA_AUDIO_SESSION,
-//                        musicService!!.mediaPlayer!!.audioSessionId
-//                    )
-//                    eqIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context?.packageName)
-//                    eqIntent.putExtra(
-//                        AudioEffect.EXTRA_CONTENT_TYPE,
-//                        AudioEffect.CONTENT_TYPE_MUSIC
-//                    )
-//                    startActivityForResult(eqIntent, 13)
-//
-//                    val audioEffectViewHelper = AudioEffectViewHelper(requireContext(), childFragmentManager, audioEffectManager)
-//                    audioEffectViewHelper.showAsDialog()
                         openEqualizerDialog()
                 } catch (e: Exception) {
                     Toast.makeText(context, "Эквалайзер не поддерживается", Toast.LENGTH_LONG)
@@ -260,7 +245,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                 shareIntent.action = Intent.ACTION_SEND
                 shareIntent.type = "audio/*"
                 shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(musicListPA[songPosition].path))
-                startActivity(Intent.createChooser(shareIntent, "Поделиться композицией?"))
+                startActivity(Intent.createChooser(shareIntent, "Sharing Music File!!"))
             }
             //избранное
             binding.favouriteBTN.setOnClickListener {
@@ -268,11 +253,11 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                 if (isFavourite) {
                     isFavourite = false
                     binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_border_24)
-                    FavouritesActivity.favSong.removeAt(fIndex)
+                    FavouritesFragment.favSong.removeAt(fIndex)
                 } else {
                     isFavourite = true
                     binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_24)
-                    FavouritesActivity.favSong.add(musicListPA[songPosition])
+                    FavouritesFragment.favSong.add(musicListPA[songPosition])
                     Toast.makeText(requireContext(),"Композиция добавлена в Избранное",Toast.LENGTH_SHORT).show()
                 }
             }
@@ -399,7 +384,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             NowPlaying.binding.songNP.text="1"
         }
         val editor = requireContext().getSharedPreferences("FAVOURITES", Context.MODE_PRIVATE).edit()
-        val jsonString = GsonBuilder().create().toJson(FavouritesActivity.favSong)
+        val jsonString = GsonBuilder().create().toJson(FavouritesFragment.favSong)
         editor.putString("FavouriteSongs", jsonString)
         editor.apply()
     }
@@ -457,14 +442,14 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                     val intent = Intent(requireContext(), MusicSevice::class.java)
                     requireContext().bindService(intent, this, Context.BIND_AUTO_CREATE)
                     musicListPA = ArrayList()
-                    musicListPA.addAll(FavouritesActivity.favSong)
+                    musicListPA.addAll(FavouritesFragment.favSong)
                     setLayout()
                 }
                 "FavouriteShuffle"->{
                     val intent = Intent(requireContext(), MusicSevice::class.java)
                     requireContext().bindService(intent, this, Context.BIND_AUTO_CREATE)
                     musicListPA = ArrayList()
-                    musicListPA.addAll(FavouritesActivity.favSong)
+                    musicListPA.addAll(FavouritesFragment.favSong)
                     musicListPA.shuffle()
                     setLayout()
                 }
@@ -472,14 +457,14 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                     val intent = Intent(requireContext(), MusicSevice::class.java)
                     requireContext().bindService(intent, this, Context.BIND_AUTO_CREATE)
                     musicListPA = ArrayList()
-                    musicListPA.addAll(PlaylistsActivity.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist)
+                    musicListPA.addAll(PlaylistsFragment.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist)
                     setLayout()
                 }
                 "PlaylistShuffle"->{
                     val intent = Intent(requireContext(), MusicSevice::class.java)
                     requireContext().bindService(intent, this, Context.BIND_AUTO_CREATE)
                     musicListPA = ArrayList()
-                    musicListPA.addAll(PlaylistsActivity.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist)
+                    musicListPA.addAll(PlaylistsFragment.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist)
                     musicListPA.shuffle()
                     setLayout()
                 }
@@ -721,37 +706,12 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
     //увеличение громкости
     private fun showSheetBass() {
         try {
-//            val bottomSheetDialog = BottomSheetDialog(requireContext())
-//            val customDialogB =
-//                LayoutInflater.from(requireContext()).inflate(R.layout.audio_booster, null)
-//            val bindingB = AudioBoosterBinding.bind(customDialogB)
-//
-//            bottomSheetDialog.setContentView(customDialogB)
-//
-//            bottomSheetDialog.setOnCancelListener { playMusic() }
-//
-//            bindingB.verticalBar.progress = loudnessEnhancer.targetGain.toInt() / 100
-//            bindingB.progressText.text =
-//                "Audio Boost\n${loudnessEnhancer.targetGain.toInt() / 10} %"
-//
-//            bindingB.verticalBar.setOnProgressChangeListener {
-//                bindingB.progressText.text = "Audio Boost\n${it * 10} %"
-//            }
-//
-//            bindingB.okButton.setOnClickListener {
-//                loudnessEnhancer.setTargetGain(bindingB.verticalBar.progress * 100)
-//                playMusic()
-//                bottomSheetDialog.dismiss()
-//            }
-//
-//            bottomSheetDialog.show()
-
             val customDialogB = LayoutInflater.from(requireContext()).inflate(R.layout.audio_booster, binding.root, false)
             val bindingB = AudioBoosterBinding.bind(customDialogB)
             val dialogB = MaterialAlertDialogBuilder(requireContext()).setView(customDialogB)
                 .setOnCancelListener { playMusic() }
                 .setPositiveButton("OK"){self, _ ->
-                    loudnessEnhancer.setTargetGain(bindingB.verticalBar.progress * 100)
+                    loudnessEnhancer.setTargetGain(bindingB.svsLevelView.value * 100)
                     playMusic()
                     self.dismiss()
                 }
@@ -759,11 +719,21 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                 .create()
             dialogB.show()
 
-            bindingB.verticalBar.progress = loudnessEnhancer.targetGain.toInt()/100
-            bindingB.progressText.text = "Audio Boost\n${loudnessEnhancer.targetGain.toInt()/10} %"
-            bindingB.verticalBar.setOnProgressChangeListener {
-                bindingB.progressText.text = "Audio Boost\n${it*10} %"
-            }
+            bindingB.svsLevelView.value = loudnessEnhancer.targetGain.toInt() / 100
+            bindingB.progressText.text = "Audio Boost\n${loudnessEnhancer.targetGain.toInt() / 10} %"
+            bindingB.svsLevelView.setOnBoxedPointsChangeListener(object :
+                com.ss.svsdemo.SegmentedVerticalSeekBar.OnValuesChangeListener {
+                override fun onProgressChanged(segmentedPointsSeekBar: com.ss.svsdemo.SegmentedVerticalSeekBar?, progress: Int) {
+                    bindingB.progressText.text = "Audio Boost\n${progress * 10} %"
+                }
+
+                override fun onStartTrackingTouch(segmentedPointsSeekBar: com.ss.svsdemo.SegmentedVerticalSeekBar?) {}
+
+                override fun onStopTrackingTouch(segmentedPointsSeekBar: com.ss.svsdemo.SegmentedVerticalSeekBar?) {
+                    loudnessEnhancer.setTargetGain(segmentedPointsSeekBar?.value ?: 0)
+                }
+            })
+
             setDialogBtnBackground(requireContext(), dialogB)
         }
         catch (ex:Exception){
@@ -841,39 +811,24 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
     }
 
     private fun openEqualizerDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.equalizer, null)
-        val builder = AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .setTitle("Equalizer")
-
-        val dialog = builder.create()
-        dialog.show()
-
-        // Находим элементы управления в диалоге
-        val seekBarFreq1 = dialogView.findViewById<SeekBar>(R.id.seekBarFreq1)
-        val seekBarBass = dialogView.findViewById<SeekBar>(R.id.seekBarBass)
-        val spinnerPresets = dialogView.findViewById<Spinner>(R.id.spinnerPresets)
-        val btnApply = dialogView.findViewById<Button>(R.id.btnApply)
-
-        // Обработчик нажатия на кнопку "Apply"
-        btnApply.setOnClickListener {
-            // Здесь можно получить значения из SeekBars и Spinner и применить их к вашему звуковому движку
-            applyEqualizerSettings(seekBarFreq1.progress, seekBarBass.progress, spinnerPresets.selectedItemPosition)
-
-            // Закрываем диалог
-            dialog.dismiss()
-        }
-
-        // Здесь вы можете настроить Spinner для списка предустановок эквалайзера и т. д.
+        try {
+            val audioSessionId = musicService!!.mediaPlayer!!.audioSessionId
+            audioEffectManager = AudioEffectManager(audioSessionId)
+            audioEffectViewHelper = AudioEffectViewHelper(
+                requireContext(),
+                requireActivity().supportFragmentManager,
+                audioEffectManager,
+            )
+            audioEffectViewHelper.showAsDialog()
+    }
+    catch (ex:Exception){
+        Toast.makeText(requireContext(),ex.toString(),Toast.LENGTH_SHORT).show()
+    }
     }
 
     override fun onResume() {
         super.onResume()
         setLayout()
         BG()
-    }
-    // Функция для применения настроек эквалайзера
-    private fun applyEqualizerSettings(freq1Level: Int, bassLevel: Int, presetIndex: Int) {
-        // Здесь вы можете применить настройки эквалайзера к вашему звуковому движку
     }
 }

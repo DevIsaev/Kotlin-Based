@@ -8,19 +8,37 @@
     android:background="?attr/themeColors"
     >
 
-    <com.lukelorusso.verticalseekbar.VerticalSeekBar
-        android:id="@+id/verticalBar"
+<!--    <com.lukelorusso.verticalseekbar.VerticalSeekBar-->
+<!--        android:id="@+id/verticalBar"-->
+<!--        android:layout_width="100dp"-->
+<!--        android:layout_height="250dp"-->
+<!--        app:vsb_bar_corner_radius="15dp"-->
+<!--        android:layout_margin="16dp"-->
+<!--        app:vsb_progress="0"-->
+<!--        app:vsb_max_value="20"-->
+<!--        app:vsb_bar_progress="@color/black"-->
+<!--        app:vsb_thumb_placeholder_src="@drawable/baseline_surround_sound_24"-->
+<!--        app:vsb_use_thumb_to_set_progress="true"-->
+<!--        app:vsb_thumb_container_tint="@android:color/transparent"-->
+<!--        tools:ignore="MissingClass" />-->
+
+    <com.ss.svsdemo.SegmentedVerticalSeekBar
+        android:id="@+id/svsLevelView"
         android:layout_width="100dp"
         android:layout_height="250dp"
-        app:vsb_bar_corner_radius="15dp"
+        android:layout_gravity="center"
         android:layout_margin="16dp"
-        app:vsb_progress="0"
-        app:vsb_max_value="20"
-        app:vsb_thumb_placeholder_src="@drawable/baseline_surround_sound_24"
-        app:vsb_use_thumb_to_set_progress="true"
-        app:vsb_thumb_container_tint="@android:color/transparent"
-        tools:ignore="MissingClass" />
-
+        app:backgroundColor="@color/color_background"
+        app:clockwise="true"
+        app:cornerRadius="10dp"
+        app:currentValue="0"
+        app:delimiterColor="@color/white"
+        app:isAllRadius="true"
+        app:maxValue="20"
+        app:progressColor="@color/color_progress"
+        app:pyramidViewEnable="false"
+        app:step="1"
+        app:touchDisabled="false" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -38,7 +56,8 @@
             android:layout_height="match_parent"
             android:text="Здесь можно увеличить громкость воспроизведения. Осторожно! Есть риск потерять слух или оглохнуть, если вы используете наушники."
             android:gravity="center"
-            android:textSize="14sp"
+            android:textSize="12sp"
+            android:textAlignment="center"
             android:textColor="@color/white"/>
     </LinearLayout>
 

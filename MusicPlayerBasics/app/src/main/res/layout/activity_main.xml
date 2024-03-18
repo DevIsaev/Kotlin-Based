@@ -30,74 +30,140 @@
         android:background="?attr/themeColors"
         android:tooltipText="MainActivity"
         app:popupTheme="@style/Theme.AppCompat.Light"/>
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/refreshLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-            android:layout_marginTop="5dp"
-        android:orientation="vertical">
-<!--            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton-->
-<!--                android:id="@+id/shuffleBTN"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_gravity="end"-->
-<!--                android:backgroundTint="@color/white"-->
-<!--                app:icon="@drawable/baseline_shuffle_24"-->
-<!--                app:iconSize="35dp"-->
-<!--                app:iconTint="?attr/themeColors"-->
-<!--                app:strokeColor="?attr/themeColors"-->
-<!--                app:strokeWidth="2dp" />-->
-<!--            <com.google.android.material.tabs.TabLayout-->
-<!--                android:id="@+id/tabView"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                app:tabIndicatorGravity="stretch"-->
-<!--                app:tabTextColor="?colorOnPrimary"-->
-<!--                app:tabSelectedTextColor="?attr/themeColors"/>-->
+            android:id="@+id/linearLayout5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:layout_editor_absoluteY="5dp">
 
-<!--            <androidx.viewpager2.widget.ViewPager2-->
-<!--                android:id="@+id/viewPager2"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="0dp"-->
-<!--                android:layout_weight="1" />-->
-            <TextView
-                android:id="@+id/totalSongs"
+            <FrameLayout
+                android:id="@+id/fragment_container_view_tag"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/Total"
-                android:layout_margin="10dp"
-                android:textSize="18sp"
-                android:textColor="?colorOnPrimary"/>
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list_music"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layoutAnimation="@anim/layout_animation_rc"
-                android:scrollbarThumbVertical="@drawable/baseline_check_box_outline_blank_24"
-                android:scrollbars="vertical"
-                android:textColor="?colorOnPrimary" />
-    <!---->
+                android:layout_height="622dp" />
+        </LinearLayout>
 
-    </LinearLayout>
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/nowPlaying"
+        <com.qamar.curvedbottomnaviagtion.CurvedBottomNavigation
+            android:id="@+id/bottomNavigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:cbn_background="?attr/themeColors"
+            app:cbn_curve_radius="26dp"
+            app:cbn_fabColor="#4778ff"
+            app:cbn_height="76dp"
+            app:cbn_iconColor="@color/white"
+            app:cbn_icon_size="24dp"
+            app:cbn_selectedIconColor="@color/white"
+            app:cbn_selected_icon_size="48dp"
+            app:cbn_titleColor="@color/white"
+
+            app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="parent"
-            android:name="com.example.musicplayerbasics.NowPlaying"
-            tools:layout="@layout/fragment_now_playing"
-            />
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/linearLayout5"
+            tools:ignore="MissingConstraints">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/themeColors">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/album_NP"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="5dp"
+                    app:shapeAppearanceOverlay="@style/curved"
+                    android:src="@drawable/icon"/>
+
+                <ImageView
+                    android:id="@+id/nextBTN_NP"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="@color/backgroundColor"
+                    android:background="@drawable/baseline_skip_next_24"
+                    app:iconSize="30dp"
+                    app:iconTint="@color/white"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
+                <ImageView
+                    android:id="@+id/playPauseBTN_NP"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginHorizontal="5dp"
+                    android:layout_toStartOf="@id/nextBTN_NP"
+                    android:backgroundTint="@color/backgroundColor"
+                    android:background="@drawable/baseline_play_arrow_24"
+                    app:iconTint="@color/white"
+                    tools:ignore="SpeakableTextPresentCheck" />
+                <ImageView
+                    android:id="@+id/prevBTN"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginHorizontal="5dp"
+                    android:layout_toStartOf="@id/playPauseBTN_NP"
+                    android:backgroundTint="@color/backgroundColor"
+                    android:background="@drawable/baseline_skip_previous_24"
+                    app:iconTint="@color/white"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
+                <TextView
+                    android:id="@+id/songNP"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:layout_toStartOf="@id/prevBTN"
+                    android:layout_toEndOf="@+id/album_NP"
+                    android:gravity="center_vertical"
+                    android:text="@string/Song"
+                    android:textSize="12sp"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"/>
+                <TextView
+                    android:id="@+id/artistNP"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_toStartOf="@id/prevBTN"
+                    android:layout_toEndOf="@+id/album_NP"
+                    android:gravity="center_vertical"
+                    android:text="@string/Song"
+                    android:textSize="11sp"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"/>
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/nowPlaying"
+                    android:name="com.example.musicplayerbasics.NowPlaying"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="parent"
+                    tools:layout="@layout/fragment_now_playing" />
+            </RelativeLayout>
+
+
+        </RelativeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/NavView"

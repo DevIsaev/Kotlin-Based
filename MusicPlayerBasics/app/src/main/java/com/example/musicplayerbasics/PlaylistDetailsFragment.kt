@@ -62,8 +62,8 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
 
         currentPlaylistPos = arguments?.getInt("index", 0)!!
 
-        PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist =
-            playlistCheck(PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist)
+        PlaylistsFragment.musicPlaylist.ref[currentPlaylistPos].playlist =
+            playlistCheck(PlaylistsFragment.musicPlaylist.ref[currentPlaylistPos].playlist)
 
         binding.playlistDetailsRV.setItemViewCacheSize(10)
         binding.playlistDetailsRV.setHasFixedSize(true)
@@ -71,7 +71,7 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
 
         adapter = AdapterMusicList(
             requireContext(),
-            PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist,
+            PlaylistsFragment.musicPlaylist.ref[currentPlaylistPos].playlist,
             playlistDetails = true
         )
         binding.playlistDetailsRV.adapter = adapter
@@ -93,7 +93,7 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
             builder.setTitle("Удаление")
                 .setMessage("Вы хотите удалить все композиции?")
                 .setPositiveButton("Yes") { dialog, _ ->
-                    PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist.clear()
+                    PlaylistsFragment.musicPlaylist.ref[currentPlaylistPos].playlist.clear()
                     adapter.refreshPlaylist()
                     dialog.dismiss()
                 }
@@ -112,14 +112,14 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
 
     override fun onResume() {
         super.onResume()
-        binding.playlistNamePD.text = PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].name
+        binding.playlistNamePD.text = PlaylistsFragment.musicPlaylist.ref[currentPlaylistPos].name
         binding.moreInfoPD.text = "Всего ${adapter.itemCount} композиций.\n\n" +
-                "Created On:\n${PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].createdOn}\n\n" +
-                "  -- ${PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].createdBy}"
+                "Created On:\n${PlaylistsFragment.musicPlaylist.ref[currentPlaylistPos].createdOn}\n\n" +
+                "  -- ${PlaylistsFragment.musicPlaylist.ref[currentPlaylistPos].createdBy}"
         if(adapter.itemCount > 0)
         {
             Glide.with(this)
-                .load(PlaylistsActivity.musicPlaylist.ref[currentPlaylistPos].playlist[0].artURI)
+                .load(PlaylistsFragment.musicPlaylist.ref[currentPlaylistPos].playlist[0].artURI)
                 .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
                 .into(binding.playlistImgPD)
             binding.shuffleBtnPD.visibility = View.VISIBLE
@@ -128,7 +128,7 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
 
         //сохранение
         val editor = requireActivity().getSharedPreferences("FAVOURITES", AppCompatActivity.MODE_PRIVATE).edit()
-        val jsonStringPL = GsonBuilder().create().toJson(PlaylistsActivity.musicPlaylist)
+        val jsonStringPL = GsonBuilder().create().toJson(PlaylistsFragment.musicPlaylist)
         editor.putString("MusicPlaylist", jsonStringPL)
         editor.apply()
     }

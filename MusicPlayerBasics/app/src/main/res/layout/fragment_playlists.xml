@@ -3,14 +3,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_red_dark"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".PlaylistsFragment">
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/playlistsRV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout"
+        android:scrollbarThumbVertical="@drawable/baseline_check_box_outline_blank_24"
+        android:scrollbars="vertical"
+        android:paddingBottom="40dp"
+        android:layout_marginTop="10dp"/>
+<!--    android:layoutAnimation="@anim/layout_animation_rc"-->
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/addBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Плейлисты"
-        android:textColor="@color/white"
-        android:textSize="28sp" />
+        android:backgroundTint="@color/white"
+        app:icon="@drawable/baseline_add_24"
+        app:iconSize="35dp"
+        app:iconTint="?attr/themeColors"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.907"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.84"
+        app:strokeColor="?attr/themeColors"
+        app:strokeWidth="2dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

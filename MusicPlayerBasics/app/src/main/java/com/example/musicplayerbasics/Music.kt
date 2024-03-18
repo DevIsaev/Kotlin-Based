@@ -52,7 +52,7 @@ fun songPosition(increment: Boolean){
 
 fun favouriteCheck(id: String): Int{
     PlayerFragment.isFavourite = false
-    FavouritesActivity.favSong.forEachIndexed { index, music ->
+    FavouritesFragment.favSong.forEachIndexed { index, music ->
         if(id == music.id){
             PlayerFragment.isFavourite = true
             return index
