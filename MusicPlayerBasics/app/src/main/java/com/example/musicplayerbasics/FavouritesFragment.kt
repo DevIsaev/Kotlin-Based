@@ -1,5 +1,6 @@
 package com.example.musicplayerbasics
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,11 +14,12 @@ import com.google.gson.GsonBuilder
 
 
 class FavouritesFragment : Fragment() {
-    private lateinit var binding:FragmentFavouritesBinding
-    private lateinit var adapter: AdapterMusicListFavourite
+
     companion object {
         var favouritesChanged: Boolean = false
         var favSong:ArrayList<Music> = ArrayList()
+        lateinit var adapter: AdapterMusicListFavourite
+        lateinit var binding:FragmentFavouritesBinding
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -29,31 +31,41 @@ class FavouritesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         try {
-            favSong = playlistCheck(favSong)
-
-            binding.favouriteRV.setHasFixedSize(true)
-            binding.favouriteRV.setItemViewCacheSize(13)
-            binding.favouriteRV.layoutManager = GridLayoutManager(requireContext(), 3)
-            adapter = AdapterMusicListFavourite(requireContext(), favSong)
-            binding.favouriteRV.adapter = adapter
-
-            favouritesChanged = false
-
-            binding.refreshLayout.setOnRefreshListener {
-                adapter.updateFavourites(favSong)
-                favouritesChanged = false
-
-                binding.refreshLayout.isRefreshing = false
-            }
+           initialization()
         }
         catch (ex:Exception){
             Toast.makeText(requireContext(),ex.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 
+    private fun initialization() {
+        MainActivity.search = false
+        favSong = playlistCheck(favSong)
+
+        binding.favouriteRV.setHasFixedSize(true)
+        binding.favouriteRV.setItemViewCacheSize(13)
+        binding.favouriteRV.layoutManager = GridLayoutManager(requireContext(), 3)
+        adapter = AdapterMusicListFavourite(requireContext(), favSong)
+        binding.favouriteRV.adapter = adapter
+
+        favouritesChanged = false
+
+        binding.refreshLayout.setOnRefreshListener {
+            adapter.updateFavourites(favSong)
+            favouritesChanged = false
+
+            binding.refreshLayout.isRefreshing = false
+        }
+
+        if(favSong.isNotEmpty()) binding.instructionFV.visibility = View.GONE
+        else binding.instructionFV.visibility = View.VISIBLE
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     override fun onResume() {
         super.onResume()
-        // Сохранение данных в SharedPreferences
+        adapter.updateFavourites(favSong)
+//        // Сохранение данных в SharedPreferences
         val editor = requireContext().getSharedPreferences("FAVOURITES", AppCompatActivity.MODE_PRIVATE).edit()
         val jsonString = GsonBuilder().create().toJson(favSong)
         editor.putString("FavouriteSongs", jsonString)
@@ -61,12 +73,8 @@ class FavouritesFragment : Fragment() {
         val jsonStringPL = GsonBuilder().create().toJson(PlaylistsFragment.musicPlaylist)
         editor.putString("MusicPlaylist", jsonStringPL)
         editor.apply()
-
-        // Если произошли изменения в избранном, обновите список
-        if (favouritesChanged) {
-            adapter.updateFavourites(favSong)
-            favouritesChanged = false
-        }
+        if(favSong.isNotEmpty()) binding.instructionFV.visibility = View.GONE
+        else binding.instructionFV.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {

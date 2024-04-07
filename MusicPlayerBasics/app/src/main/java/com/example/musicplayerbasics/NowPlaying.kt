@@ -55,19 +55,23 @@ companion object{
         }
         binding.root.setOnLongClickListener {
             if(PlayerFragment.musicService!=null) {
-                PlayerFragment.nowPlayingId=""
-                PlayerFragment.fIndex=-1
-                PlayerFragment.musicService!!.audioManager.abandonAudioFocus(PlayerFragment.musicService)
-                PlayerFragment.musicService!!.stopForeground(true)
-                PlayerFragment.musicService!!.mediaPlayer!!.stop()
-                PlayerFragment.musicService = null
-                binding.root.visibility = View.INVISIBLE
+              clearNP()
             }
             true
         }
 
 
         return view
+    }
+
+    fun clearNP() {
+        PlayerFragment.nowPlayingId=""
+        PlayerFragment.fIndex=-1
+        PlayerFragment.musicService!!.audioManager.abandonAudioFocus(PlayerFragment.musicService)
+        PlayerFragment.musicService!!.stopForeground(true)
+        PlayerFragment.musicService!!.mediaPlayer!!.stop()
+        PlayerFragment.musicService = null
+        binding.root.visibility = View.INVISIBLE
     }
 
     override fun onResume() {
@@ -97,18 +101,19 @@ companion object{
             }
         }
         catch (ex:Exception){
+            PlayerFragment.binding.songTITLE.text=ex.toString()
             binding.songNP.text="1"
         }
     }
     //воспроизведение
-    private fun playMusic(){
+    fun playMusic(){
         PlayerFragment.isPlaying = true
         PlayerFragment.musicService!!.mediaPlayer!!.start()
         binding.playPauseBTNNP.setImageResource(R.drawable.baseline_pause_24)
         PlayerFragment.musicService!!.showNotification(R.drawable.baseline_pause_24)
     }
     //пауза
-    private fun pauseMusic(){
+    fun pauseMusic(){
         PlayerFragment.isPlaying = false
         PlayerFragment.musicService!!.mediaPlayer!!.pause()
         binding.playPauseBTNNP.setImageResource(R.drawable.baseline_play_arrow_24)

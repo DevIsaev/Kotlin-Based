@@ -20,8 +20,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
+import androidx.viewpager2.widget.ViewPager2
 import com.example.musicplayerbasics.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.GsonBuilder
@@ -85,6 +85,12 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.SIZE + " DESC"
         )
+
+        var viewPager: ViewPager2? =null
+        var bottomNavigation:CurvedBottomNavigation?=null
+        var r:Boolean=false
+
+
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -307,14 +313,30 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
                     MusicListSearch = ArrayList()
                     if (newText != null) {
                         val input = newText.lowercase()
-                        for (song in MusicListMA) {
-                            if (song.title.lowercase().contains(input) || song.artist.lowercase()
-                                    .contains(input) || song.album.lowercase().contains(input)
-                            ) {
-                                MusicListSearch.add(song)
+
+                        when(binding.toolbar.title){
+                            "Избранное"->{
+                                for (song in FavouritesFragment.favSong) {
+                                    if (song.title.lowercase().contains(input) || song.artist.lowercase()
+                                            .contains(input) || song.album.lowercase().contains(input)
+                                    ) {
+                                        MusicListSearch.add(song)
+                                    }
+                                    search = true
+                                    FavouritesFragment.adapter.updateFavourites(MusicListSearch)
+                                }
                             }
-                            search = true
-                            musicAdapter.updateMusicList(MusicListSearch)
+                            "Все композиции"->{
+                                for (song in MusicListMA) {
+                                    if (song.title.lowercase().contains(input) || song.artist.lowercase()
+                                            .contains(input) || song.album.lowercase().contains(input)
+                                    ) {
+                                        MusicListSearch.add(song)
+                                    }
+                                    search = true
+                                    musicAdapter.updateMusicList(MusicListSearch)
+                                }
+                            }
                         }
                     }
                     return true
@@ -335,43 +357,49 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         }
     }
 
-    fun BottomNavigation(){
-        var bottomNavigation=findViewById<CurvedBottomNavigation>(R.id.bottomNavigation)
-        bottomNavigation.add(CurvedBottomNavigation.Model(1,"", R.drawable.baseline_favorite_242))
-        bottomNavigation.add(CurvedBottomNavigation.Model(2,"", R.drawable.baseline_house_24))
-        bottomNavigation.add(CurvedBottomNavigation.Model(3,"", R.drawable.baseline_library_music_24))
+    fun BottomNavigation() {
+        bottomNavigation= findViewById(R.id.bottomNavigation)
+        bottomNavigation?.add(CurvedBottomNavigation.Model(1, "", R.drawable.baseline_favorite_242))
+        bottomNavigation?.add(CurvedBottomNavigation.Model(2, "", R.drawable.baseline_house_24))
+        bottomNavigation?.add(CurvedBottomNavigation.Model(3, "", R.drawable.baseline_library_music_24))
+        bottomNavigation?.add(CurvedBottomNavigation.Model(4, "", R.drawable.baseline_settings_24))
 
-        bottomNavigation.setOnClickMenuListener {
-            when(it.id){
-                1->{
-                    //replaceFragment(First())
-                    binding.toolbar.setTitle("Избранное")
-                    replaceFragment(FavouritesFragment())
-                    //Toast.makeText(this,it.id.toString(),Toast.LENGTH_SHORT).show()
-                }
-                2->{
-                    //replaceFragment(Second())
-                    binding.toolbar.setTitle("Все композиции")
-                    replaceFragment(AllMusicFragment())
-                    //Toast.makeText(this,it.id.toString(),Toast.LENGTH_SHORT).show()
-                }
-                3->{
-                    //replaceFragment(Third())
-                    binding.toolbar.setTitle("Плейлисты")
-                    replaceFragment(PlaylistsFragment())
-                    //Toast.makeText(this,it.id.toString(),Toast.LENGTH_SHORT).show()
-                }
-            }
+
+       viewPager=findViewById(R.id.viewPager)
+        val adapter = ViewPagerAdapter(this)
+        adapter.addFragment(FavouritesFragment())
+        adapter.addFragment(AllMusicFragment())
+        adapter.addFragment(PlaylistsFragment())
+        adapter.addFragment(SettingsFragment())
+        viewPager?.adapter = adapter
+
+        bottomNavigation?.setOnClickMenuListener {
+            viewPager?.setCurrentItem(it.id - 1, true)
         }
 
-        replaceFragment(AllMusicFragment())
-        binding.toolbar.setTitle("Все композиции")
-        bottomNavigation.show(2)
+        viewPager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                bottomNavigation?.show(position + 1)
+                when (position) {
+                    0 -> {
+                        binding.toolbar.setTitle("Избранное")
+                    }
+                    1 -> {
+                        binding.toolbar.setTitle("Все композиции")
+                    }
+                    2 -> {
+                        binding.toolbar.setTitle("Плейлисты")
+                    }
+                    3 -> {
+                        binding.toolbar.setTitle("Настройки")
+                    }
+                }
+            }
+        })
+    when{
+        r->        viewPager?.setCurrentItem(3, false) // Устанавливаем фрагмент "Все композиции" изначально
+        else->        viewPager?.setCurrentItem(1, false) // Устанавливаем фрагмент "Все композиции" изначально
     }
-    private fun replaceFragment(fragment: Fragment) {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragment_container_view_tag,fragment)
-            .commit()
     }
 }

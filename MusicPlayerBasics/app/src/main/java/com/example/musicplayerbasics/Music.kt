@@ -1,7 +1,6 @@
 package com.example.musicplayerbasics
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.media.MediaMetadataRetriever
@@ -80,14 +79,7 @@ fun exitApp(){
     }
     exitProcess(1)
 }
-fun restartApp(context: Context) {
-    val packageManager = context.packageManager
-    val intent = packageManager.getLaunchIntentForPackage(context.packageName)
-    val componentName = intent!!.component
-    val mainIntent = Intent.makeRestartActivityTask(componentName)
-    context.startActivity(mainIntent)
-    exitProcess(0)
-}
+
 
 fun getMainColor(img: Bitmap): Int {
     val newImg = Bitmap.createScaledBitmap(img, 1,1 , true)

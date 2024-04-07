@@ -112,6 +112,7 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
 
     override fun onResume() {
         super.onResume()
+
         binding.playlistNamePD.text = PlaylistsFragment.musicPlaylist.ref[currentPlaylistPos].name
         binding.moreInfoPD.text = "Всего ${adapter.itemCount} композиций.\n\n" +
                 "Created On:\n${PlaylistsFragment.musicPlaylist.ref[currentPlaylistPos].createdOn}\n\n" +
@@ -124,7 +125,7 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
                 .into(binding.playlistImgPD)
             binding.shuffleBtnPD.visibility = View.VISIBLE
         }
-        adapter.notifyDataSetChanged()
+        adapter.refreshPlaylist()
 
         //сохранение
         val editor = requireActivity().getSharedPreferences("FAVOURITES", AppCompatActivity.MODE_PRIVATE).edit()
@@ -134,7 +135,7 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
     }
     override fun onDestroy() {
         super.onDestroy()
-
+        //PlaylistsFragment().onResume()
 
     }
 }

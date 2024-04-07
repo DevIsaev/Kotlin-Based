@@ -1,6 +1,7 @@
 package com.example.musicplayerbasics
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -34,10 +35,28 @@ class AllMusicFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initialization()
         binding.refreshLayout.setOnRefreshListener {
-            MainActivity.MusicListMA = getAllAudio()
-            MainActivity.musicAdapter.updateMusicList(MainActivity.MusicListMA)
-            binding.totalSongs.text = "Всего песен: ${MainActivity.musicAdapter.itemCount}"
+            binding.refreshLayout.isRefreshing = true
+            refreshList()
             binding.refreshLayout.isRefreshing = false
+        }
+
+        binding.sortBtn.setOnClickListener {
+            var menuList= arrayOf("Последнее добавленное", "Название","Размер")
+            var currentSort=MainActivity.sort
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("Сортировать композиции по:")
+                .setPositiveButton("Принять"){_,_ ->
+                    var editor=requireContext().getSharedPreferences("SORTING", AppCompatActivity.MODE_PRIVATE).edit()
+                    editor.putInt("sortOrder",currentSort)
+                    editor.apply()
+                    onResume()
+                }
+                .setSingleChoiceItems(menuList,currentSort){_,which ->
+                    currentSort=which
+                }
+
+            val customDialog=builder.create()
+            customDialog.show()
         }
     }
 
@@ -50,8 +69,16 @@ class AllMusicFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
+    override fun onResume() {
+        super.onResume()
+        //initialization()
+        //MainActivity.musicAdapter.updateMusicList(MainActivity.MusicListMA)
+        refreshList()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.R)
     @SuppressLint("SetTextI18n")
-    private fun initialization() {
+    fun initialization() {
         //поиск
         MainActivity.search = false
         var sortEditor = requireContext().getSharedPreferences("SORTING", AppCompatActivity.MODE_PRIVATE)
@@ -139,4 +166,17 @@ class AllMusicFragment : Fragment() {
         }
         return tempList
     }
+
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    fun refreshList(){
+//        MainActivity.MusicListMA = getAllAudio()
+//        MainActivity.musicAdapter.updateMusicList(MainActivity.MusicListMA)
+//        binding.totalSongs.text = "Всего песен: ${MainActivity.musicAdapter.itemCount}"
+//        initialization()
+        val updatedList = getAllAudio()
+        MainActivity.musicAdapter.updateMusicList(updatedList)
+        binding.totalSongs.text = "Всего песен: ${updatedList.size}"
+    }
+
 }

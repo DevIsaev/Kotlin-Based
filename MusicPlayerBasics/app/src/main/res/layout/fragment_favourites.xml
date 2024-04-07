@@ -22,4 +22,18 @@
         android:paddingBottom="40dp"/>
 <!--        android:layoutAnimation="@anim/layout_animation_rc" />-->
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <TextView
+        android:id="@+id/instructionFV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="Список пуст"
+        android:textSize="20sp"
+        android:padding="16dp"
+        android:gravity="center"
+        android:textColor="?attr/dialogBtnBackground"
+        />
 </FrameLayout>

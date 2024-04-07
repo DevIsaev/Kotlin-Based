@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Установить цвет"
+            android:textSize="18sp"
+            android:textColor="?colorOnPrimary"
+            android:layout_marginTop="2dp"
+            android:gravity="center"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal">
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/coolPinkTheme"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/baseline_circle_24"
+                    android:tint="@color/pink"/>
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/coolBlueTheme"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/baseline_circle_24"
+                    android:tint="@color/blue"/>
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/coolPurpleTheme"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/baseline_circle_24"
+                    android:tint="@color/purple500"/>
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/coolGreenTheme"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/baseline_circle_24"
+                    android:tint="@color/green"/>
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/coolBlackTheme"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/baseline_circle_24"
+                    android:tint="@color/black"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal">
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/coolCustom1Theme"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/baseline_circle_24"
+                    />
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/coolCustom2Theme"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/baseline_circle_24"
+                    />
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/coolCustom3Theme"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/baseline_circle_24"
+                    />
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/coolCustom4Theme"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/baseline_circle_24"
+                    />
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/coolCustom5Theme"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/baseline_circle_24"
+                    />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="2dp"
+                android:gravity="center"
+                android:text="Установить тему"
+                android:textColor="?colorOnPrimary"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/lightBTN"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/baseline_sunny_24"
+                android:tint="?colorOnPrimary" />
+            <ImageView
+                android:id="@+id/nightBTN"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/baseline_mode_night_24"
+                android:tint="?colorOnPrimary" />
+            <ImageView
+                android:id="@+id/autoBTN"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/baseline_settings_24"
+                android:tint="?colorOnPrimary" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/versionName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Версия: 1.0"
+            android:textSize="18sp"
+            android:textColor="?colorOnPrimary"
+            android:padding="16dp"/>
+    </LinearLayout>
+
+</FrameLayout>

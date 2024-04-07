@@ -7,6 +7,7 @@ import android.app.Activity.RESULT_OK
 import android.content.ComponentName
 import android.content.Context
 import android.content.Context.AUDIO_SERVICE
+import android.content.Context.BIND_AUTO_CREATE
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.ActivityInfo
@@ -362,7 +363,6 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         super.onDestroy()
         //musicService!!.mediaPlayer!!.stop()
         //requireContext().unbindService(this)
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         try {
             if (musicService != null) {
                 NowPlaying.binding.root.visibility = View.VISIBLE
@@ -379,9 +379,10 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                     NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_play_arrow_24)
                 }
             }
+            //FavouritesFragment.adapter.updateFavourites(FavouritesFragment.favSong)
         }
         catch (ex:Exception){
-            NowPlaying.binding.songNP.text="1"
+            NowPlaying.binding.songNP.text=ex.toString()
         }
         val editor = requireContext().getSharedPreferences("FAVOURITES", Context.MODE_PRIVATE).edit()
         val jsonString = GsonBuilder().create().toJson(FavouritesFragment.favSong)
@@ -396,34 +397,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
 
         if (songPosition != null && classType != null) {
             when (classType) {
-                "MusicAdapter" -> {
-                    //service
-                    val intent = Intent(requireContext(), MusicSevice::class.java)
-                    requireContext().bindService(intent, this, Context.BIND_AUTO_CREATE)
-                    musicListPA = ArrayList()
-                    musicListPA.addAll(MainActivity.MusicListMA)
-                    setLayout()
-                    //createMP()
-                }
-                "MusicAdapterSearch" -> {
-                    //service
-                    val intent = Intent(requireContext(), MusicSevice::class.java)
-                    requireContext().bindService(intent, this, Context.BIND_AUTO_CREATE)
-                    musicListPA = ArrayList()
-                    musicListPA.addAll(MainActivity.MusicListSearch)
-                    setLayout()
-                    //createMP()
-                }
-                "MainActivity" -> {
-                    //service
-                    val intent = Intent(requireContext(), MusicSevice::class.java)
-                    requireContext().bindService(intent, this, Context.BIND_AUTO_CREATE)
-                    musicListPA = ArrayList()
-                    musicListPA.addAll(MainActivity.MusicListMA)
-                    musicListPA.shuffle()
-                    setLayout()
-                    //createMP()
-                }
+
                 "NowPlaying" -> {
                     setLayout()
                     binding.durationCURRENT.text= DurationFormat(musicService!!.mediaPlayer!!.currentPosition.toLong())
@@ -437,37 +411,29 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                         binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_play_arrow_24)
                     }
                     //createMP()
+                    NowPlaying.binding.root.visibility = View.VISIBLE
+                    NowPlaying.binding.songNP.isSelected = true
+                    Glide.with(requireContext())
+                        .load(musicListPA[songPosition].artURI)
+                        .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
+                        .into(NowPlaying.binding.albumNP)
+                    NowPlaying.binding.songNP.text = musicListPA[songPosition].title
+                    NowPlaying.binding.artistNP.text= musicListPA[songPosition].artist
+                    if (isPlaying) {
+                        NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_pause_24)
+                    } else {
+                        NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_play_arrow_24)
+                    }
+
                 }
-                "Favourite"->{
-                    val intent = Intent(requireContext(), MusicSevice::class.java)
-                    requireContext().bindService(intent, this, Context.BIND_AUTO_CREATE)
-                    musicListPA = ArrayList()
-                    musicListPA.addAll(FavouritesFragment.favSong)
-                    setLayout()
-                }
-                "FavouriteShuffle"->{
-                    val intent = Intent(requireContext(), MusicSevice::class.java)
-                    requireContext().bindService(intent, this, Context.BIND_AUTO_CREATE)
-                    musicListPA = ArrayList()
-                    musicListPA.addAll(FavouritesFragment.favSong)
-                    musicListPA.shuffle()
-                    setLayout()
-                }
-                "AdapterMusicListPlaylist"->{
-                    val intent = Intent(requireContext(), MusicSevice::class.java)
-                    requireContext().bindService(intent, this, Context.BIND_AUTO_CREATE)
-                    musicListPA = ArrayList()
-                    musicListPA.addAll(PlaylistsFragment.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist)
-                    setLayout()
-                }
-                "PlaylistShuffle"->{
-                    val intent = Intent(requireContext(), MusicSevice::class.java)
-                    requireContext().bindService(intent, this, Context.BIND_AUTO_CREATE)
-                    musicListPA = ArrayList()
-                    musicListPA.addAll(PlaylistsFragment.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist)
-                    musicListPA.shuffle()
-                    setLayout()
-                }
+                "MusicAdapterSearch"-> initServiceAndPlaylist(MainActivity.MusicListSearch, shuffle = false)
+                "MusicAdapter" -> initServiceAndPlaylist(MainActivity.MusicListMA, shuffle = false)
+                "MainActivity" -> initServiceAndPlaylist(MainActivity.MusicListMA, shuffle = true)
+                "Favourite"-> initServiceAndPlaylist(FavouritesFragment.favSong, shuffle = false)
+                "MainActivity"-> initServiceAndPlaylist(MainActivity.MusicListMA, shuffle = true)
+                "FavouriteShuffle"-> initServiceAndPlaylist(FavouritesFragment.favSong, shuffle = true)
+                "AdapterMusicListPlaylist"-> initServiceAndPlaylist(PlaylistsFragment.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist, shuffle = false)
+                "PlaylistShuffle"-> initServiceAndPlaylist(PlaylistsFragment.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist, shuffle = true)
             }
         }
     }
@@ -510,15 +476,24 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         val img = getImage(musicListPA[songPosition].path)
         if (img != null) {
             // Создаем Bitmap из полученных данных изображения
-            var albumArtBitmap = BitmapFactory.decodeByteArray(img, 0, img.size)
-            // Применяем размытие к изображению альбома
-            val blurredBitmap1 = blurBitmap(albumArtBitmap, 25f, requireContext())
-            val blurredBitmap2 = blurBitmap(blurredBitmap1, 25f, requireContext())
-            val blurredBitmap3 = blurBitmap(blurredBitmap2, 25f, requireContext())
-            val blurredBitmap4 = blurBitmap(blurredBitmap3, 25f, requireContext())
-            val blurredBitmap5 = blurBitmap(blurredBitmap4, 25f, requireContext())
-            val blurredBitmap6 = blurBitmap(blurredBitmap5, 25f, requireContext())
-            val blurredBitmap = blurBitmap(blurredBitmap6, 25f, requireContext())
+            val albumArtBitmap = BitmapFactory.decodeByteArray(img, 0, img.size)
+            // Получение ширины и высоты изображения
+            val width = albumArtBitmap.width
+            val height = albumArtBitmap.height
+            // Вывод ширины и высоты через Toast
+            //Toast.makeText(requireContext(), "Ширина: $width, Высота: $height", Toast.LENGTH_LONG).show()
+
+            // Проверка на длину и ширину больше 600
+            val shouldBlurMore = width > 600 || height > 600
+
+            // Применяем размытие к изображению альбома через цикл for
+            var blurredBitmap = albumArtBitmap
+            val blurAmount = 25f
+            val iterations = if (shouldBlurMore) 15 else 7
+            for (i in 1..iterations) {
+                blurredBitmap = blurBitmap(blurredBitmap, blurAmount, requireContext())
+            }
+
             // Создаем Drawable из размытого изображения
             val drawable = BitmapDrawable(resources, blurredBitmap)
             // Создаем GradientDrawable для установки углов и обводки
@@ -528,6 +503,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             val layersDrawable = LayerDrawable(arrayOf(drawable, gradientDrawable))
             // Устанавливаем созданный Drawable в качестве фона
             binding.bgPlayer.background = layersDrawable
+
 
             //
             val image = if (img != null) {
@@ -582,25 +558,29 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             playMusic()
             loudnessEnhancer = LoudnessEnhancer(musicService!!.mediaPlayer!!.audioSessionId)
             loudnessEnhancer.enabled = true
+
+
         } catch (ex: Exception) {
             return
         }
     }
 
     //воспроизведение
-    private fun playMusic() {
+    fun playMusic() {
         isPlaying = true
         musicService!!.mediaPlayer!!.start()
         binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
         musicService!!.showNotification(R.drawable.baseline_pause_24,)
+        NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_pause_24)
     }
 
     //пауза
-    private fun pauseMusic() {
+    fun pauseMusic() {
         isPlaying = false
         musicService!!.mediaPlayer!!.pause()
         binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_play_arrow_24)
         musicService!!.showNotification(R.drawable.baseline_play_arrow_24)
+        NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_play_arrow_24)
     }
 
     //след\пред музыка
@@ -651,8 +631,21 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                 backAnim.start()
                 isFont = true
             }
+//            NowPlaying.binding.root.visibility = View.VISIBLE
+//            NowPlaying.binding.songNP.isSelected = true
+//            Glide.with(requireContext())
+//                .load(musicListPA[songPosition].artURI)
+//                .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
+//                .into(NowPlaying.binding.albumNP)
+//            NowPlaying.binding.songNP.text = musicListPA[songPosition].title
+//            NowPlaying.binding.artistNP.text= musicListPA[songPosition].artist
+//            if (isPlaying) {
+//                NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_pause_24)
+//            } else {
+//                NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_play_arrow_24)
+//            }
         } catch (ex: Exception) {
-            return
+            binding.songTITLE.text=ex.toString()
         }
     }
 
@@ -830,5 +823,15 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         super.onResume()
         setLayout()
         BG()
+    }
+
+    private fun initServiceAndPlaylist(playlist: ArrayList<Music>, shuffle: Boolean){
+        val intent = Intent(requireContext(), MusicSevice::class.java)
+        requireContext().bindService(intent, this, BIND_AUTO_CREATE)
+        requireContext().startService(intent)
+        musicListPA = ArrayList()
+        musicListPA.addAll(playlist)
+        if(shuffle) musicListPA.shuffle()
+        setLayout()
     }
 }

@@ -19,9 +19,9 @@ import java.util.Locale
 
 
 class PlaylistsFragment : Fragment() {
-    private lateinit var binding:FragmentPlaylistsBinding
     private lateinit var adapter:AdapterMusicListPlaylist
     companion object {
+        lateinit var binding:FragmentPlaylistsBinding
         var musicPlaylist:PlaylistMusic=PlaylistMusic()
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -33,39 +33,44 @@ class PlaylistsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         try {
-            //перезапись
-            FavouritesFragment.favSong = ArrayList()
-            val editor = requireContext().getSharedPreferences("FAVOURITES", AppCompatActivity.MODE_PRIVATE)
-            val jsonString = editor.getString("FavouriteSongs", null)
-            val typeToken = object : TypeToken<ArrayList<Music>>() {}.type
-            if (jsonString != null) {
-                val data: ArrayList<Music> = GsonBuilder().create().fromJson(jsonString, typeToken)
-                FavouritesFragment.favSong.addAll(data)
-            }
-            musicPlaylist = PlaylistMusic()
-            //val editorPL = getSharedPreferences("FAVOURITES", MODE_PRIVATE)
-            val jsonStringPL = editor.getString("MusicPlaylist", null)
-            //val typeTokenPL = object : TypeToken<PlaylistMusic>(){}.type
-            if (jsonStringPL != null) {
-                val dataPL: PlaylistMusic =
-                    GsonBuilder().create().fromJson(jsonStringPL, PlaylistMusic::class.java)
-                musicPlaylist = dataPL
-            }
-
-
-            binding.playlistsRV.setHasFixedSize(true)
-            binding.playlistsRV.setItemViewCacheSize(13)
-            binding.playlistsRV.layoutManager = GridLayoutManager(requireContext(), 2)
-            adapter = AdapterMusicListPlaylist(requireContext(), musicPlaylist.ref)
-            binding.playlistsRV.adapter = adapter
-
-            binding.addBtn.setOnClickListener {
-                customAlertDialog()
-            }
+          intialization()
         }
         catch (ex:Exception){
             Toast.makeText(requireContext(),ex.toString(), Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun intialization() {
+        //перезапись
+        FavouritesFragment.favSong = ArrayList()
+        val editor = requireContext().getSharedPreferences("FAVOURITES", AppCompatActivity.MODE_PRIVATE)
+        val jsonString = editor.getString("FavouriteSongs", null)
+        val typeToken = object : TypeToken<ArrayList<Music>>() {}.type
+        if (jsonString != null) {
+            val data: ArrayList<Music> = GsonBuilder().create().fromJson(jsonString, typeToken)
+            FavouritesFragment.favSong.addAll(data)
+        }
+        musicPlaylist = PlaylistMusic()
+        //val editorPL = getSharedPreferences("FAVOURITES", MODE_PRIVATE)
+        val jsonStringPL = editor.getString("MusicPlaylist", null)
+        //val typeTokenPL = object : TypeToken<PlaylistMusic>(){}.type
+        if (jsonStringPL != null) {
+            val dataPL: PlaylistMusic =
+                GsonBuilder().create().fromJson(jsonStringPL, PlaylistMusic::class.java)
+            musicPlaylist = dataPL
+        }
+
+        binding.playlistsRV.setHasFixedSize(true)
+        binding.playlistsRV.setItemViewCacheSize(13)
+        binding.playlistsRV.layoutManager = GridLayoutManager(requireContext(), 2)
+        adapter = AdapterMusicListPlaylist(requireContext(), musicPlaylist.ref)
+        binding.playlistsRV.adapter = adapter
+
+        binding.addBtn.setOnClickListener {
+            customAlertDialog()
+        }
+        if(musicPlaylist.ref.isNotEmpty()) binding.instructionPA.visibility = View.GONE
+        else binding.instructionPA.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {
@@ -79,7 +84,18 @@ class PlaylistsFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     override fun onResume() {
         super.onResume()
+        //intialization()
+        val editor = requireContext().getSharedPreferences("FAVOURITES", AppCompatActivity.MODE_PRIVATE).edit()
+        val jsonString = GsonBuilder().create().toJson(FavouritesFragment.favSong)
+        editor.putString("FavouriteSongs", jsonString)
+
+        val jsonStringPL = GsonBuilder().create().toJson(PlaylistsFragment.musicPlaylist)
+        editor.putString("MusicPlaylist", jsonStringPL)
+        editor.apply()
         adapter.notifyDataSetChanged()
+
+        if(musicPlaylist.ref.isNotEmpty()) binding.instructionPA.visibility = View.GONE
+        else binding.instructionPA.visibility = View.VISIBLE
     }
 
     private fun  customAlertDialog(){
@@ -124,7 +140,10 @@ class PlaylistsFragment : Fragment() {
             tempPlaylist.createdOn=sdf.format(calendar)
 
             musicPlaylist.ref.add(tempPlaylist)
-            adapter.refrershPlaylist()
+            adapter.refreshPlaylist()
+
         }
+        if(musicPlaylist.ref.isNotEmpty()) binding.instructionPA.visibility = View.GONE
+        else binding.instructionPA.visibility = View.VISIBLE
     }
 }
