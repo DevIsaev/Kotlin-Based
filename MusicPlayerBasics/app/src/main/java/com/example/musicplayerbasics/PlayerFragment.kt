@@ -3,6 +3,7 @@ package com.example.musicplayerbasics
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.ComponentName
 import android.content.Context
@@ -25,6 +26,7 @@ import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.media.audiofx.LoudnessEnhancer
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.renderscript.Allocation
@@ -40,9 +42,11 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.musicplayerbasics.MainActivity.Companion.mList
 import com.example.musicplayerbasics.databinding.ActivityPlayerBinding
 import com.example.musicplayerbasics.databinding.AudioBoosterBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -54,14 +58,17 @@ import com.google.gson.GsonBuilder
 
 class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer.OnCompletionListener {
 
+    private lateinit var mainActivityContext: Context
 
     lateinit var fontAnim: AnimatorSet
     lateinit var backAnim: AnimatorSet
     var isFont = true
 
     companion object {
-        fun newInstance(): PlayerFragment {
-            return PlayerFragment()
+        fun newInstance(context: Context): PlayerFragment {
+            val fragment = PlayerFragment()
+            fragment.mainActivityContext = context
+            return fragment
         }
 
         lateinit var musicListPA: ArrayList<Music>
@@ -88,6 +95,9 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
 
         private lateinit var audioEffectManager: AudioEffectManager
         private lateinit var audioEffectViewHelper: AudioEffectViewHelper
+
+        // Добавьте переменную для хранения контекста
+        private lateinit var fragmentContext: Context
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -113,8 +123,11 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
             decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
         }
+        saveMusicCounts(mList,context!!)
+        Toast.makeText(fragmentContext,context.toString(),Toast.LENGTH_SHORT).show()
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -133,8 +146,14 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         }
 
         try {
-            songInitialization()
+                songInitialization()
+                loadMusicCounts(mList,context!!)
+                Toast.makeText(requireContext(), mList[songPosition].count.toString()+"/"+arguments?.getString("class").toString()+"/"+mList[songPosition].title,Toast.LENGTH_SHORT).show()
+                //Toast.makeText(requireContext(),context.toString(),Toast.LENGTH_SHORT).show()
 
+//            Toast.makeText(requireContext(), musicListPA[songPosition].count.toString(),Toast.LENGTH_SHORT).show()
+//            musicListPA[songPosition].incrementPlayCount()
+//            Toast.makeText(requireContext(), musicListPA[songPosition].count.toString(),Toast.LENGTH_SHORT).show()
             //изображение альбома
             binding.albumFont.setOnClickListener {
                 if (isFont) {
@@ -168,7 +187,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                         playMusic()
                     }
                 } catch (ex: Exception) {
-                    binding.songTITLE.text = ex.toString()
+                    binding.songTITLE.text = "183"+ex.toString()
                 }
             }
             //назад
@@ -268,6 +287,8 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                 songPosition = 0
                 setLayout()
                 createMP()
+                mList = musicListPA // присваиваем mList измененный список
+                Toast.makeText(requireContext(), mList[songPosition].count.toString()+"/"+arguments?.getString("class").toString()+"/"+mList[songPosition].title,Toast.LENGTH_SHORT).show()
             }
 
             //увеличение громкости
@@ -352,12 +373,15 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             })
         }
         catch (ex:Exception){
-            binding.songTITLE.text=ex.toString()
+            binding.songTITLE.text="367"+ex.toString()
             Toast.makeText(requireContext(),ex.toString(),Toast.LENGTH_SHORT).show()
         }
     }
 
-
+    override fun onPause() {
+        super.onPause()
+        saveMusicCounts(mList, context!!)
+    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -379,19 +403,28 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                     NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_play_arrow_24)
                 }
             }
-            //FavouritesFragment.adapter.updateFavourites(FavouritesFragment.favSong)
+            FavouritesFragment.adapter.updateFavourites(FavouritesFragment.favSong)
+            if (!MainActivity.search){
+                MainActivity.search=false
+            }
+            else{
+                MainActivity.search=true
+            }
         }
         catch (ex:Exception){
-            NowPlaying.binding.songNP.text=ex.toString()
+            return
         }
         val editor = requireContext().getSharedPreferences("FAVOURITES", Context.MODE_PRIVATE).edit()
         val jsonString = GsonBuilder().create().toJson(FavouritesFragment.favSong)
         editor.putString("FavouriteSongs", jsonString)
         editor.apply()
+        saveMusicCounts(mList,requireContext())
+
     }
 
     //инициализация
     private fun songInitialization() {
+
         songPosition = arguments?.getInt("index", 0)!!
         val classType = arguments?.getString("class")
 
@@ -399,6 +432,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             when (classType) {
 
                 "NowPlaying" -> {
+                    //initServiceAndPlaylist(mList, shuffle = false)
                     setLayout()
                     binding.durationCURRENT.text= DurationFormat(musicService!!.mediaPlayer!!.currentPosition.toLong())
                     binding.durationEND.text = DurationFormat(musicService!!.mediaPlayer!!.duration.toLong())
@@ -411,128 +445,105 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
                         binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_play_arrow_24)
                     }
                     //createMP()
-                    NowPlaying.binding.root.visibility = View.VISIBLE
-                    NowPlaying.binding.songNP.isSelected = true
-                    Glide.with(requireContext())
-                        .load(musicListPA[songPosition].artURI)
-                        .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
-                        .into(NowPlaying.binding.albumNP)
-                    NowPlaying.binding.songNP.text = musicListPA[songPosition].title
-                    NowPlaying.binding.artistNP.text= musicListPA[songPosition].artist
-                    if (isPlaying) {
-                        NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_pause_24)
-                    } else {
-                        NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_play_arrow_24)
-                    }
-
+//                    NowPlaying.binding.root.visibility = View.VISIBLE
+//                    NowPlaying.binding.songNP.isSelected = true
+//                    Glide.with(requireContext())
+//                        .load(musicListPA[songPosition].artURI)
+//                        .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
+//                        .into(NowPlaying.binding.albumNP)
+//                    NowPlaying.binding.songNP.text = musicListPA[songPosition].title
+//                    NowPlaying.binding.artistNP.text= musicListPA[songPosition].artist
+//                    if (isPlaying) {
+//                        NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_pause_24)
+//                    } else {
+//                        NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_play_arrow_24)
+//                    }
                 }
-                "MusicAdapterSearch"-> initServiceAndPlaylist(MainActivity.MusicListSearch, shuffle = false)
-                "MusicAdapter" -> initServiceAndPlaylist(MainActivity.MusicListMA, shuffle = false)
-                "MainActivity" -> initServiceAndPlaylist(MainActivity.MusicListMA, shuffle = true)
-                "Favourite"-> initServiceAndPlaylist(FavouritesFragment.favSong, shuffle = false)
-                "MainActivity"-> initServiceAndPlaylist(MainActivity.MusicListMA, shuffle = true)
-                "FavouriteShuffle"-> initServiceAndPlaylist(FavouritesFragment.favSong, shuffle = true)
-                "AdapterMusicListPlaylist"-> initServiceAndPlaylist(PlaylistsFragment.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist, shuffle = false)
-                "PlaylistShuffle"-> initServiceAndPlaylist(PlaylistsFragment.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist, shuffle = true)
+                "MusicAdapterSearch"-> {
+                    mList =MainActivity.MusicListSearch
+                    initServiceAndPlaylist(MainActivity.MusicListSearch, shuffle = false)
+                    //saveMusicListMA(requireContext(), mList)
+                }
+                "MusicAdapter" -> {
+                    mList =MainActivity.MusicListMA
+                    initServiceAndPlaylist(MainActivity.MusicListMA, shuffle = false)
+                    //saveMusicListMA(requireContext(), mList)
+                }
+                "MainActivity" -> {
+                    mList =MainActivity.MusicListMA
+                    initServiceAndPlaylist(MainActivity.MusicListMA, shuffle = false)
+                }
+                "Favourite"-> {
+                    mList =FavouritesFragment.favSong
+                    initServiceAndPlaylist(FavouritesFragment.favSong, shuffle = false)
+                    //saveMusicListMA(requireContext(), mList)
+                }
+                "FavouriteShuffle"-> {
+                    mList =FavouritesFragment.favSong
+                    initServiceAndPlaylist(FavouritesFragment.favSong, shuffle = true)
+                    //saveMusicListMA(requireContext(), mList)
+                }
+                "AdapterMusicListPlaylist"-> {
+                    mList =PlaylistsFragment.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist
+                    initServiceAndPlaylist(PlaylistsFragment.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist, shuffle = false)
+                    //saveMusicListMA(requireContext(), mList)
+                }
+                "PlaylistShuffle"-> {
+                    mList =PlaylistsFragment.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist
+                    initServiceAndPlaylist(PlaylistsFragment.musicPlaylist.ref[PlaylistDetailsFragment.currentPlaylistPos].playlist, shuffle = true)
+                    //saveMusicListMA(requireContext(), mList)
+                }
             }
         }
     }
-
-    //вид
-    fun setLayout() {
-        fIndex= favouriteCheck(musicListPA[songPosition].id)
-        Glide.with(this)
-            .load(musicListPA[songPosition].artURI)
-            .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
-            .into(binding.albumIMGFont)
-        binding.songTITLE.text = musicListPA[songPosition].title + "\n" + musicListPA[songPosition].artist
-
-        if (repeat) {
-            repeat = true
-            binding.repeatBTN.setImageResource(R.drawable.baseline_repeat_one_24)
-        }
-        if (min15 || min30 || min45 || min60)
-            binding.timerBTN.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.highlightColor
-                )
-            )
-        if(isFavourite){
-            binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_24)
-        }
-        else{
-            binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_border_24)
-        }
-
-        retrieveMetadata()
-        //binding.metadata.text = metadataText
-        BG()
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        fragmentContext = context
+    }
+    fun initServiceAndPlaylist(playlist: ArrayList<Music>, shuffle: Boolean){
+        val intent = Intent(requireContext(), MusicSevice::class.java)
+        requireContext().bindService(intent, this, BIND_AUTO_CREATE)
+        requireContext().startService(intent)
+        musicListPA = ArrayList()
+        musicListPA.addAll(playlist)
+        if(shuffle) musicListPA.shuffle()
+        mList= musicListPA
+        setLayout()
     }
 
-
-    //задний фон
-    fun BG(){
-        val img = getImage(musicListPA[songPosition].path)
-        if (img != null) {
-            // Создаем Bitmap из полученных данных изображения
-            val albumArtBitmap = BitmapFactory.decodeByteArray(img, 0, img.size)
-            // Получение ширины и высоты изображения
-            val width = albumArtBitmap.width
-            val height = albumArtBitmap.height
-            // Вывод ширины и высоты через Toast
-            //Toast.makeText(requireContext(), "Ширина: $width, Высота: $height", Toast.LENGTH_LONG).show()
-
-            // Проверка на длину и ширину больше 600
-            val shouldBlurMore = width > 600 || height > 600
-
-            // Применяем размытие к изображению альбома через цикл for
-            var blurredBitmap = albumArtBitmap
-            val blurAmount = 25f
-            val iterations = if (shouldBlurMore) 15 else 7
-            for (i in 1..iterations) {
-                blurredBitmap = blurBitmap(blurredBitmap, blurAmount, requireContext())
+    //завершение песни
+    @SuppressLint("SetTextI18n")
+    override fun onCompletion(mp: MediaPlayer?) {
+        saveANDload(mList, songPosition)
+        songPositionPN(increment = true)
+        createMP()
+        try {
+            setLayout()
+            BG()
+            Toast.makeText(fragmentContext,context.toString(),Toast.LENGTH_SHORT).show()
+            if (isFont == false) {
+                fontAnim.setTarget(binding.albumBack)
+                backAnim.setTarget(binding.albumFont)
+                fontAnim.start()
+                backAnim.start()
+                isFont = true
             }
-
-            // Создаем Drawable из размытого изображения
-            val drawable = BitmapDrawable(resources, blurredBitmap)
-            // Создаем GradientDrawable для установки углов и обводки
-            val gradientDrawable = GradientDrawable()
-            gradientDrawable.cornerRadius = 110f // Здесь можно установить радиус скругления углов
-            // Объединяем Drawable с GradientDrawable
-            val layersDrawable = LayerDrawable(arrayOf(drawable, gradientDrawable))
-            // Устанавливаем созданный Drawable в качестве фона
-            binding.bgPlayer.background = layersDrawable
-
-
-            //
-            val image = if (img != null) {
-                BitmapFactory.decodeByteArray(img, 0, img.size)
+            NowPlaying.binding.root.visibility = View.VISIBLE
+            NowPlaying.binding.songNP.isSelected = true
+            Glide.with(fragmentContext)
+                .load(musicListPA[songPosition].artURI)
+                .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
+                .into(NowPlaying.binding.albumNP)
+            NowPlaying.binding.songNP.text = musicListPA[songPosition].title
+            NowPlaying.binding.artistNP.text= musicListPA[songPosition].artist
+            if (isPlaying) {
+                NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_pause_24)
             } else {
-                BitmapFactory.decodeResource(resources, R.drawable.icon)
+                NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_play_arrow_24)
             }
-            val bgColor = getMainColor(image)
-            val gradient = GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, intArrayOf(bgColor, bgColor))
-            gradient.cornerRadius = resources.getDimension(R.dimen.corner_radius)
-            binding.albumIMGBack.background = gradient
-        } else {
-            // Если изображение не получено, устанавливаем стандартный фон
-            binding.bgPlayer.setBackgroundResource(R.drawable.gradient)
+        } catch (ex: Exception) {
+            binding.songTITLE.text="701"+context.toString()+ex.toString()
         }
-    }
-    //блюр
-    fun blurBitmap(bitmap: Bitmap, radius: Float, context: Context): Bitmap {
-        val rs = RenderScript.create(context)
-        val input = Allocation.createFromBitmap(rs, bitmap)
-        val output = Allocation.createTyped(rs, input.type)
-        val script = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs))
-
-        script.setRadius(radius)
-        script.setInput(input)
-        script.forEach(output)
-
-        output.copyTo(bitmap)
-        return bitmap
     }
 
     //вызов медиаплеера
@@ -565,12 +576,156 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
         }
     }
 
+    //вид
+    fun setLayout() {
+        try {
+            if (fragmentContext != null && musicListPA.isNotEmpty() && songPosition >= 0 && songPosition < musicListPA.size) {
+                fIndex = favouriteCheck(musicListPA[songPosition].id)
+                Glide.with(fragmentContext)
+                    .load(musicListPA[songPosition].artURI)
+                    .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
+                    .into(binding.albumIMGFont)
+                binding.songTITLE.text =
+                    musicListPA[songPosition].title + "\n" + musicListPA[songPosition].artist
+                if (repeat) {
+                    repeat = true
+                    binding.repeatBTN.setImageResource(R.drawable.baseline_repeat_one_24)
+                }
+                if (min15 || min30 || min45 || min60)
+                    binding.timerBTN.setColorFilter(
+                        ContextCompat.getColor(
+                            fragmentContext,
+                            R.color.highlightColor
+                        )
+                    )
+                if(isFavourite){
+                    binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_24)
+                }
+                else{
+                    binding.favouriteBTN.setImageResource(R.drawable.baseline_favorite_border_24)
+                }
+
+                retrieveMetadata()
+                //binding.metadata.text = metadataText
+                BG() // Добавлено для отладки
+                //Toast.makeText(requireContext(),"BG_CALL BG method called from setLayout",Toast.LENGTH_SHORT).show()
+            } else {
+                // Handle the case when required resources are not available
+            }
+        } catch (ex: Exception) {
+            // Handle any exceptions that occur during layout setting
+            ex.printStackTrace()
+        }
+    }
+
+    //задний фон
+    fun BG(){
+        try {
+            if (fragmentContext != null && musicListPA.isNotEmpty() && songPosition >= 0 && songPosition < musicListPA.size) {
+                //Toast.makeText(requireContext(), "BG_CALL BG method started", Toast.LENGTH_SHORT).show()
+                val img = getImage(musicListPA[songPosition].path)
+                if (img != null) {
+                    // Создаем Bitmap из полученных данных изображения
+                    val albumArtBitmap = BitmapFactory.decodeByteArray(img, 0, img.size)
+                    // Получение ширины и высоты изображения
+                    val width = albumArtBitmap.width
+                    val height = albumArtBitmap.height
+                    // Вывод ширины и высоты через Toast
+                    //Toast.makeText(requireContext(), "Ширина: $width, Высота: $height", Toast.LENGTH_LONG).show()
+
+                    // Проверка на длину и ширину больше 600
+                    val shouldBlurMore = width > 600 || height > 600
+
+                    // Применяем размытие к изображению альбома через цикл for
+                    var blurredBitmap = albumArtBitmap
+                    val blurAmount = 25f
+                    val iterations = if (shouldBlurMore) 15 else 7
+                    for (i in 1..iterations) {
+                        blurredBitmap = blurBitmap(blurredBitmap, blurAmount, fragmentContext)
+                    }
+
+                    // Создаем Drawable из размытого изображения
+                    val drawable = BitmapDrawable(resources, blurredBitmap)
+                    // Создаем GradientDrawable для установки углов и обводки
+                    val gradientDrawable = GradientDrawable()
+                    gradientDrawable.cornerRadius =
+                        110f // Здесь можно установить радиус скругления углов
+                    // Объединяем Drawable с GradientDrawable
+                    val layersDrawable = LayerDrawable(arrayOf(drawable, gradientDrawable))
+                    // Устанавливаем созданный Drawable в качестве фона
+                    binding.bgPlayer.background = layersDrawable
+
+
+                    //
+                    val image = if (img != null) {
+                        BitmapFactory.decodeByteArray(img, 0, img.size)
+                    } else {
+                        BitmapFactory.decodeResource(resources, R.drawable.icon)
+                    }
+                    val bgColor = getMainColor(image)
+                    val gradient = GradientDrawable(
+                        GradientDrawable.Orientation.BOTTOM_TOP,
+                        intArrayOf(bgColor, bgColor)
+                    )
+                    gradient.cornerRadius = resources.getDimension(R.dimen.corner_radius)
+                    binding.albumIMGBack.background = gradient
+                } else {
+                    // Если изображение не получено, устанавливаем стандартный фон
+                    binding.bgPlayer.setBackgroundResource(R.drawable.bg1)
+                }
+            }
+            else{
+
+            }
+        } catch (ex: Exception) {
+            // Handle any exceptions that occur during background setting
+            binding.songTITLE.text=ex.toString()
+        }
+    }
+
+    fun saveANDload(AL: ArrayList<Music>, position: Int) {
+        // Проверка на null
+        if (fragmentContext != null) {
+            // Проверка на активность
+            if (fragmentContext is Activity) {
+                val activityContext = fragmentContext as Activity
+                Toast.makeText(
+                    fragmentContext,
+                    "n:${AL[position].title}, - ${AL[position].count}" + "/" + arguments?.getString("class").toString(),
+                    Toast.LENGTH_SHORT
+                ).show()
+                AL[position].incrementPlayCount(activityContext)
+                saveMusicCounts(AL, fragmentContext)
+                Toast.makeText(
+                    fragmentContext,
+                    "n:${AL[position].title}, - ${AL[position].count}" + "/" + arguments?.getString("class").toString(),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    //блюр
+    fun blurBitmap(bitmap: Bitmap, radius: Float, context: Context): Bitmap {
+        val rs = RenderScript.create(context)
+        val input = Allocation.createFromBitmap(rs, bitmap)
+        val output = Allocation.createTyped(rs, input.type)
+        val script = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs))
+
+        script.setRadius(radius)
+        script.setInput(input)
+        script.forEach(output)
+
+        output.copyTo(bitmap)
+        return bitmap
+    }
+
     //воспроизведение
     fun playMusic() {
         isPlaying = true
         musicService!!.mediaPlayer!!.start()
         binding.btnPAUSEPLAY.setIconResource(R.drawable.baseline_pause_24)
-        musicService!!.showNotification(R.drawable.baseline_pause_24,)
+        musicService!!.showNotification(R.drawable.baseline_pause_24)
         NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_pause_24)
     }
 
@@ -593,11 +748,11 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             isFont = true
         }
         if (increment) {
-            songPosition(true)
+            songPositionPN(true)
             setLayout()
             createMP()
         } else {
-            songPosition(false)
+            songPositionPN(false)
             setLayout()
             createMP()
         }
@@ -616,37 +771,6 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
     }
     override fun onServiceDisconnected(name: ComponentName?) {
         musicService = null
-    }
-
-    //завершение песни
-    override fun onCompletion(mp: MediaPlayer?) {
-        songPosition(increment = true)
-        createMP()
-        try {
-            setLayout()
-            if (isFont == false) {
-                fontAnim.setTarget(binding.albumBack)
-                backAnim.setTarget(binding.albumFont)
-                fontAnim.start()
-                backAnim.start()
-                isFont = true
-            }
-//            NowPlaying.binding.root.visibility = View.VISIBLE
-//            NowPlaying.binding.songNP.isSelected = true
-//            Glide.with(requireContext())
-//                .load(musicListPA[songPosition].artURI)
-//                .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
-//                .into(NowPlaying.binding.albumNP)
-//            NowPlaying.binding.songNP.text = musicListPA[songPosition].title
-//            NowPlaying.binding.artistNP.text= musicListPA[songPosition].artist
-//            if (isPlaying) {
-//                NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_pause_24)
-//            } else {
-//                NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_play_arrow_24)
-//            }
-        } catch (ex: Exception) {
-            binding.songTITLE.text=ex.toString()
-        }
     }
 
     //
@@ -753,7 +877,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
 
         val bitDepth = bitDepthString?.toIntOrNull() ?: 16
         // Проверка разрядности и частоты дискретизации
-        val isHighResolution = bitDepth >= 24 && sampleRateT != null && sampleRateT >= 48.0
+        val isHighResolution = bitDepth >= 24 && sampleRateT != null && sampleRateT >= 44.1
         // Отображение логотипа в зависимости от условий
         binding.hiresLogo.visibility = if (isHighResolution) View.VISIBLE else View.GONE
 
@@ -792,6 +916,7 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
             musicService!!.mediaPlayer!!.seekTo(musicService!!.mediaPlayer!!.duration)
         }
     }
+
     //перемотка вперед
     private fun seekBackward(milliseconds: Int) {
         val newPosition = musicService!!.mediaPlayer!!.currentPosition - milliseconds
@@ -821,17 +946,8 @@ class PlayerFragment : BottomSheetDialogFragment(),ServiceConnection,MediaPlayer
 
     override fun onResume() {
         super.onResume()
+        loadMusicCounts(mList,context!!)
         setLayout()
-        BG()
-    }
-
-    private fun initServiceAndPlaylist(playlist: ArrayList<Music>, shuffle: Boolean){
-        val intent = Intent(requireContext(), MusicSevice::class.java)
-        requireContext().bindService(intent, this, BIND_AUTO_CREATE)
-        requireContext().startService(intent)
-        musicListPA = ArrayList()
-        musicListPA.addAll(playlist)
-        if(shuffle) musicListPA.shuffle()
-        setLayout()
+        //BG()
     }
 }

@@ -30,11 +30,11 @@ companion object{
         binding.root.visibility=View.INVISIBLE
         binding.songNP.isSelected=true
         binding.playPauseBTNNP.setOnClickListener {
-            if(!PlayerFragment.isPlaying){
-                playMusic()
+            if(PlayerFragment.isPlaying){
+                pauseMusic()
             }
             else{
-                pauseMusic()
+                playMusic()
             }
         }
         binding.nextBTNNP.setOnClickListener {
@@ -44,14 +44,12 @@ companion object{
            prevNextSong(false,requireContext())
         }
         binding.root.setOnClickListener {
-            val playerFragment = PlayerFragment.newInstance()
-
+            val playerFragment = PlayerFragment.newInstance(context!!)
             val bundle = Bundle()
             bundle.putInt("index", PlayerFragment.songPosition)
             bundle.putString("class", "NowPlaying")
             playerFragment.arguments = bundle
-
-            playerFragment.show((context as AppCompatActivity).supportFragmentManager, playerFragment.tag)
+            playerFragment.show((requireActivity() as AppCompatActivity).supportFragmentManager, "PlayerFragment")
         }
         binding.root.setOnLongClickListener {
             if(PlayerFragment.musicService!=null) {
@@ -59,8 +57,6 @@ companion object{
             }
             true
         }
-
-
         return view
     }
 
@@ -91,12 +87,13 @@ companion object{
                 binding.songNP.text = PlayerFragment.musicListPA[PlayerFragment.songPosition].title
                 binding.artistNP.text=PlayerFragment.musicListPA[PlayerFragment.songPosition].artist
 
-                PlayerFragment.musicService!!.showNotification(R.drawable.baseline_pause_24)
 
                 if (PlayerFragment.isPlaying) {
                     binding.playPauseBTNNP.setImageResource(R.drawable.baseline_pause_24)
+                    PlayerFragment.musicService!!.showNotification(R.drawable.baseline_pause_24)
                 } else {
                     binding.playPauseBTNNP.setImageResource(R.drawable.baseline_play_arrow_24)
+                    PlayerFragment.musicService!!.showNotification(R.drawable.baseline_play_arrow_24)
                 }
             }
         }
@@ -121,7 +118,7 @@ companion object{
     }
     //след\пред композиция
     private  fun prevNextSong(increment:Boolean,context: Context){
-        songPosition(increment=increment)
+        songPositionPN(increment=increment)
         PlayerFragment.musicService!!.createMP()
         Glide.with(context)
             .load(PlayerFragment.musicListPA[PlayerFragment.songPosition].artURI)

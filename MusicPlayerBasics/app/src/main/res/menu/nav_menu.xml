@@ -5,7 +5,7 @@
 
     <group>
         <item
-            android:id="@+id/IDSignOut"
+            android:id="@+id/IDSignOut" 
             android:title="Выйти"
             android:icon="@drawable/baseline_login_24"
             android:padding="10dp" />

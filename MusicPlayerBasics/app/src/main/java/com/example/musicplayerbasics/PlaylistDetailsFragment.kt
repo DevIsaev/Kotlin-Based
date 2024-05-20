@@ -78,7 +78,7 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
 
 
         binding.shuffleBtnPD.setOnClickListener {
-            val bottomSheet = PlayerFragment.newInstance()
+            val bottomSheet = PlayerFragment.newInstance(requireContext())
             val bundle = Bundle()
             bundle.putInt("index", 0)
             bundle.putString("class", "PlaylistShuffle")
@@ -110,6 +110,10 @@ class PlaylistDetailsFragment : BottomSheetDialogFragment() {
     }
     }
 
+    override fun onPause() {
+        super.onPause()
+        saveMusicCounts(MainActivity.MusicListMA, requireContext())
+    }
     override fun onResume() {
         super.onResume()
 

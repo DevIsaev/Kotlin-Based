@@ -75,4 +75,5 @@ dependencies {
     implementation ("io.github.smartsensesolutions:SegmentedVerticalSeekBar:1.0.0")
 
     implementation ("com.github.qamarelsafadi:CurvedBottomNavigation:0.1.3")
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }

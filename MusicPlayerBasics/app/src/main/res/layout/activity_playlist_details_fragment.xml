@@ -91,11 +91,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
         <!--Add Button-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
         <Button
             android:id="@+id/addBtnPD"
             style="@style/Widget.AppCompat.Button.Borderless"
@@ -122,7 +126,15 @@
             android:textAllCaps="false"
             android:textColor="?attr/themeColors"
             tools:ignore="RtlHardcoded" />
-
+    </LinearLayout>
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/nowPlaying"
+            android:name="com.example.musicplayerbasics.NowPlaying"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
+            tools:layout="@layout/fragment_now_playing" />
     </LinearLayout>
 
 

@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
@@ -39,11 +40,7 @@ class SettingsFragment : Fragment() {
         SmartColorpickerFromImgBinding.inflate(layoutInflater)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentSettingsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -161,6 +158,22 @@ class SettingsFragment : Fragment() {
             }
 
 
+            binding.statistic.setOnClickListener {
+                try {
+                    val playerFragment = Statistics()
+
+                    val bundle = Bundle()
+                    playerFragment.arguments = bundle
+
+                    playerFragment.show(
+                        (context as AppCompatActivity).supportFragmentManager,
+                        playerFragment.tag
+                    )
+                }
+                catch (ex:Exception){
+                    binding.statistic.text=ex.toString()
+                }
+            }
         } catch (ex: Exception) {
             Toast.makeText(requireContext(), ex.toString(), Toast.LENGTH_SHORT).show()
         }

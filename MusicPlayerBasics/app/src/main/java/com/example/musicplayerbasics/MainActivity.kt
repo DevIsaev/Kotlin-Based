@@ -1,5 +1,6 @@
 package com.example.musicplayerbasics
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -30,53 +31,21 @@ import com.qamar.curvedbottomnaviagtion.CurvedBottomNavigation
 
 
 class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener {
-    private lateinit var binding: ActivityMainBinding
 
     var drawer: DrawerLayout? = null
     lateinit var toggle: ActionBarDrawerToggle
     companion object {
+        @SuppressLint("StaticFieldLeak")
+        lateinit var binding: ActivityMainBinding
         lateinit var MusicListMA: ArrayList<Music>
         lateinit var musicAdapter: AdapterMusicList
         lateinit var MusicListSearch: ArrayList<Music>
         var search: Boolean = false
 
-        var themeIndex: Int = 0
-        val currentTheme = arrayOf(
-            R.style.coolPink,
-            R.style.coolBlue,
-            R.style.coolPurple,
-            R.style.coolGreen,
-            R.style.coolBlack,
-            R.style.coolCustom1,
-            R.style.coolCustom2,
-            R.style.coolCustom3,
-            R.style.coolCustom4,
-            R.style.coolCustom5,
-        )
-        val currentThemeNav = arrayOf(
-            R.style.coolPinkNav,
-            R.style.coolBlueNav,
-            R.style.coolPurpleNav,
-            R.style.coolGreenNav,
-            R.style.coolBlackNav,
-            R.style.coolCustom1Nav,
-            R.style.coolCustom2Nav,
-            R.style.coolCustom3Nav,
-            R.style.coolCustom4Nav,
-            R.style.coolCustom5Nav,
-        )
-        val currentGradient = arrayOf(
-            R.drawable.gradient_pink,
-            R.drawable.gradient_blue,
-            R.drawable.gradient_purple,
-            R.drawable.gradient_green,
-            R.drawable.gradient_black,
-            R.drawable.gradient1,
-            R.drawable.gradient2,
-            R.drawable.gradient3,
-            R.drawable.gradient4,
-            R.drawable.gradient5,
-        )
+        var themeIndex: Int = 2
+        val currentTheme = arrayOf(R.style.coolPink, R.style.coolBlue, R.style.coolPurple, R.style.coolGreen, R.style.coolBlack, R.style.coolCustom1, R.style.coolCustom2, R.style.coolCustom3, R.style.coolCustom4, R.style.coolCustom5,)
+        val currentThemeNav = arrayOf(R.style.coolPinkNav, R.style.coolBlueNav, R.style.coolPurpleNav, R.style.coolGreenNav, R.style.coolBlackNav, R.style.coolCustom1Nav, R.style.coolCustom2Nav, R.style.coolCustom3Nav, R.style.coolCustom4Nav, R.style.coolCustom5Nav,)
+        val currentGradient = arrayOf(R.drawable.gradient_pink, R.drawable.gradient_blue, R.drawable.gradient_purple, R.drawable.gradient_green, R.drawable.gradient_black, R.drawable.gradient1, R.drawable.gradient2, R.drawable.gradient3, R.drawable.gradient4, R.drawable.gradient5,)
         var sort: Int = 0
 
         //добавить: по папкам, по количеству прослушиваний
@@ -90,14 +59,14 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         var bottomNavigation:CurvedBottomNavigation?=null
         var r:Boolean=false
 
-
+        lateinit var mList:ArrayList<Music>
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var themeEditor = getSharedPreferences("THEMES", MODE_PRIVATE)
-        themeIndex = themeEditor.getInt("theme", 0)
+        themeIndex = themeEditor.getInt("theme", 2)
         setTheme(currentThemeNav[themeIndex])
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -123,15 +92,21 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
                 }
             }
             Navigation()
+            //MusicListMA = loadMusicListMA(this)
+            //loadMusicCounts(MusicListMA, baseContext)
         } catch (ex: Exception) {
             binding.toolbar.setTitle(ex.toString())
         }
     }
 
+//    override fun onPause() {
+//        super.onPause()
+//        saveMusicCounts(mList, baseContext)
+//    }
     override fun onDestroy() {
         super.onDestroy()
         if (PlayerFragment.isPlaying && PlayerFragment.musicService != null) {
-            exitApp()
+            //exitApp()
         }
     }
 
@@ -160,6 +135,13 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             var nowPlaying=findViewById<FragmentContainerView>(R.id.nowPlaying)
             nowPlaying.visibility= View.VISIBLE
         }
+        //loadMusicCounts()
+//        try {
+//            MusicListMA = loadMusicListMA(this)
+//        }
+//        catch (ex:Exception){
+//            binding.toolbar.setTitle(ex.toString())
+//        }
     }
 
 

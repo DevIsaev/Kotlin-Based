@@ -35,7 +35,7 @@ class AdapterMusicListFavourite(private val context: Context, private var musicL
         holder.root.setOnClickListener {
             when {
                 MainActivity.search -> openFragment("MusicAdapterSearch", position)
-
+                musicList[position].id == PlayerFragment.nowPlayingId -> openFragment("NowPlaying", position)
                 else -> openFragment("Favourite", position)
             }
         }
@@ -69,7 +69,7 @@ class AdapterMusicListFavourite(private val context: Context, private var musicL
     }
 
     private fun openFragment(reference: String,position:Int){
-        val playerFragment = PlayerFragment.newInstance()
+        val playerFragment = PlayerFragment.newInstance(context)
 
         val bundle = Bundle()
         bundle.putInt("index", position)

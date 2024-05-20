@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AllMusicStatistic">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_musicStatistic"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbarThumbVertical="@drawable/baseline_check_box_outline_blank_24"
+        android:scrollbars="vertical"
+        android:textColor="?colorOnPrimary"/>
+    <!--            android:layoutAnimation="@anim/layout_animation_rc"-->
+
+</FrameLayout>

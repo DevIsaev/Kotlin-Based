@@ -14,6 +14,7 @@ import android.text.SpannableStringBuilder
 import android.text.format.DateUtils
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -32,7 +33,7 @@ import com.google.gson.GsonBuilder
 import java.io.File
 
 
-class AdapterMusicList(private val context: Context, private var musicList: ArrayList<Music>, private  var playlistDetails:Boolean=false, private var selectionActivity:Boolean=false) : RecyclerView.Adapter<AdapterMusicList.MyHolder>(){
+class AdapterMusicList(private val context: Context, private var musicList: ArrayList<Music>, private  var playlistDetails:Boolean=false, private var selectionActivity:Boolean=false,private var statistic:Boolean=false) : RecyclerView.Adapter<AdapterMusicList.MyHolder>(){
 
     class MyHolder(binding: MusicViewBinding):RecyclerView.ViewHolder(binding.root) {
         val title=binding.songName
@@ -41,6 +42,8 @@ class AdapterMusicList(private val context: Context, private var musicList: Arra
         val duration=binding.songDuration
         val root=binding.root
         val card=binding.cardSong
+        var count=binding.countTxt
+        var statlayout=binding.statlayout
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdapterMusicList.MyHolder {
@@ -54,6 +57,10 @@ class AdapterMusicList(private val context: Context, private var musicList: Arra
         holder.artist.text = musicList[position].artist
         holder.duration.text = DurationFormat(musicList[position].duration)
 
+        holder.count.text=musicList[position].count.toString()
+        holder.statlayout.visibility=View.INVISIBLE
+        holder.duration.visibility=View.VISIBLE
+
         Glide.with(context)
             .load(musicList[position].artURI)
             .apply(RequestOptions().placeholder(R.drawable.icon).centerCrop())
@@ -66,9 +73,21 @@ class AdapterMusicList(private val context: Context, private var musicList: Arra
 
 
         when {
+            statistic->{
+                holder.root.setOnClickListener {
+                Toast.makeText(context,musicList[position].count.toString(),Toast.LENGTH_SHORT).show()
+                }
+                holder.count.text=musicList[position].count.toString()
+                holder.statlayout.visibility=View.VISIBLE
+                holder.duration.visibility=View.INVISIBLE
+            }
+
             playlistDetails -> {
                 holder.root.setOnClickListener {
-                    openFragment("AdapterMusicListPlaylist", position)
+                    when {
+                        musicList[position].id == PlayerFragment.nowPlayingId -> openFragment("NowPlaying", position)
+                        else->openFragment("AdapterMusicListPlaylist", position)
+                    }
                 }
             }
 
@@ -91,7 +110,6 @@ class AdapterMusicList(private val context: Context, private var musicList: Arra
                     when {
                         MainActivity.search -> openFragment("MusicAdapterSearch", position)
                         musicList[position].id == PlayerFragment.nowPlayingId -> openFragment("NowPlaying", position)
-                        //musicList[position].id == PlayerFragment.nowPlayingId -> openFragment("MusicAdapter", position)
                         else -> openFragment("MusicAdapter", position)
                     }
                 }
@@ -273,7 +291,7 @@ class AdapterMusicList(private val context: Context, private var musicList: Arra
 //        diffResult.dispatchUpdatesTo(this)
     }
     private fun openFragment(reference: String,position:Int){
-        val playerFragment = PlayerFragment.newInstance()
+        val playerFragment = PlayerFragment.newInstance(context)
 
         val bundle = Bundle()
         bundle.putInt("index", position)

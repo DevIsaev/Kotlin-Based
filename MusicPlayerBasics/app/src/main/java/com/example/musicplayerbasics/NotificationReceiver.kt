@@ -31,7 +31,7 @@ class NotificationReceiver:BroadcastReceiver() {
         NowPlaying.binding.playPauseBTNNP.setImageResource(R.drawable.baseline_play_arrow_24)
     }
     private  fun prevNextSong(increment:Boolean,context: Context){
-        songPosition(increment = increment)
+        songPositionPN(increment = increment)
         PlayerFragment.musicService!!.createMP()
         Glide.with(context)
             .load(PlayerFragment.musicListPA[PlayerFragment.songPosition].artURI)

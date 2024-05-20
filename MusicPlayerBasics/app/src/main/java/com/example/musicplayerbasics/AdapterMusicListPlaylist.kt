@@ -64,7 +64,6 @@ class AdapterMusicListPlaylist(private val context: Context, private var playlis
         holder.root.setOnClickListener {
             val bottomSheet = PlaylistDetailsFragment()
             val bundle = Bundle()
-
             bundle.putInt("index", position)
             bottomSheet .arguments = bundle
             bottomSheet .show((context as AppCompatActivity).supportFragmentManager, bottomSheet .tag)

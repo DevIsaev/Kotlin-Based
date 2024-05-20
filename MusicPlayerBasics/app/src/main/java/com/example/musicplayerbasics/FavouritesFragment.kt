@@ -64,6 +64,10 @@ class FavouritesFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     override fun onResume() {
         super.onResume()
+        veryfing()
+    }
+
+    fun veryfing() {
         adapter.updateFavourites(favSong)
 //        // Сохранение данных в SharedPreferences
         val editor = requireContext().getSharedPreferences("FAVOURITES", AppCompatActivity.MODE_PRIVATE).edit()

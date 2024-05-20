@@ -309,4 +309,9 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor" tools:targetApi="l">@android:color/transparent</item>
     </style>
+
+    <style name="MyTabStyle" parent="Base.Widget.Design.TabLayout">
+        <item name="android:textSize">8.51sp</item>
+<!--        <item name="android:textAllCaps">true</item>-->
+    </style>
 </resources>
