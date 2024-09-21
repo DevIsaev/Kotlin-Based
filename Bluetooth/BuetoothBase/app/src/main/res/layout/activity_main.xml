@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:scrollbarAlwaysDrawVerticalTrack="true"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/status"
+        app:srcCompat="@drawable/baseline_bluetooth_disabled_24" />
+
+    <TextView
+        android:id="@+id/DEVICES"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <Button
+        android:id="@+id/buttonON"
+        android:layout_width="221dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="24dp"
+        android:background="#0018FF"
+        android:text="ВКЛЮЧИТЬ"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/DEVICES" />
+
+    <Button
+        android:id="@+id/buttonOFF"
+        android:layout_width="221dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="24dp"
+        android:text="ВЫКЛЮЧИТЬ"
+        android:textColor="@color/white"
+        android:background="#0018FF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonON" />
+
+    <Button
+        android:id="@+id/buttonDiscover"
+        android:layout_width="221dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="24dp"
+        android:text="НАЧАТЬ ПОИСК"
+        android:textColor="@color/white"
+        android:background="#0018FF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonOFF" />
+
+    <Button
+        android:id="@+id/buttonDEVICES"
+        android:layout_width="221dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="24dp"
+        android:text="ВСЕ УСТРОЙСТВА"
+        android:textColor="@color/white"
+        android:background="#0018FF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonDiscover" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
